@@ -9,12 +9,13 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "typescript.tsdk": "/usr/local/share/nvm/versions/node/v20.16.0/lib/node_modules/typescript/lib"
+        "typescript.tsdk": "/usr/local/share/nvm/versions/node/current/lib/node_modules/typescript/lib"
       },
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "biomejs.biome"
+        "biomejs.biome",
+        "GitHub.copilot"
       ]
     }
   }

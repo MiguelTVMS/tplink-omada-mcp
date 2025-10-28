@@ -1,5 +1,6 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import https from 'node:https';
+
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
 import { EnvironmentConfig } from './config.js';
@@ -12,7 +13,7 @@ import {
   OmadaSite
 } from './types.js';
 
-export interface OmadaClientOptions extends EnvironmentConfig {}
+export type OmadaClientOptions = EnvironmentConfig;
 
 function normalizeCookieHeader(values: string[] | undefined): string | undefined {
   if (!values?.length) {
