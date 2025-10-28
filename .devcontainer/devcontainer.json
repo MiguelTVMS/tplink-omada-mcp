@@ -4,6 +4,8 @@
   "service": "development",
   "workspaceFolder": "/workspace",
   "features": {},
+  "remoteUser": "node",
+  "updateRemoteUserUID": true,
   "mounts": [
     "source=${localEnv:SSH_AUTH_SOCK},target=/ssh-agent,type=bind"
   ],
