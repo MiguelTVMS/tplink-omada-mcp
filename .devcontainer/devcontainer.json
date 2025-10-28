@@ -1,0 +1,21 @@
+{
+  "name": "TP-Link Omada MCP",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "development",
+  "workspaceFolder": "/workspace",
+  "features": {},
+  "forwardPorts": [8043, 8088],
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "typescript.tsdk": "/usr/local/share/nvm/versions/node/v20.16.0/lib/node_modules/typescript/lib"
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "biomejs.biome"
+      ]
+    }
+  }
+}
