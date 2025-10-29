@@ -22,7 +22,8 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "biomejs.biome",
-        "GitHub.copilot"
+        "GitHub.copilot",
+        "ardisaurus.gitflow-actions-sidebar"
       ]
     }
   }
