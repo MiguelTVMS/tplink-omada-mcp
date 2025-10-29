@@ -43,6 +43,7 @@ Reference `.env.example`. Primary variables:
 - Reference the OpenAPI spec in `docs/` when adding or updating Omada API interactions.
 
 ## Aditional Guidelines
+- The project follows a GitFlow branching strategy: `main` reflects production-ready code, while `develop` is the integration branch. **All pull requests must target `develop`.**
 - When adding new features or fixing bugs, create a new branch from `develop` and submit a pull request for review.
 - Write unit tests for new functionality and ensure existing tests pass.
 - Keep the reference `.env.example` and this documentation up to date with any new environment variables added to the project.
