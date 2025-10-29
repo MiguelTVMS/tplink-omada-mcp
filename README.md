@@ -90,9 +90,12 @@ Some clients, such as the OpenAI MCP connector, require an HTTP endpoint with Se
 ```bash
 npm run dev:http   # live reload during development
 npm run start:http # run the compiled output
+npm run ngrok:http  # expose the HTTP/SSE server via ngrok
 ```
 
 By default, the server listens on `0.0.0.0:3000` and exposes the MCP endpoint at `/mcp` with a health check on `/healthz`. Configure the host, port, and path using the optional `MCP_HTTP_*` environment variables documented in `.env.example`. The `npm run docker:run:http` helper wraps the HTTP/SSE image and publishes the port automatically.
+
+To share the local server with remote tooling, run `npm run ngrok:http` in a separate terminal after signing in with `ngrok config add-authtoken <token>`. The command forwards a public HTTPS URL to `http://localhost:3000` and prints the tunnel address in the console.
 
 ## Tools
 

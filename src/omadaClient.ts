@@ -1,10 +1,10 @@
 import https from 'node:https';
 
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
-import { EnvironmentConfig } from './config.js';
-import {
+import type { EnvironmentConfig } from './config.js';
+import type {
   OmadaApiResponse,
   OmadaClientInfo,
   OmadaDeviceInfo,
@@ -12,6 +12,7 @@ import {
   PaginatedResult,
   TokenResult
 } from './types.js';
+import { logger } from './utils/logger.js';
 
 export type OmadaClientOptions = EnvironmentConfig;
 
@@ -35,7 +36,7 @@ export class OmadaClient {
 
   private readonly clientSecret: string;
 
-  constructor(private readonly options: OmadaClientOptions) {
+  constructor(options: OmadaClientOptions) {
     this.siteId = options.siteId;
     this.clientId = options.clientId;
     this.clientSecret = options.clientSecret;
@@ -235,10 +236,29 @@ export class OmadaClient {
       }
     };
 
+    const method = (requestConfig.method ?? 'GET').toUpperCase();
+    const url = requestConfig.url ?? 'unknown-url';
+    logger.info('Omada request', {
+      method,
+      url,
+      params: requestConfig.params,
+      siteId: requestConfig.params?.siteId ?? undefined
+    });
+
     try {
       const response = await this.http.request<T>(requestConfig);
+      logger.info('Omada response', {
+        method,
+        url,
+        status: response.status
+      });
       return response.data;
     } catch (error) {
+      logger.error('Omada request failed', {
+        method,
+        url,
+        message: error instanceof Error ? error.message : String(error)
+      });
       if (!retry || !axios.isAxiosError(error)) {
         throw error;
       }

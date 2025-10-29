@@ -73,6 +73,22 @@
     },
     {
       "type": "node",
+      "request": "launch",
+      "name": "Expose MCP HTTP Server via ngrok",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "ngrok:http",
+        "--"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
       "request": "attach",
       "name": "Attach to MCP Server",
       "processId": "${command:PickProcess}",

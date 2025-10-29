@@ -1,9 +1,16 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
+import type {
+  CallToolResult,
+  ServerNotification,
+  ServerRequest
+} from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 
 import type { OmadaClient } from './omadaClient.js';
+import { logger } from './utils/logger.js';
 
 const siteInputSchema = z.object({
   siteId: z.string().min(1).optional()
@@ -33,18 +40,105 @@ function toToolResult(value: unknown) {
   };
 }
 
+function safeSerialize(value: unknown) {
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return '[unserializable]';
+  }
+}
+
+type ToolExtra = RequestHandlerExtra<ServerRequest, ServerNotification>;
+
+function wrapToolHandler<Args extends z.ZodRawShape>(
+  name: string,
+  handler: (
+    args: z.objectOutputType<Args, z.ZodTypeAny>,
+    extra: ToolExtra
+  ) => Promise<CallToolResult>
+): (
+  args: z.objectOutputType<Args, z.ZodTypeAny>,
+  extra: ToolExtra
+) => Promise<CallToolResult> {
+  return async (
+    args: z.objectOutputType<Args, z.ZodTypeAny>,
+    extra: ToolExtra
+  ): Promise<CallToolResult> => {
+    const sessionId = extra.sessionId ?? 'unknown-session';
+    logger.info('Tool invoked', { tool: name, sessionId, args: safeSerialize(args) });
+
+    try {
+      const result = await handler(args, extra);
+      logger.info('Tool completed', { tool: name, sessionId });
+      return result;
+    } catch (error) {
+      logger.error('Tool failed', {
+        tool: name,
+        sessionId,
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw error;
+    }
+  };
+}
+
 export function createServer(client: OmadaClient): McpServer {
   const server = new McpServer({
     name: 'tplink-omada-mcp',
     version: '0.1.0'
   });
 
+  server.server.oninitialized = () => {
+    logger.info('Server initialization completed');
+  };
+
+  server.server.onclose = () => {
+    logger.warn('Server connection closed');
+  };
+
+  server.server.onerror = (error) => {
+    logger.error('Server error', { error });
+  };
+
+  server.server.fallbackRequestHandler = async (request, extra) => {
+    const sessionId = extra.sessionId ?? 'unknown-session';
+    logger.warn('Unhandled request received', {
+      method: request.method,
+      sessionId,
+      params: safeSerialize(request.params)
+    });
+    throw new Error(`Unhandled request: ${request.method}`);
+  };
+
+  server.server.fallbackNotificationHandler = async (notification) => {
+    logger.warn('Unhandled notification received', {
+      method: notification.method,
+      params: safeSerialize(notification.params)
+    });
+  };
+
   server.registerTool(
     'omada.listSites',
     {
       description: 'List all sites configured on the Omada controller.'
     },
-    async () => toToolResult(await client.listSites())
+    async (extra) => {
+      const sessionId = extra.sessionId ?? 'unknown-session';
+      logger.info('Tool invoked', { tool: 'omada.listSites', sessionId });
+
+      try {
+        const result = toToolResult(await client.listSites());
+        logger.info('Tool completed', { tool: 'omada.listSites', sessionId });
+        return result;
+      } catch (error) {
+        logger.error('Tool failed', {
+          tool: 'omada.listSites',
+          sessionId,
+          error: error instanceof Error ? error.message : String(error)
+        });
+        throw error;
+      }
+    }
   );
 
   server.registerTool(
@@ -53,7 +147,9 @@ export function createServer(client: OmadaClient): McpServer {
       description: 'List provisioned network devices for a specific site.',
       inputSchema: siteInputSchema.shape
     },
-    async ({ siteId }) => toToolResult(await client.listDevices(siteId))
+    wrapToolHandler('omada.listDevices', async ({ siteId }) =>
+      toToolResult(await client.listDevices(siteId))
+    )
   );
 
   server.registerTool(
@@ -62,7 +158,9 @@ export function createServer(client: OmadaClient): McpServer {
       description: 'List network clients connected to a site.',
       inputSchema: siteInputSchema.shape
     },
-    async ({ siteId }) => toToolResult(await client.listClients(siteId))
+    wrapToolHandler('omada.listClients', async ({ siteId }) =>
+      toToolResult(await client.listClients(siteId))
+    )
   );
 
   server.registerTool(
@@ -71,7 +169,9 @@ export function createServer(client: OmadaClient): McpServer {
       description: 'Fetch detailed information for a specific Omada device.',
       inputSchema: deviceIdSchema.shape
     },
-    async ({ deviceId, siteId }) => toToolResult(await client.getDevice(deviceId, siteId))
+    wrapToolHandler('omada.getDevice', async ({ deviceId, siteId }) =>
+      toToolResult(await client.getDevice(deviceId, siteId))
+    )
   );
 
   server.registerTool(
@@ -80,7 +180,9 @@ export function createServer(client: OmadaClient): McpServer {
       description: 'Fetch details for a specific Omada client.',
       inputSchema: clientIdSchema.shape
     },
-    async ({ clientId, siteId }) => toToolResult(await client.getClient(clientId, siteId))
+    wrapToolHandler('omada.getClient', async ({ clientId, siteId }) =>
+      toToolResult(await client.getClient(clientId, siteId))
+    )
   );
 
   server.registerTool(
@@ -90,7 +192,7 @@ export function createServer(client: OmadaClient): McpServer {
         'Call an arbitrary API path on the Omada controller. The provided URL should be a path, for example /openapi/v1/{omadacId}/sites',
       inputSchema: customRequestSchema.shape
     },
-    async ({ method, url, params, data, siteId }) => {
+    wrapToolHandler('omada.callApi', async ({ method, url, params, data, siteId }) => {
       const resolvedUrl = siteId ? url.replace('{siteId}', siteId) : url;
 
       const payload = await client.callApi({
@@ -101,7 +203,7 @@ export function createServer(client: OmadaClient): McpServer {
       });
 
       return toToolResult(payload);
-    }
+    })
   );
 
   return server;
@@ -110,5 +212,7 @@ export function createServer(client: OmadaClient): McpServer {
 export async function startServer(client: OmadaClient, transport?: Transport): Promise<void> {
   const server = createServer(client);
   const activeTransport = transport ?? new StdioServerTransport();
+  logger.info('Connecting server', { transport: activeTransport.constructor.name });
   await server.connect(activeTransport);
+  logger.info('Server connected');
 }

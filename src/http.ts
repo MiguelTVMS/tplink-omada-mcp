@@ -7,6 +7,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { loadConfigFromEnv } from './config.js';
 import { OmadaClient } from './omadaClient.js';
 import { createServer as createMcpServer } from './server.js';
+import { logger } from './utils/logger.js';
 
 const DEFAULT_PORT = 3000;
 const DEFAULT_HOST = '0.0.0.0';
@@ -24,7 +25,7 @@ function resolvePort(value: string | undefined, fallback: number): number {
 
     const parsed = Number.parseInt(value, 10);
     if (!Number.isInteger(parsed) || parsed <= 0 || parsed > 65_535) {
-        console.warn(`Invalid MCP HTTP port "${value}". Falling back to ${fallback}.`);
+        logger.warn('Invalid MCP HTTP port provided', { provided: value, fallback });
         return fallback;
     }
 
@@ -106,18 +107,18 @@ async function createShutdownHandler(
     closeHttp: () => Promise<void>,
     closeServer: () => Promise<void>
 ): Promise<void> {
-    console.log(`Received ${signal}, shutting down MCP HTTP server...`);
+    logger.warn('Received shutdown signal', { signal });
 
     try {
         await closeServer();
     } catch (error) {
-        console.error('Error closing MCP server:', error);
+        logger.error('Error closing MCP server', { error });
     }
 
     try {
         await closeHttp();
     } catch (error) {
-        console.error('Error closing HTTP server:', error);
+        logger.error('Error closing HTTP server', { error });
     }
 }
 
@@ -140,7 +141,7 @@ async function main(): Promise<void> {
     });
 
     transport.onerror = (error) => {
-        console.error('Streamable HTTP transport error:', error);
+        logger.error('Streamable HTTP transport error', { error });
     };
 
     await mcpServer.connect(transport);
@@ -152,9 +153,17 @@ async function main(): Promise<void> {
     const httpServer = http.createServer(async (req, res) => {
         const url = getRequestUrl(req, port);
         if (!url) {
+            logger.warn('HTTP request rejected', { reason: 'invalid-url', method: req.method, url: req.url });
             sendJson(res, 400, { error: 'Invalid request URL.' });
             return;
         }
+
+        logger.info('HTTP request received', {
+            method: req.method,
+            path: url.pathname,
+            query: url.search,
+            sessionId: req.headers['mcp-session-id'] ?? undefined
+        });
 
         if (url.pathname === HEALTH_PATH) {
             sendJson(res, 200, { status: 'ok' });
@@ -169,7 +178,7 @@ async function main(): Promise<void> {
         try {
             await transport.handleRequest(req, res);
         } catch (error) {
-            console.error('Failed to handle MCP HTTP request:', error);
+            logger.error('Failed to handle MCP HTTP request', { error });
             if (!res.headersSent) {
                 sendJson(res, 500, {
                     jsonrpc: '2.0',
@@ -183,15 +192,20 @@ async function main(): Promise<void> {
     });
 
     httpServer.on('clientError', (error, socket) => {
-        console.error('HTTP client error:', error);
+        logger.error('HTTP client error', { error });
         socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
     });
 
     await new Promise<void>((resolve) => {
         httpServer.listen(port, host, () => {
             const displayHost = host === '0.0.0.0' ? 'localhost' : host;
-            console.log(`MCP HTTP server listening on http://${displayHost}:${port}${endpointPath}`);
-            console.log(`Health check available at http://${displayHost}:${port}${HEALTH_PATH}`);
+            logger.info('HTTP server listening', {
+                endpoint: `http://${displayHost}:${port}${endpointPath}`
+            });
+            logger.info('HTTP health check available', {
+                endpoint: `http://${displayHost}:${port}${HEALTH_PATH}`
+            });
+            logger.info('HTTP server ready');
             resolve();
         });
     });
@@ -216,6 +230,6 @@ async function main(): Promise<void> {
 
 main().catch((error) => {
     const message = error instanceof Error ? error.message : String(error);
-    console.error(`Failed to start MCP HTTP server: ${message}`);
+    logger.error('Failed to start MCP HTTP server', { error: message });
     process.exitCode = 1;
 });

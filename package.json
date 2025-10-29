@@ -13,6 +13,7 @@
     "dev:http": "tsx --env-file=.env src/http.ts",
     "start": "node dist/index.js",
     "start:http": "node dist/http.js",
+    "ngrok:http": "ngrok http --log=stdout --log-format=logfmt 3000",
     "docker:build": "docker build -f Dockerfile -t ghcr.io/migueltvms/tplink-omada-mcp-cli:latest .",
     "docker:run": "docker run --rm -it --env-file .env ghcr.io/migueltvms/tplink-omada-mcp-cli:latest",
     "docker:push": "docker push ghcr.io/migueltvms/tplink-omada-mcp-cli:latest",
@@ -41,6 +42,7 @@
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "ngrok": "^5.0.0-beta.2",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
