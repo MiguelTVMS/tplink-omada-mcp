@@ -8,8 +8,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_CLI: ghcr.io/${{ toLower(github.repository_owner) }}/tplink-omada-mcp-cli
-  IMAGE_HTTP: ghcr.io/${{ toLower(github.repository_owner) }}/tplink-omada-mcp-http
 
 jobs:
   build-and-push:
@@ -27,6 +25,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Determine image names
+        id: meta
+        run: |
+          owner_lower=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          echo "owner_lower=${owner_lower}" >> "${GITHUB_OUTPUT}"
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -42,8 +46,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ env.IMAGE_CLI }}:latest
-            ${{ env.IMAGE_CLI }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner_lower }}/tplink-omada-mcp-cli:latest
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner_lower }}/tplink-omada-mcp-cli:${{ github.sha }}
 
       - name: Build and push HTTP image
         uses: docker/build-push-action@v6
@@ -53,5 +57,5 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ env.IMAGE_HTTP }}:latest
-            ${{ env.IMAGE_HTTP }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner_lower }}/tplink-omada-mcp-http:latest
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner_lower }}/tplink-omada-mcp-http:${{ github.sha }}
