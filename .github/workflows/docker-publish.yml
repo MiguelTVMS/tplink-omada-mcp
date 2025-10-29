@@ -36,8 +36,12 @@ jobs:
 
           if [[ "${ref}" == refs/tags/* ]]; then
             ref_name="${ref#refs/tags/}"
-            cli_tags="${REGISTRY}/${owner_lower}/tplink-omada-mcp-cli:latest\n${REGISTRY}/${owner_lower}/tplink-omada-mcp-cli:${ref_name}"
-            http_tags="${REGISTRY}/${owner_lower}/tplink-omada-mcp-http:latest\n${REGISTRY}/${owner_lower}/tplink-omada-mcp-http:${ref_name}"
+            cli_tags=$(printf "%s\n%s" \
+              "${REGISTRY}/${owner_lower}/tplink-omada-mcp-cli:latest" \
+              "${REGISTRY}/${owner_lower}/tplink-omada-mcp-cli:${ref_name}")
+            http_tags=$(printf "%s\n%s" \
+              "${REGISTRY}/${owner_lower}/tplink-omada-mcp-http:latest" \
+              "${REGISTRY}/${owner_lower}/tplink-omada-mcp-http:${ref_name}")
           else
             ref_name="${GITHUB_HEAD_REF:-${ref#refs/heads/}}"
             sanitized=$(echo "${ref_name}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9._-]/-/g')
