@@ -32,6 +32,10 @@ const customRequestSchema = z.object({
   siteId: z.string().min(1).optional()
 });
 
+const stackIdSchema = siteInputSchema.extend({
+  stackId: z.string().min(1, 'stackId is required')
+});
+
 function toToolResult(value: unknown) {
   const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2) ?? '';
 
@@ -246,6 +250,17 @@ export function createServer(client: OmadaClient): McpServer {
     },
     wrapToolHandler('omada.getDevice', async ({ deviceId, siteId }) =>
       toToolResult(await client.getDevice(deviceId, siteId))
+    )
+  );
+
+  server.registerTool(
+    'omada.getSwitchStackDetail',
+    {
+      description: 'Fetch detailed information for a specific switch stack.',
+      inputSchema: stackIdSchema.shape
+    },
+    wrapToolHandler('omada.getSwitchStackDetail', async ({ stackId, siteId }) =>
+      toToolResult(await client.getSwitchStackDetail(stackId, siteId))
     )
   );
 

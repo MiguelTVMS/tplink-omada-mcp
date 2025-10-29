@@ -107,6 +107,7 @@ If an intermediary strips the `Mcp-Session-Id` header, set `MCP_HTTP_STATEFUL=fa
 | `omada.listDevices` | Lists provisioned devices for a given site. |
 | `omada.listClients` | Lists active client devices for a site. |
 | `omada.getDevice` | Fetches details for a specific Omada device. |
+| `omada.getSwitchStackDetail` | Retrieves detailed configuration and status for a switch stack. |
 | `omada.getClient` | Fetches details for a specific client device. |
 | `omada.callApi` | Executes a raw API request using the established Omada session token. |
 
@@ -117,6 +118,7 @@ If an intermediary strips the `Mcp-Session-Id` header, set `MCP_HTTP_STATEFUL=fa
 | `getSiteList` | List controller sites. | Backed by `omada.listSites`; automatic pagination is handled client-side. |
 | `getDeviceList` | List devices assigned to a site. | Used by `omada.listDevices` and `omada.getDevice` (single device lookup is resolved from this list). |
 | `getGridActiveClients` | List active clients connected to a site. | Used by `omada.listClients` and `omada.getClient` (single client lookup is resolved from this list). |
+| `getOswStackDetail` | Retrieve details for a switch stack. | Used by `omada.getSwitchStackDetail`. |
 
 ## Devcontainer support
 

@@ -13,6 +13,7 @@ import type {
   OmadaClientInfo,
   OmadaDeviceInfo,
   OmadaSiteSummary,
+  OswStackDetail,
   PaginatedResult,
   TokenResult
 } from './types/index.js';
@@ -91,6 +92,20 @@ export class OmadaClient {
   public async getDevice(identifier: string, siteId?: string): Promise<OmadaDeviceInfo | undefined> {
     const devices = await this.listDevices(siteId);
     return devices.find((device) => device.mac === identifier || device.deviceId === identifier);
+  }
+
+  public async getSwitchStackDetail(stackId: string, siteId?: string): Promise<OswStackDetail> {
+    if (!stackId) {
+      throw new Error('A stack id must be provided.');
+    }
+
+    const resolvedSiteId = this.resolveSiteId(siteId);
+    const path = this.buildOmadaPath(
+      `/sites/${encodeURIComponent(resolvedSiteId)}/stacks/${encodeURIComponent(stackId)}`
+    );
+
+    const response = await this.get<OmadaApiResponse<OswStackDetail>>(path);
+    return this.ensureSuccess(response);
   }
 
   public async getClient(identifier: string, siteId?: string): Promise<OmadaClientInfo | undefined> {
