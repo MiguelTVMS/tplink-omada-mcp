@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "tplink-omada-mcp": {
+      "command": "npm",
+      "args": [
+        "run",
+        "dev"
+      ],
+      "cwd": "/absolute/path/to/tplink-omada-mcp",
+      "env": {
+        "OMADA_BASE_URL": "https://controller.example.com:8043",
+        "OMADA_CLIENT_ID": "replace-with-client-id",
+        "OMADA_CLIENT_SECRET": "replace-with-client-secret",
+        "OMADA_OMADAC_ID": "replace-with-omadac-id",
+        "OMADA_SITE_ID": "optional-default-site",
+        "OMADA_STRICT_SSL": "false",
+        "OMADA_TIMEOUT": "10000"
+      }
+    }
+  }
+}
