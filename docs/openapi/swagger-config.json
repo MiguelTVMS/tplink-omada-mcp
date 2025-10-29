@@ -1,0 +1,80 @@
+{
+    "configUrl": "swagger-config",
+    "oauth2RedirectUrl": "https://omada.miguel.ms/swagger-ui/oauth2-redirect.html",
+    "showExtensions": true,
+    "urls": [
+        {
+            "url": "00 All",
+            "name": "00-all.json"
+        },
+        {
+            "url": "01 Account",
+            "name": "01-account.json"
+        },
+        {
+            "url": "02 Organization",
+            "name": "02-organization.json"
+        },
+        {
+            "url": "03 Device",
+            "name": "03-device.json"
+        },
+        {
+            "url": "04 Site Setting",
+            "name": "04-site-setting.json"
+        },
+        {
+            "url": "05 Client",
+            "name": "05-client.json"
+        },
+        {
+            "url": "06 Hotspot",
+            "name": "06-hotspot.json"
+        },
+        {
+            "url": "07 Monitor",
+            "name": "07-monitor.json"
+        },
+        {
+            "url": "08 Maintenance",
+            "name": "08-maintenance.json"
+        },
+        {
+            "url": "09 Insight",
+            "name": "09-insight.json"
+        },
+        {
+            "url": "10 Log",
+            "name": "10-log.json"
+        },
+        {
+            "url": "11 Batch",
+            "name": "11-batch.json"
+        },
+        {
+            "url": "12 Global Setting",
+            "name": "12-global-setting.json"
+        },
+        {
+            "url": "13 Global Security",
+            "name": "13-global-security.json"
+        },
+        {
+            "url": "14 Msp",
+            "name": "14-msp.json"
+        },
+        {
+            "url": "15 Device Template",
+            "name": "15-device-template.json"
+        },
+        {
+            "url": "16 Site Template Setting",
+            "name": "16-site-template-setting.json"
+        },
+        {
+            "url": "17 Abnormal Detect",
+            "name": "17-abnormal-detect.json"
+        }
+    ],
+    "validatorUrl": ""
+}
