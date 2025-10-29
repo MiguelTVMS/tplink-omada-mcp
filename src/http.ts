@@ -166,17 +166,30 @@ async function main(): Promise<void> {
         });
 
         if (url.pathname === HEALTH_PATH) {
+            logger.debug('Health check request served');
             sendJson(res, 200, { status: 'ok' });
             return;
         }
 
         if (url.pathname !== endpointPath) {
+            logger.warn('HTTP request rejected', {
+                reason: 'unexpected-path',
+                expected: endpointPath,
+                received: url.pathname
+            });
             sendJson(res, 404, { error: 'Not Found' });
             return;
         }
 
         try {
             await transport.handleRequest(req, res);
+            if (!res.headersSent) {
+                logger.debug('Transport completed without sending response headers');
+            }
+            logger.info('MCP request handled successfully', {
+                path: url.pathname,
+                method: req.method
+            });
         } catch (error) {
             logger.error('Failed to handle MCP HTTP request', { error });
             if (!res.headersSent) {

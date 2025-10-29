@@ -88,6 +88,41 @@ export function createServer(client: OmadaClient): McpServer {
     version: '0.1.0'
   });
 
+  const protocol = server.server;
+  type RequestSchema = Parameters<typeof protocol.setRequestHandler>[0];
+  type RequestCallback = Parameters<typeof protocol.setRequestHandler>[1];
+
+  const originalSetRequestHandler = protocol.setRequestHandler.bind(protocol);
+  protocol.setRequestHandler = function patchedSetRequestHandler(
+    schema: RequestSchema,
+    handler: RequestCallback
+  ) {
+    const method = (schema as { shape: { method: { value: string } } }).shape.method.value;
+    const wrapped: RequestCallback = async (request, extra) => {
+      const sessionId = extra.sessionId ?? 'unknown-session';
+      const logFields: Record<string, unknown> = { method, sessionId };
+      if ('params' in request) {
+        logFields.params = safeSerialize((request as { params: unknown }).params);
+      }
+      logger.info('MCP request received', logFields);
+
+      try {
+        const result = await handler(request, extra);
+        logger.info('MCP request handled', { method, sessionId });
+        return result;
+      } catch (error) {
+        logger.error('MCP request failed', {
+          method,
+          sessionId,
+          error: error instanceof Error ? error.message : String(error)
+        });
+        throw error;
+      }
+    };
+
+    return originalSetRequestHandler(schema, wrapped);
+  };
+
   server.server.oninitialized = () => {
     logger.info('Server initialization completed');
   };
