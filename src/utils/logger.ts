@@ -1,6 +1,31 @@
+import pino from 'pino';
+
 type LogFields = Record<string, unknown>;
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+const level = process.env.LOG_LEVEL ?? 'info';
+
+const levelToSeverity: Record<string, string> = {
+    trace: 'DEBUG',
+    debug: 'DEBUG',
+    info: 'INFO',
+    warn: 'WARNING',
+    error: 'ERROR',
+    fatal: 'CRITICAL'
+};
+
+const instance = pino({
+    level,
+    base: undefined,
+    messageKey: 'message',
+    timestamp: pino.stdTimeFunctions.isoTime,
+    formatters: {
+        level(label) {
+            return { severity: levelToSeverity[label] ?? label.toUpperCase() };
+        }
+    }
+});
 
 function normalizeMeta(meta?: LogFields): LogFields | undefined {
     if (!meta) {
@@ -22,24 +47,10 @@ function normalizeMeta(meta?: LogFields): LogFields | undefined {
 
 function write(level: LogLevel, message: string, meta?: LogFields): void {
     const fields = normalizeMeta(meta);
-    const args = fields ? [message, fields] : [message];
-
-    switch (level) {
-        case 'debug':
-            console.debug(...args);
-            break;
-        case 'info':
-            console.info(...args);
-            break;
-        case 'warn':
-            console.warn(...args);
-            break;
-        case 'error':
-            console.error(...args);
-            break;
-        default:
-            console.log(...args);
-            break;
+    if (fields) {
+        instance[level](fields, message);
+    } else {
+        instance[level](message);
     }
 }
 

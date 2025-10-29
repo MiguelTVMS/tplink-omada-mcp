@@ -15,7 +15,7 @@ import type {
   OmadaSiteSummary,
   PaginatedResult,
   TokenResult
-} from './types.js';
+} from './types/index.js';
 import { logger } from './utils/logger.js';
 
 export type OmadaClientOptions = EnvironmentConfig;

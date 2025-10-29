@@ -55,3 +55,4 @@ Reference `.env.example`. Primary variables:
 - **DON'T** change anything in `node_modules` or commit any changes to that folder.
 - IMPORTANT: Encapsulate the log implementation in `src/utils/logger.ts` to allow easy modification of the logging behavior in the future. Use this logger throughout the codebase instead of direct console.log statements.
 - Avoid using the TypeScript `any` type; prefer precise typings or `unknown` when necessary.
+- Any new implementation should be done in both servers, http server and stdio server, to maintain feature parity.
