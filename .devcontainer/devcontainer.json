@@ -3,7 +3,9 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "development",
   "workspaceFolder": "/workspace",
-  "features": {},
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
   "remoteUser": "node",
   "updateRemoteUserUID": true,
   "forwardPorts": [

@@ -10,7 +10,10 @@
     "format": "prettier --write .",
     "check": "npm run lint",
     "dev": "tsx src/index.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "docker:build": "docker build -t jmtvms/tplink-omada-mcp:latest .",
+    "docker:run": "docker run --rm -it --env-file .env jmtvms/tplink-omada-mcp:latest",
+    "docker:push": "docker push jmtvms/tplink-omada-mcp:latest"
   },
   "keywords": [
     "mcp",

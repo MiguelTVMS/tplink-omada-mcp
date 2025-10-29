@@ -23,7 +23,7 @@ Reference `.env.example`. Primary variables:
 
 ## Code Structure
 - `src/` — Main source code.
-- `src/types/` — TypeScript type definitions. Each type has its own file for clarity. Use Zod types where applicable.
+- `src/types/` — TypeScript type definitions. Each type has its own file for clarity.
 - `src/services/` — Service modules encapsulating business logic and API interactions. Each TAG from the Omada API has a corresponding service file.
 
 ## Development Workflow
