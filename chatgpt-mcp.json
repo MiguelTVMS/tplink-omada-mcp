@@ -1,20 +1,30 @@
 {
     "mcpServers": {
         "tplink-omada-mcp": {
-            "command": "npm",
+            "command": "docker",
             "args": [
                 "run",
-                "dev"
+                "--rm",
+                "-i",
+                "--env",
+                "OMADA_BASE_URL=https://controller.example.com:8043",
+                "--env",
+                "OMADA_CLIENT_ID=replace-with-client-id",
+                "--env",
+                "OMADA_CLIENT_SECRET=replace-with-client-secret",
+                "--env",
+                "OMADA_OMADAC_ID=replace-with-omadac-id",
+                "--env",
+                "OMADA_SITE_ID=optional-default-site",
+                "--env",
+                "OMADA_STRICT_SSL=false",
+                "--env",
+                "OMADA_TIMEOUT=10000",
+                "jmtvms/tplink-omada-mcp:latest"
             ],
-            "cwd": "/absolute/path/to/tplink-omada-mcp",
+            "cwd": "/",
             "env": {
-                "OMADA_BASE_URL": "https://controller.example.com:8043",
-                "OMADA_CLIENT_ID": "replace-with-client-id",
-                "OMADA_CLIENT_SECRET": "replace-with-client-secret",
-                "OMADA_OMADAC_ID": "replace-with-omadac-id",
-                "OMADA_SITE_ID": "optional-default-site",
-                "OMADA_STRICT_SSL": "false",
-                "OMADA_TIMEOUT": "10000"
+                "DOCKER_BUILDKIT": "1"
             }
         }
     }
