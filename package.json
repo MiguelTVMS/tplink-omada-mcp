@@ -11,8 +11,10 @@
     "check": "npm run lint",
     "dev": "tsx --env-file=.env src/index.ts",
     "dev:http": "tsx --env-file=.env src/http.ts",
+    "dev:http:ngrok": "concurrently -k --names \"server,ngrok\" \"npm:dev:http\" \"npm:ngrok:http\"",
     "start": "node dist/index.js",
     "start:http": "node dist/http.js",
+    "ngrok:http": "ngrok http --log=stdout --log-format=logfmt 3000",
     "docker:build": "docker build -f Dockerfile -t ghcr.io/migueltvms/tplink-omada-mcp-cli:latest .",
     "docker:run": "docker run --rm -it --env-file .env ghcr.io/migueltvms/tplink-omada-mcp-cli:latest",
     "docker:push": "docker push ghcr.io/migueltvms/tplink-omada-mcp-cli:latest",
@@ -30,6 +32,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.20.2",
     "axios": "^1.13.0",
+    "pino": "^10.1.0",
     "https-proxy-agent": "^7.0.6",
     "zod": "^3.25.76"
   },
@@ -38,9 +41,11 @@
     "@types/node": "^24.9.2",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
+    "concurrently": "^9.1.0",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "ngrok": "^5.0.0-beta.2",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"

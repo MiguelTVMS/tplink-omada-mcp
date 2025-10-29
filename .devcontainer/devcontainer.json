@@ -4,13 +4,15 @@
   "service": "development",
   "workspaceFolder": "/workspace",
   "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/jckimble/devcontainer-features/ngrok:3": {}
   },
   "remoteUser": "node",
   "updateRemoteUserUID": true,
   "forwardPorts": [
     8043,
-    8088
+    8088,
+    3000
   ],
   "postCreateCommand": "npm install",
   "customizations": {

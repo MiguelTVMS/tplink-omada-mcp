@@ -10,8 +10,6 @@ services:
     command: sleep infinity
     depends_on:
       - omada
-    environment:
-      OMADA_BASE_URL: https://omada:8043
     networks:
       - omada
 

@@ -73,12 +73,37 @@
     },
     {
       "type": "node",
+      "request": "launch",
+      "name": "Start ngrok tunnel",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "ngrok:http",
+        "--"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
       "request": "attach",
       "name": "Attach to MCP Server",
       "processId": "${command:PickProcess}",
       "restart": false,
       "skipFiles": [
         "<node_internals>/**"
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Expose MCP HTTP Server via ngrok",
+      "configurations": [
+        "Run MCP HTTP Server (npm run dev:http)",
+        "Start ngrok tunnel"
       ]
     }
   ]

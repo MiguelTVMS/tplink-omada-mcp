@@ -1,0 +1,4 @@
+{
+    "eslint.useFlatConfig": true,
+    "eslint.nodePath": "./node_modules"
+}
