@@ -6,13 +6,10 @@
   "features": {},
   "remoteUser": "node",
   "updateRemoteUserUID": true,
-  "mounts": [
-    "source=${localEnv:SSH_AUTH_SOCK},target=/ssh-agent,type=bind"
+  "forwardPorts": [
+    8043,
+    8088
   ],
-  "remoteEnv": {
-    "SSH_AUTH_SOCK": "/ssh-agent"
-  },
-  "forwardPorts": [8043, 8088],
   "postCreateCommand": "npm install",
   "customizations": {
     "vscode": {
