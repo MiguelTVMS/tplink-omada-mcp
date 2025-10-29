@@ -21,8 +21,6 @@ Reference `.env.example`. Primary variables:
 - `OMADA_USERNAME`, `OMADA_PASSWORD` (required)
 - `OMADA_SITE_ID`, `OMADA_STRICT_SSL`, `OMADA_TIMEOUT`, `OMADA_PROXY_URL` (optional)
 
-
-
 ## Code Structure
 - `src/` — Main source code.
 - `src/types/` — TypeScript type definitions. Each type has its own file for clarity. Use Zod types where applicable.
@@ -53,3 +51,5 @@ Reference `.env.example`. Primary variables:
 - Keep the reference `.env.example` and this documentation up to date with any new environment variables added to the project.
 - **DON'T** change the omada-openapi.json it should only be used as reference for the api endpoints.
 - **ONLY** implement using client credentials mode Access processs as described in the Omada API documentation. The client credentials should be provided via environment variables.
+- We will implement one API operation at a time. Use the OpenAPI operationId as a guide for naming functions and methods.
+- After a operation is implemented, update the README.md file with a table of supported operations in the topic Supported Omada API Operations. This table should include the operationId, a brief description, and any relevant notes about the implementation. Keep it short and concise.
