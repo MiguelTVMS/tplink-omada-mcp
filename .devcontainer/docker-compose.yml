@@ -8,26 +8,3 @@ services:
     volumes:
       - ..:/workspace:cached
     command: sleep infinity
-    depends_on:
-      - omada
-    networks:
-      - omada
-
-  omada:
-    image: mbentley/omada-controller:latest
-    restart: unless-stopped
-    environment:
-      MANAGE_HTTP_PORT: 8088
-      MANAGE_HTTPS_PORT: 8043
-      SHOW_SERVER_LOGS: 'true'
-      SSL_CERT_NAME: omada
-      TZ: UTC
-    ports:
-      - '8043:8043'
-      - '8088:8088'
-    networks:
-      - omada
-
-networks:
-  omada:
-    driver: bridge
