@@ -1,8 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import { z } from 'zod';
 
-import { OmadaClient } from './omadaClient.js';
+import type { OmadaClient } from './omadaClient.js';
 
 const siteInputSchema = z.object({
   siteId: z.string().min(1).optional()
@@ -32,7 +33,7 @@ function toToolResult(value: unknown) {
   };
 }
 
-export async function startServer(client: OmadaClient): Promise<void> {
+export function createServer(client: OmadaClient): McpServer {
   const server = new McpServer({
     name: 'tplink-omada-mcp',
     version: '0.1.0'
@@ -103,6 +104,11 @@ export async function startServer(client: OmadaClient): Promise<void> {
     }
   );
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  return server;
+}
+
+export async function startServer(client: OmadaClient, transport?: Transport): Promise<void> {
+  const server = createServer(client);
+  const activeTransport = transport ?? new StdioServerTransport();
+  await server.connect(activeTransport);
 }

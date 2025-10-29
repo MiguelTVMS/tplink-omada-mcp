@@ -51,3 +51,4 @@ Reference `.env.example`. Primary variables:
 - We will implement one API operation at a time. Use the OpenAPI operationId as a guide for naming functions and methods.
 - After a operation is implemented, update the README.md file with a table of supported operations in the topic Supported Omada API Operations. This table should include the operationId, a brief description, and any relevant notes about the implementation. Keep it short and concise.
 - Avoid using `docs/openapi/00-all.json` as a reference for implementing operations. Instead, use the individual files in `docs/openapi/` that correspond to each TAG. This will help keep the implementation focused and organized. Also the file is very large and cumbersome to navigate. All the individual files under `docs/openapi/` are generated from `00-all.json`. 
+- **DON'T** change anything in `node_modules` or commit any changes to that folder.

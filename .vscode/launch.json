@@ -24,8 +24,43 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Run MCP HTTP Server (npm run dev:http)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:http",
+        "--"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Run MCP Server (compiled output)",
       "program": "${workspaceFolder}/dist/index.js",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "npm: build",
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run MCP HTTP Server (compiled output)",
+      "program": "${workspaceFolder}/dist/http.js",
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "preLaunchTask": "npm: build",

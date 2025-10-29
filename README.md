@@ -70,6 +70,21 @@ npm start
 
 The MCP server communicates over standard input and output. Integrate it with MCP-compatible clients by referencing the `npm start` command and providing the required environment variables.
 
+### HTTP/SSE transport
+
+Some clients, such as the OpenAI MCP connector, require an HTTP endpoint with Server-Sent Events. Start the streamable HTTP transport with:
+
+```bash
+npm run dev:http   # live reload during development
+npm run start:http # run the compiled output
+```
+
+By default, the server listens on `0.0.0.0:3000` and exposes the MCP endpoint at `/mcp` with a health check on `/healthz`. Configure the host, port, and path using the optional `MCP_HTTP_*` environment variables documented in `.env.example`. When running in Docker, publish the port and override the command if needed:
+
+```bash
+npm run docker:run:http
+```
+
 ## Tools
 
 | Tool | Description |
