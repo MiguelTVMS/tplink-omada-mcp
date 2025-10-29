@@ -8,6 +8,7 @@ A Model Context Protocol (MCP) server implemented in TypeScript that exposes the
 - Tools for retrieving sites, network devices, and connected clients
 - Generic Omada API invoker for advanced automation scenarios
 - Environment-driven configuration
+- Per-tag Omada OpenAPI references stored under `docs/openapi`
 - Ready-to-use devcontainer with a companion Omada controller service
 
 ## Getting started

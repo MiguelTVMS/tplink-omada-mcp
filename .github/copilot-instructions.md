@@ -13,7 +13,7 @@ This project implements a Model Context Protocol (MCP) server that exposes TP-Li
 - `src/server.ts` — MCP server entry point built with `@modelcontextprotocol/sdk/server/mcp`.
 - `src/omadaClient.ts` — Axios-based client for Omada controller REST APIs.
 - `src/config.ts` — Environment variable loading and validation via Zod.
-- `docs/omada-openapi.json` — Reference OpenAPI specification for Omada endpoints.
+- `docs/openapi/` — Reference OpenAPI specifications for Omada endpoints, split per API tag.
 
 ## Environment Variables
 Reference `.env.example`. Primary variables:
@@ -49,7 +49,7 @@ Reference `.env.example`. Primary variables:
 - When adding new features or fixing bugs, create a new branch from `develop` and submit a pull request for review.
 - Write unit tests for new functionality and ensure existing tests pass.
 - Keep the reference `.env.example` and this documentation up to date with any new environment variables added to the project.
-- **DON'T** change the omada-openapi.json it should only be used as reference for the api endpoints.
+- **DON'T** change the JSON files under `docs/openapi/`; they should only be used as reference for the API endpoints.
 - **ONLY** implement using client credentials mode Access processs as described in the Omada API documentation. The client credentials should be provided via environment variables.
 - We will implement one API operation at a time. Use the OpenAPI operationId as a guide for naming functions and methods.
 - After a operation is implemented, update the README.md file with a table of supported operations in the topic Supported Omada API Operations. This table should include the operationId, a brief description, and any relevant notes about the implementation. Keep it short and concise.
