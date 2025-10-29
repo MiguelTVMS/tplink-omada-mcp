@@ -1,3 +1,5 @@
+name: Publish Docker Images
+
 on:
   push:
     branches:
@@ -9,6 +11,7 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
+      - '.github/workflows/docker-publish.yml'
   workflow_dispatch:
 
 env:
