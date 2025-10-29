@@ -70,6 +70,19 @@ npm start
 
 The MCP server communicates over standard input and output. Integrate it with MCP-compatible clients by referencing the `npm start` command and providing the required environment variables.
 
+### Docker images
+
+Two container images are provided:
+
+```bash
+npm run docker:build       # Build the CLI/stdio image (tag: ghcr.io/migueltvms/tplink-omada-mcp-cli:latest)
+npm run docker:run         # Launch the CLI/stdio image with your .env file
+npm run docker:build:http  # Build the HTTP/SSE image (tag: ghcr.io/migueltvms/tplink-omada-mcp-http:latest)
+npm run docker:run:http    # Launch the HTTP/SSE image and publish port 3000
+```
+
+Use `npm run docker:push` and `npm run docker:push:http` to publish the images after authenticating with GitHub Container Registry.
+
 ### HTTP/SSE transport
 
 Some clients, such as the OpenAI MCP connector, require an HTTP endpoint with Server-Sent Events. Start the streamable HTTP transport with:
@@ -79,11 +92,7 @@ npm run dev:http   # live reload during development
 npm run start:http # run the compiled output
 ```
 
-By default, the server listens on `0.0.0.0:3000` and exposes the MCP endpoint at `/mcp` with a health check on `/healthz`. Configure the host, port, and path using the optional `MCP_HTTP_*` environment variables documented in `.env.example`. When running in Docker, publish the port and override the command if needed:
-
-```bash
-npm run docker:run:http
-```
+By default, the server listens on `0.0.0.0:3000` and exposes the MCP endpoint at `/mcp` with a health check on `/healthz`. Configure the host, port, and path using the optional `MCP_HTTP_*` environment variables documented in `.env.example`. The `npm run docker:run:http` helper wraps the HTTP/SSE image and publishes the port automatically.
 
 ## Tools
 

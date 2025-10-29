@@ -11,7 +11,7 @@
     },
     "servers": [
         {
-            "url": "https://omada.miguel.ms",
+            "url": "https://controller.example.com",
             "description": "Generated server url"
         }
     ],

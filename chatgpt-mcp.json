@@ -20,7 +20,7 @@
                 "OMADA_STRICT_SSL=false",
                 "--env",
                 "OMADA_TIMEOUT=10000",
-                "jmtvms/tplink-omada-mcp:latest"
+                "ghcr.io/migueltvms/tplink-omada-mcp-http:latest"
             ],
             "cwd": "/",
             "env": {

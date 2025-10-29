@@ -1,6 +1,6 @@
 {
     "configUrl": "swagger-config",
-    "oauth2RedirectUrl": "https://omada.miguel.ms/swagger-ui/oauth2-redirect.html",
+    "oauth2RedirectUrl": "https://controller.example.com/swagger-ui/oauth2-redirect.html",
     "showExtensions": true,
     "urls": [
         {

@@ -13,10 +13,12 @@
     "dev:http": "tsx --env-file=.env src/http.ts",
     "start": "node dist/index.js",
     "start:http": "node dist/http.js",
-    "docker:build": "docker build -t jmtvms/tplink-omada-mcp:latest .",
-    "docker:run": "docker run --rm -it --env-file .env jmtvms/tplink-omada-mcp:latest",
-    "docker:run:http": "docker run --rm -it --env-file .env -p 3000:3000 jmtvms/tplink-omada-mcp:latest node dist/http.js",
-    "docker:push": "docker push jmtvms/tplink-omada-mcp:latest"
+    "docker:build": "docker build -f Dockerfile -t ghcr.io/migueltvms/tplink-omada-mcp-cli:latest .",
+    "docker:run": "docker run --rm -it --env-file .env ghcr.io/migueltvms/tplink-omada-mcp-cli:latest",
+    "docker:push": "docker push ghcr.io/migueltvms/tplink-omada-mcp-cli:latest",
+    "docker:build:http": "docker build -f Dockerfile.http -t ghcr.io/migueltvms/tplink-omada-mcp-http:latest .",
+    "docker:run:http": "docker run --rm -it --env-file .env -p 3000:3000 ghcr.io/migueltvms/tplink-omada-mcp-http:latest",
+    "docker:push:http": "docker push ghcr.io/migueltvms/tplink-omada-mcp-http:latest"
   },
   "keywords": [
     "mcp",
