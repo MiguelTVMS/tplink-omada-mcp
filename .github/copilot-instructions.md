@@ -54,3 +54,4 @@ Reference `.env.example`. Primary variables:
 - Avoid using `docs/openapi/00-all.json` as a reference for implementing operations. Instead, use the individual files in `docs/openapi/` that correspond to each TAG. This will help keep the implementation focused and organized. Also the file is very large and cumbersome to navigate. All the individual files under `docs/openapi/` are generated from `00-all.json`. 
 - **DON'T** change anything in `node_modules` or commit any changes to that folder.
 - IMPORTANT: Encapsulate the log implementation in `src/utils/logger.ts` to allow easy modification of the logging behavior in the future. Use this logger throughout the codebase instead of direct console.log statements.
+- Avoid using the TypeScript `any` type; prefer precise typings or `unknown` when necessary.

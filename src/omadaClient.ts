@@ -1,6 +1,10 @@
 import https from 'node:https';
 
-import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosRequestHeaders
+} from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
 import type { EnvironmentConfig } from './config.js';
@@ -148,6 +152,10 @@ export class OmadaClient {
 
   private ensureSuccess<T>(response: OmadaApiResponse<T>): T {
     if (response.errorCode !== 0) {
+      logger.error('Omada API error', {
+        errorCode: response.errorCode,
+        message: response.msg
+      });
       throw new Error(response.msg ?? 'Omada API request failed');
     }
 
@@ -188,14 +196,23 @@ export class OmadaClient {
       params.refresh_token = this.refreshToken;
     }
 
-    const { data } = await this.http.post<OmadaApiResponse<TokenResult>>(
-      '/openapi/authorize/token',
-      body,
-      { params }
-    );
+    try {
+      const { data } = await this.http.post<OmadaApiResponse<TokenResult>>(
+        '/openapi/authorize/token',
+        body,
+        { params }
+      );
 
-    const token = this.ensureSuccess(data);
-    this.setToken(token);
+      const token = this.ensureSuccess(data);
+      this.setToken(token);
+    } catch (error) {
+      logger.error('Omada authentication failed', {
+        grantType,
+        baseUrl: this.http.defaults.baseURL,
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw error;
+    }
   }
 
   private setToken(token: TokenResult): void {
@@ -245,12 +262,28 @@ export class OmadaClient {
       siteId: requestConfig.params?.siteId ?? undefined
     });
 
+    logger.debug('Omada request details', {
+      method,
+      url,
+      headers: this.sanitizeHeaders(requestConfig.headers as AxiosRequestHeaders | undefined),
+      params: requestConfig.params ?? null,
+      data: this.sanitizePayload(requestConfig.data)
+    });
+
     try {
       const response = await this.http.request<T>(requestConfig);
       logger.info('Omada response', {
         method,
         url,
         status: response.status
+      });
+
+      logger.debug('Omada response payload', {
+        method,
+        url,
+        status: response.status,
+        headers: this.sanitizeHeaders(response.headers as AxiosRequestHeaders | undefined),
+        data: this.sanitizePayload(response.data)
       });
       return response.data;
     } catch (error) {
@@ -259,6 +292,17 @@ export class OmadaClient {
         url,
         message: error instanceof Error ? error.message : String(error)
       });
+
+      if (axios.isAxiosError(error) && error.response) {
+        logger.debug('Omada error response payload', {
+          method,
+          url,
+          status: error.response.status,
+          headers: this.sanitizeHeaders(error.response.headers as AxiosRequestHeaders | undefined),
+          data: this.sanitizePayload(error.response.data)
+        });
+      }
+
       if (!retry || !axios.isAxiosError(error)) {
         throw error;
       }
@@ -274,5 +318,65 @@ export class OmadaClient {
 
       throw error;
     }
+  }
+
+  private sanitizeHeaders(headers: AxiosRequestHeaders | undefined): Record<string, unknown> | undefined {
+    if (!headers) {
+      return undefined;
+    }
+
+    const sanitized: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(headers)) {
+      sanitized[key] = this.isSensitiveKey(key) ? this.maskValue(value) : value;
+    }
+
+    return sanitized;
+  }
+
+  private sanitizePayload(payload: unknown): unknown {
+    if (!payload || typeof payload !== 'object') {
+      return payload;
+    }
+
+    if (Array.isArray(payload)) {
+      return payload.map((item) => this.sanitizePayload(item));
+    }
+
+    const sanitized: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(payload)) {
+      sanitized[key] = this.isSensitiveKey(key) ? this.maskValue(value) : this.sanitizePayload(value);
+    }
+
+    return sanitized;
+  }
+
+  private isSensitiveKey(key: string): boolean {
+    const normalized = key.toLowerCase();
+    return (
+      normalized.includes('authorization') ||
+      normalized.includes('token') ||
+      normalized.includes('secret') ||
+      normalized.includes('password') ||
+      normalized.includes('client_id')
+    );
+  }
+
+  private maskValue(value: unknown): unknown {
+    if (typeof value === 'string') {
+      if (value.length <= 8) {
+        return '********';
+      }
+      return `${value.slice(0, 4)}…${value.slice(-4)}`;
+    }
+
+    if (Array.isArray(value)) {
+      return value.map(() => '********');
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      return '[masked-object]';
+    }
+
+    return '********';
   }
 }

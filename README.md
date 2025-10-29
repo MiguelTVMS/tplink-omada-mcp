@@ -97,6 +97,8 @@ By default, the server listens on `0.0.0.0:3000` and exposes the MCP endpoint at
 
 To share the local server with remote tooling, run `npm run ngrok:http` in a separate terminal after signing in with `ngrok config add-authtoken <token>`. The command forwards a public HTTPS URL to `http://localhost:3000` and prints the tunnel address in the console.
 
+If an intermediary strips the `Mcp-Session-Id` header, set `MCP_HTTP_STATEFUL=false` to disable server-managed sessions and allow stateless requests.
+
 ## Tools
 
 | Tool | Description |

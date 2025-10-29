@@ -48,6 +48,36 @@ function safeSerialize(value: unknown) {
   }
 }
 
+function summarizeSuccess(method: string, result: unknown): Record<string, unknown> | undefined {
+  if (!result || typeof result !== 'object') {
+    return undefined;
+  }
+
+  const payload = result as Record<string, unknown>;
+
+  switch (method) {
+    case 'initialize': {
+      const protocolVersion = payload['protocolVersion'];
+      return typeof protocolVersion === 'string' ? { protocolVersion } : undefined;
+    }
+    case 'tools/list': {
+      const tools = Array.isArray(payload['tools']) ? payload['tools'] : undefined;
+      return tools ? { toolCount: tools.length } : undefined;
+    }
+    case 'tools/call': {
+      const name = payload['name'];
+      if (typeof name === 'string') {
+        return { tool: name };
+      }
+      break;
+    }
+    default:
+      break;
+  }
+
+  return undefined;
+}
+
 type ToolExtra = RequestHandlerExtra<ServerRequest, ServerNotification>;
 
 function wrapToolHandler<Args extends z.ZodRawShape>(
@@ -108,7 +138,8 @@ export function createServer(client: OmadaClient): McpServer {
 
       try {
         const result = await handler(request, extra);
-        logger.info('MCP request handled', { method, sessionId });
+        const summary = summarizeSuccess(method, result);
+        logger.info('MCP request handled', summary ? { method, sessionId, ...summary } : { method, sessionId });
         return result;
       } catch (error) {
         logger.error('MCP request failed', {
@@ -124,7 +155,16 @@ export function createServer(client: OmadaClient): McpServer {
   };
 
   server.server.oninitialized = () => {
-    logger.info('Server initialization completed');
+    // getCapabilities is private; probe cautiously via narrowed cast without using `any`.
+    interface ServerWithCapabilities {
+      getCapabilities?: () => unknown;
+    }
+    const capabilities = (server.server as unknown as ServerWithCapabilities).getCapabilities?.();
+    if (capabilities) {
+      logger.info('Server initialization completed', { capabilities });
+    } else {
+      logger.info('Server initialization completed');
+    }
   };
 
   server.server.onclose = () => {
