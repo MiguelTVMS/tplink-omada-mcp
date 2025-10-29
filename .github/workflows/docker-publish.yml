@@ -8,8 +8,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_CLI: ghcr.io/${{ github.repository_owner }}/tplink-omada-mcp-cli
-  IMAGE_HTTP: ghcr.io/${{ github.repository_owner }}/tplink-omada-mcp-http
+  IMAGE_CLI: ghcr.io/${{ toLower(github.repository_owner) }}/tplink-omada-mcp-cli
+  IMAGE_HTTP: ghcr.io/${{ toLower(github.repository_owner) }}/tplink-omada-mcp-http
 
 jobs:
   build-and-push:
