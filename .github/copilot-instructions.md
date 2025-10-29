@@ -18,7 +18,7 @@ This project implements a Model Context Protocol (MCP) server that exposes TP-Li
 ## Environment Variables
 Reference `.env.example`. Primary variables:
 - `OMADA_BASE_URL` (required)
-- `OMADA_USERNAME`, `OMADA_PASSWORD` (required)
+- `OMADA_CLIENT_ID`, `OMADA_CLIENT_SECRET` (required)
 - `OMADA_SITE_ID`, `OMADA_STRICT_SSL`, `OMADA_TIMEOUT`, `OMADA_PROXY_URL` (optional)
 
 ## Code Structure
@@ -37,9 +37,6 @@ Reference `.env.example`. Primary variables:
 - Follow Prettier defaults (`npm run format`).
 - ESLint enforces import ordering and TypeScript best practices.
 
-## Devcontainer Notes
-- SSH agent socket is forwarded using `${localEnv:SSH_AUTH_SOCK}` mount; container runs as `node` with UID updated to match the host to support 1Password-integrated SSH keys.
-
 ## Contribution Guidelines
 - Keep environment secrets out of the repo; only commit `.env.example`.
 - Ensure `npm run lint` and `npm run build` pass before committing.
@@ -53,3 +50,4 @@ Reference `.env.example`. Primary variables:
 - **ONLY** implement using client credentials mode Access processs as described in the Omada API documentation. The client credentials should be provided via environment variables.
 - We will implement one API operation at a time. Use the OpenAPI operationId as a guide for naming functions and methods.
 - After a operation is implemented, update the README.md file with a table of supported operations in the topic Supported Omada API Operations. This table should include the operationId, a brief description, and any relevant notes about the implementation. Keep it short and concise.
+- Avoid using `docs/openapi/00-all.json` as a reference for implementing operations. Instead, use the individual files in `docs/openapi/` that correspond to each TAG. This will help keep the implementation focused and organized. Also the file is very large and cumbersome to navigate.
