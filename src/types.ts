@@ -1,55 +1,49 @@
-export interface OmadaSite {
-  id: string;
+export interface OmadaSiteSummary {
+  siteId: string;
   name: string;
-  description?: string;
-  role?: string;
+  [key: string]: unknown;
 }
 
-export interface OmadaDevice {
-  id: string;
-  name: string;
+export interface OmadaDeviceInfo {
   mac: string;
+  name?: string;
+  deviceId?: string;
+  type?: string;
   model?: string;
   ip?: string;
-  type?: string;
   status?: string;
   siteId?: string;
+  [key: string]: unknown;
 }
 
-export interface OmadaClientDevice {
-  id: string;
-  name?: string;
+export interface OmadaClientInfo {
+  id?: string;
   mac: string;
-  ip?: string;
-  type?: string;
-  isBlocked?: boolean;
+  name?: string;
+  hostName?: string;
+  deviceType?: string;
   ssid?: string;
+  ip?: string;
   siteId?: string;
+  [key: string]: unknown;
 }
 
-export interface ApiListResponse<T> {
-  errorCode: number;
-  msg?: string;
-  result?: {
-    data?: T[];
-    [key: string]: unknown;
-  };
-}
-
-export interface ApiItemResponse<T> {
+export interface OmadaApiResponse<T> {
   errorCode: number;
   msg?: string;
   result?: T;
 }
 
-export interface OmadaLoginResult {
-  errorCode: number;
-  msg?: string;
-  result?: {
-    token?: string;
-    timeout?: number;
-    role?: string;
-    url?: string;
-    [key: string]: unknown;
-  };
+export interface PaginatedResult<T> {
+  totalRows?: number;
+  currentPage?: number;
+  currentSize?: number;
+  data?: T[];
+}
+
+export interface TokenResult {
+  accessToken: string;
+  tokenType: string;
+  expiresIn: number;
+  refreshToken?: string;
 }

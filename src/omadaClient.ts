@@ -5,44 +5,41 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 
 import { EnvironmentConfig } from './config.js';
 import {
-  ApiItemResponse,
-  ApiListResponse,
-  OmadaClientDevice,
-  OmadaDevice,
-  OmadaLoginResult,
-  OmadaSite
+  OmadaApiResponse,
+  OmadaClientInfo,
+  OmadaDeviceInfo,
+  OmadaSiteSummary,
+  PaginatedResult,
+  TokenResult
 } from './types.js';
 
 export type OmadaClientOptions = EnvironmentConfig;
 
-function normalizeCookieHeader(values: string[] | undefined): string | undefined {
-  if (!values?.length) {
-    return undefined;
-  }
-
-  return values
-    .map((cookie) => cookie.split(';')[0])
-    .filter(Boolean)
-    .join('; ');
-}
+const TOKEN_EXPIRY_BUFFER_SECONDS = 30;
+const DEFAULT_PAGE_SIZE = 200;
 
 export class OmadaClient {
   private readonly http: AxiosInstance;
 
-  private token?: string;
+  private accessToken?: string;
 
-  private cookieHeader?: string;
+  private refreshToken?: string;
 
-  private readonly username: string;
-
-  private readonly password: string;
+  private tokenExpiresAt?: number;
 
   private readonly siteId?: string;
 
+  private readonly omadacId: string;
+
+  private readonly clientId: string;
+
+  private readonly clientSecret: string;
+
   constructor(private readonly options: OmadaClientOptions) {
-    this.username = options.username;
-    this.password = options.password;
     this.siteId = options.siteId;
+    this.clientId = options.clientId;
+    this.clientSecret = options.clientSecret;
+    this.omadacId = options.omadacId;
 
     const httpsAgent = options.proxyUrl
       ? new HttpsProxyAgent(options.proxyUrl)
@@ -68,46 +65,72 @@ export class OmadaClient {
     this.http = axios.create(axiosOptions);
   }
 
-  public async listSites(): Promise<OmadaSite[]> {
-    const response = await this.get<ApiListResponse<OmadaSite>>('/api/v2/sites');
-    return response.result?.data ?? [];
+  public async listSites(): Promise<OmadaSiteSummary[]> {
+    return this.fetchPaginated<OmadaSiteSummary>(this.buildOmadaPath('/sites'));
   }
 
-  public async listDevices(siteId?: string): Promise<OmadaDevice[]> {
-    const response = await this.get<ApiListResponse<OmadaDevice>>(
-      `/api/v2/sites/${this.resolveSiteId(siteId)}/devices`,
+  public async listDevices(siteId?: string): Promise<OmadaDeviceInfo[]> {
+    const resolvedSiteId = this.resolveSiteId(siteId);
+    return this.fetchPaginated<OmadaDeviceInfo>(
+      this.buildOmadaPath(`/sites/${encodeURIComponent(resolvedSiteId)}/devices`)
     );
-    return response.result?.data ?? [];
   }
 
-  public async listClients(siteId?: string): Promise<OmadaClientDevice[]> {
-    const response = await this.get<ApiListResponse<OmadaClientDevice>>(
-      `/api/v2/sites/${this.resolveSiteId(siteId)}/clients`,
+  public async listClients(siteId?: string): Promise<OmadaClientInfo[]> {
+    const resolvedSiteId = this.resolveSiteId(siteId);
+    return this.fetchPaginated<OmadaClientInfo>(
+      this.buildOmadaPath(`/sites/${encodeURIComponent(resolvedSiteId)}/clients`)
     );
-    return response.result?.data ?? [];
   }
 
-  public async getDevice(deviceId: string, siteId?: string): Promise<OmadaDevice | undefined> {
-    const response = await this.get<ApiItemResponse<OmadaDevice>>(
-      `/api/v2/sites/${this.resolveSiteId(siteId)}/devices/${deviceId}`,
-    );
-    return response.result;
+  public async getDevice(identifier: string, siteId?: string): Promise<OmadaDeviceInfo | undefined> {
+    const devices = await this.listDevices(siteId);
+    return devices.find((device) => device.mac === identifier || device.deviceId === identifier);
   }
 
-  public async getClient(clientId: string, siteId?: string): Promise<OmadaClientDevice | undefined> {
-    const response = await this.get<ApiItemResponse<OmadaClientDevice>>(
-      `/api/v2/sites/${this.resolveSiteId(siteId)}/clients/${clientId}`,
-    );
-    return response.result;
+  public async getClient(identifier: string, siteId?: string): Promise<OmadaClientInfo | undefined> {
+    const clients = await this.listClients(siteId);
+    return clients.find((client) => client.mac === identifier || client.id === identifier);
   }
 
   public async callApi<T = unknown>(config: AxiosRequestConfig): Promise<T> {
-    const response = await this.request<T>(config);
-    return response;
+    return this.request<T>(config);
   }
 
-  private async get<T>(path: string): Promise<T> {
-    return this.request<T>({ method: 'GET', url: path });
+  private async fetchPaginated<T>(
+    path: string,
+    params: Record<string, unknown> = {}
+  ): Promise<T[]> {
+    const records: T[] = [];
+    let page = 1;
+    let totalRows: number | undefined;
+
+    // Fetch sequential pages because OpenAPI requires explicit pagination parameters.
+    do {
+      const response = await this.get<OmadaApiResponse<PaginatedResult<T>>>(path, {
+        ...params,
+        page,
+        pageSize: DEFAULT_PAGE_SIZE
+      });
+
+      const result = this.ensureSuccess(response);
+      const pageData = result.data ?? [];
+      totalRows = result.totalRows ?? totalRows;
+
+      records.push(...pageData);
+      page += 1;
+
+      if (pageData.length === 0) {
+        break;
+      }
+    } while (!totalRows || records.length < totalRows);
+
+    return records;
+  }
+
+  private buildOmadaPath(relativePath: string): string {
+    const normalized = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
+    return `/openapi/v1/${encodeURIComponent(this.omadacId)}${normalized}`;
   }
 
   private resolveSiteId(siteId?: string): string {
@@ -122,50 +145,93 @@ export class OmadaClient {
     throw new Error('A site id must be provided either in the environment or as a parameter.');
   }
 
-  private async ensureAuthenticated(force = false): Promise<void> {
-    if (this.token && !force) {
+  private ensureSuccess<T>(response: OmadaApiResponse<T>): T {
+    if (response.errorCode !== 0) {
+      throw new Error(response.msg ?? 'Omada API request failed');
+    }
+
+    return (response.result ?? ({} as T)) as T;
+  }
+
+  private async ensureAccessToken(): Promise<void> {
+    if (this.accessToken && this.tokenExpiresAt && Date.now() < this.tokenExpiresAt) {
       return;
     }
 
-    const response = await this.http.post<OmadaLoginResult>(
-      '/api/v2/login',
-      {
-        username: this.username,
-        password: this.password,
-        timeout: 28800
-      },
-      { headers: { Cookie: this.cookieHeader } }
+    if (this.refreshToken) {
+      try {
+        await this.authenticate('refresh_token');
+        return;
+      } catch {
+        this.clearToken();
+      }
+    }
+
+    await this.authenticate('client_credentials');
+  }
+
+  private async authenticate(grantType: 'client_credentials' | 'refresh_token'): Promise<void> {
+    const params: Record<string, string> = { grant_type: grantType };
+    const body: Record<string, string> = {
+      client_id: this.clientId,
+      client_secret: this.clientSecret
+    };
+
+    if (grantType === 'client_credentials') {
+      body.omadacId = this.omadacId;
+    } else {
+      if (!this.refreshToken) {
+        throw new Error('No refresh token available to refresh the access token');
+      }
+
+      params.refresh_token = this.refreshToken;
+    }
+
+    const { data } = await this.http.post<OmadaApiResponse<TokenResult>>(
+      '/openapi/authorize/token',
+      body,
+      { params }
     );
 
-    const cookie = normalizeCookieHeader(response.headers['set-cookie']);
-    if (cookie) {
-      this.cookieHeader = cookie;
+    const token = this.ensureSuccess(data);
+    this.setToken(token);
+  }
+
+  private setToken(token: TokenResult): void {
+    this.accessToken = token.accessToken;
+    this.refreshToken = token.refreshToken;
+
+    const expiresInSeconds = Number.isFinite(token.expiresIn) ? token.expiresIn : 0;
+    const expiresInMs = Math.max(expiresInSeconds - TOKEN_EXPIRY_BUFFER_SECONDS, 0) * 1000;
+    this.tokenExpiresAt = Date.now() + expiresInMs;
+  }
+
+  private clearToken(): void {
+    this.accessToken = undefined;
+    this.refreshToken = undefined;
+    this.tokenExpiresAt = undefined;
+  }
+
+  private async get<T>(path: string, params?: Record<string, unknown>): Promise<T> {
+    return this.request<T>({ method: 'GET', url: path, params });
+  }
+
+  private isAuthErrorCode(errorCode?: number): boolean {
+    if (errorCode === undefined) {
+      return false;
     }
 
-    if (response.data.errorCode !== 0) {
-      throw new Error(response.data.msg ?? 'Failed to authenticate with the Omada controller');
-    }
-
-    const token = response.data.result?.token;
-    if (!token) {
-      throw new Error('The Omada controller did not return an authentication token');
-    }
-
-    this.token = token;
+    return [-44106, -44111, -44112, -44113, -44114, -44116].includes(errorCode);
   }
 
   private async request<T>(config: AxiosRequestConfig, retry = true): Promise<T> {
-    await this.ensureAuthenticated();
+    await this.ensureAccessToken();
 
     const requestConfig: AxiosRequestConfig = {
       ...config,
       headers: {
         ...(config.headers ?? {}),
-        ...(this.cookieHeader ? { Cookie: this.cookieHeader } : {})
-      },
-      params: {
-        ...(config.params ?? {}),
-        ...(this.token ? { token: this.token } : {})
+        Authorization: `AccessToken=${this.accessToken ?? ''}`
       }
     };
 
@@ -180,9 +246,9 @@ export class OmadaClient {
       const status = error.response?.status;
       const errorCode = (error.response?.data as { errorCode?: number } | undefined)?.errorCode;
 
-      if (status === 401 || errorCode === -1601 || errorCode === -1602) {
-        this.token = undefined;
-        await this.ensureAuthenticated(true);
+      if (status === 401 || status === 403 || this.isAuthErrorCode(errorCode)) {
+        this.clearToken();
+        await this.ensureAccessToken();
         return this.request<T>(config, false);
       }
 

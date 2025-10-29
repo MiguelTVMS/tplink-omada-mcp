@@ -9,11 +9,11 @@ const siteInputSchema = z.object({
 });
 
 const clientIdSchema = siteInputSchema.extend({
-  clientId: z.string().min(1)
+  clientId: z.string().min(1, 'clientId (MAC or client identifier) is required')
 });
 
 const deviceIdSchema = siteInputSchema.extend({
-  deviceId: z.string().min(1)
+  deviceId: z.string().min(1, 'deviceId (MAC or device identifier) is required')
 });
 
 const customRequestSchema = z.object({
@@ -86,7 +86,7 @@ export async function startServer(client: OmadaClient): Promise<void> {
     'omada.callApi',
     {
       description:
-        'Call an arbitrary API path on the Omada controller. The provided URL should be a path, for example /api/v2/sites',
+        'Call an arbitrary API path on the Omada controller. The provided URL should be a path, for example /openapi/v1/{omadacId}/sites',
       inputSchema: customRequestSchema.shape
     },
     async ({ method, url, params, data, siteId }) => {

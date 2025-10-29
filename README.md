@@ -4,7 +4,7 @@ A Model Context Protocol (MCP) server implemented in TypeScript that exposes the
 
 ## Features
 
-- Secure login to Omada controllers with automatic token refresh
+- OAuth client-credentials authentication with automatic token refresh
 - Tools for retrieving sites, network devices, and connected clients
 - Generic Omada API invoker for advanced automation scenarios
 - Environment-driven configuration
@@ -32,8 +32,9 @@ The MCP server reads its configuration from environment variables:
 | Variable | Description |
 | --- | --- |
 | `OMADA_BASE_URL` | Base URL of the Omada controller, e.g. `https://localhost:8043` |
-| `OMADA_USERNAME` | Controller username |
-| `OMADA_PASSWORD` | Controller password |
+| `OMADA_CLIENT_ID` | OAuth client identifier generated in Omada Platform Integration |
+| `OMADA_CLIENT_SECRET` | OAuth client secret associated with the client ID |
+| `OMADA_OMADAC_ID` | Omada controller (omadacId) to target. `OMADA_CONTROLLER_ID` is supported as an alias |
 | `OMADA_SITE_ID` | Optional default site identifier used when a tool call does not specify one |
 | `OMADA_STRICT_SSL` | Set to `false` to allow self-signed TLS certificates |
 | `OMADA_TIMEOUT` | Optional request timeout in milliseconds |
@@ -78,7 +79,15 @@ The MCP server communicates over standard input and output. Integrate it with MC
 | `omada.listClients` | Lists active client devices for a site. |
 | `omada.getDevice` | Fetches details for a specific Omada device. |
 | `omada.getClient` | Fetches details for a specific client device. |
-| `omada.callApi` | Executes a raw API request using the established Omada session. |
+| `omada.callApi` | Executes a raw API request using the established Omada session token. |
+
+## Supported Omada API Operations
+
+| Operation ID | Description | Notes |
+| --- | --- | --- |
+| `getSiteList` | List controller sites. | Backed by `omada.listSites`; automatic pagination is handled client-side. |
+| `getDeviceList` | List devices assigned to a site. | Used by `omada.listDevices` and `omada.getDevice` (single device lookup is resolved from this list). |
+| `getGridActiveClients` | List active clients connected to a site. | Used by `omada.listClients` and `omada.getClient` (single client lookup is resolved from this list). |
 
 ## Devcontainer support
 
