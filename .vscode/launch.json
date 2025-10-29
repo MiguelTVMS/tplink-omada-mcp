@@ -74,7 +74,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Expose MCP HTTP Server via ngrok",
+      "name": "Start ngrok tunnel",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run",
@@ -95,6 +95,15 @@
       "restart": false,
       "skipFiles": [
         "<node_internals>/**"
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Expose MCP HTTP Server via ngrok",
+      "configurations": [
+        "Run MCP HTTP Server (npm run dev:http)",
+        "Start ngrok tunnel"
       ]
     }
   ]
