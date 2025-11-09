@@ -3,25 +3,24 @@
  * All environment variable validation logic should be centralized here
  */
 
+import { isIPv4, isIPv6 } from 'node:net';
+
 /**
  * Validates IPv4 addresses
  * @param value - The string to validate
  * @returns true if valid IPv4 address, false otherwise
  */
 export function isValidIpv4Address(value: string): boolean {
-    const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-    return ipv4Regex.test(value);
+    return isIPv4(value);
 }
 
 /**
- * Validates IPv6 addresses (simplified, supports most common formats)
+ * Validates IPv6 addresses
  * @param value - The string to validate
  * @returns true if valid IPv6 address, false otherwise
  */
 export function isValidIpv6Address(value: string): boolean {
-    // Simplified IPv6 regex supporting common formats
-    const ipv6Regex = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::1|::)$/;
-    return ipv6Regex.test(value);
+    return isIPv6(value);
 }
 
 /**

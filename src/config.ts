@@ -64,11 +64,14 @@ const envSchema = z
         (data) => {
             // Validate httpBindAddr if provided
             if (data.httpBindAddr && !isValidBindAddress(data.httpBindAddr)) {
-                throw new Error(`MCP_HTTP_BIND_ADDR must be a valid IPv4 or IPv6 address, got: ${data.httpBindAddr}`);
+                return false;
             }
             return true;
         },
-        { message: 'Invalid HTTP bind address' }
+        {
+            message: 'MCP_HTTP_BIND_ADDR must be a valid IPv4 or IPv6 address',
+            path: ['httpBindAddr'],
+        }
     )
     .refine(
         (data) => {
@@ -76,13 +79,16 @@ const envSchema = z
             if (data.httpAllowedOrigins) {
                 for (const origin of data.httpAllowedOrigins) {
                     if (!isValidOrigin(origin)) {
-                        throw new Error(`MCP_HTTP_ALLOWED_ORIGINS contains invalid origin: ${origin}`);
+                        return false;
                     }
                 }
             }
             return true;
         },
-        { message: 'Invalid allowed origins' }
+        {
+            message: 'MCP_HTTP_ALLOWED_ORIGINS contains invalid origin values',
+            path: ['httpAllowedOrigins'],
+        }
     );
 
 export interface EnvironmentConfig {

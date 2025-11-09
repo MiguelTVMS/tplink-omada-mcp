@@ -175,11 +175,11 @@ export async function startHttpServer(client: OmadaClient, config: EnvironmentCo
                     const bufferChunk = typeof chunk === 'string' ? Buffer.from(chunk, 'utf8') : chunk;
                     bodyChunks.push(bufferChunk);
                 });
-            }
 
-            await new Promise<void>((resolve) => {
-                req.on('end', () => resolve());
-            });
+                await new Promise<void>((resolve) => {
+                    req.on('end', () => resolve());
+                });
+            }
 
             logger.info('HTTP request received', {
                 method: req.method,
