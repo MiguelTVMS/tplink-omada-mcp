@@ -11,6 +11,9 @@ interface StreamTransportState {
     server: ReturnType<typeof createServer>;
 }
 
+// Export the type for use in http.ts
+export type { StreamTransportState };
+
 /**
  * Creates a Streamable HTTP transport
  * This implements the MCP protocol version 2025-03-26
@@ -46,30 +49,38 @@ export function createStreamTransport(client: OmadaClient, config: EnvironmentCo
 
 /**
  * Handles incoming Streamable HTTP requests (GET, POST, DELETE)
+ * For stateful mode, transports should be stored and reused by the caller
  */
 export async function handleStreamRequest(
     client: OmadaClient,
     config: EnvironmentConfig,
     req: IncomingMessage,
     res: ServerResponse,
-    parsedBody?: unknown
-): Promise<void> {
+    parsedBody?: unknown,
+    existingTransport?: StreamTransportState
+): Promise<StreamTransportState | void> {
     logger.info('Streamable HTTP request received', {
         method: req.method,
         url: req.url,
         sessionId: req.headers['mcp-session-id'] ?? undefined,
     });
 
-    // Create a new transport for each request
-    // In a stateless setup, this is fine
-    // In a stateful setup, you would typically store and reuse transports
-    const { transport, server } = createStreamTransport(client, config);
+    // Reuse existing transport if provided, otherwise create new one
+    const state = existingTransport ?? createStreamTransport(client, config);
 
-    await server.connect(transport);
-    await transport.handleRequest(req, res, parsedBody);
+    if (!existingTransport) {
+        await state.server.connect(state.transport);
+    }
+
+    await state.transport.handleRequest(req, res, parsedBody);
 
     logger.debug('Streamable HTTP request handled', {
         method: req.method,
         sessionId: req.headers['mcp-session-id'] ?? undefined,
     });
+
+    // Return state for session management if stateful
+    if (config.stateful) {
+        return state;
+    }
 }

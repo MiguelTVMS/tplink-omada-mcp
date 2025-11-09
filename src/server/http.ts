@@ -6,7 +6,7 @@ import type { EnvironmentConfig } from '../config.js';
 import type { OmadaClient } from '../omadaClient/index.js';
 import { logger } from '../utils/logger.js';
 import { createSseTransport, getSseMessagePath, handleSseConnection, handleSseMessage } from './sse.js';
-import { handleStreamRequest } from './stream.js';
+import { handleStreamRequest, type StreamTransportState } from './stream.js';
 
 const DEFAULT_PORT = 3000;
 const HEALTH_PATH = '/healthz';
@@ -167,8 +167,9 @@ export async function startHttpServer(client: OmadaClient, config: EnvironmentCo
     const host = config.httpBindAddr ?? '127.0.0.1';
     const endpointPath = normalizePath(config.httpPath ?? (transport === 'sse' ? '/sse' : '/mcp'));
 
-    // For SSE transport, we need to track transports by session ID
+    // Track transports by session ID for stateful mode
     const sseTransports = new Map<string, { transport: SSEServerTransport; server: ReturnType<typeof createSseTransport>['server'] }>();
+    const streamTransports = new Map<string, StreamTransportState>();
 
     const httpServer = http.createServer((req, res) => {
         void (async () => {
@@ -279,7 +280,27 @@ export async function startHttpServer(client: OmadaClient, config: EnvironmentCo
                 } else {
                     // Streamable HTTP Transport handling
                     if (url.pathname === endpointPath) {
-                        await handleStreamRequest(client, config, req, res, parsedBody);
+                        // Check for existing session in stateful mode
+                        const sessionId = req.headers['mcp-session-id'] as string | undefined;
+                        let existingState: StreamTransportState | undefined;
+
+                        if (config.stateful && sessionId) {
+                            existingState = streamTransports.get(sessionId);
+                        }
+
+                        const state = await handleStreamRequest(client, config, req, res, parsedBody, existingState);
+
+                        // Store transport for stateful sessions
+                        if (config.stateful && state && state.transport.sessionId) {
+                            streamTransports.set(state.transport.sessionId, state);
+
+                            // Clean up on close
+                            state.transport.onclose = () => {
+                                if (state.transport.sessionId) {
+                                    streamTransports.delete(state.transport.sessionId);
+                                }
+                            };
+                        }
                     } else {
                         sendJson(res, 404, { error: 'Not Found' });
                     }
@@ -352,16 +373,31 @@ export async function startHttpServer(client: OmadaClient, config: EnvironmentCo
             httpServer.close(() => resolve());
         });
     const closeSessions: ShutdownHandler = async () => {
+        // Close SSE transport sessions
         for (const [sessionId, session] of sseTransports) {
             try {
                 await session.server.close();
                 await session.transport.close();
-                logger.info('Closed session', { sessionId });
+                logger.info('Closed SSE session', { sessionId });
             } catch (error) {
-                logger.error('Error closing session', { sessionId, error });
+                logger.error('Error closing SSE session', { sessionId, error });
             }
         }
         sseTransports.clear();
+
+        // Close Streamable HTTP transport sessions
+        for (const [sessionId, state] of streamTransports) {
+            if (state) {
+                try {
+                    await state.server.close();
+                    await state.transport.close();
+                    logger.info('Closed stream session', { sessionId });
+                } catch (error) {
+                    logger.error('Error closing stream session', { sessionId, error });
+                }
+            }
+        }
+        streamTransports.clear();
     };
 
     for (const signal of ['SIGINT', 'SIGTERM'] as const) {
