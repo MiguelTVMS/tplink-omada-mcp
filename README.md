@@ -120,8 +120,9 @@ The **Streamable HTTP** transport implements the [MCP protocol version 2025-03-2
 
 ```bash
 # Set transport to stream (default)
+export MCP_SERVER_USE_HTTP=true
 export MCP_HTTP_TRANSPORT=stream
-npm run dev:http
+npm run dev
 ```
 
 Features:
@@ -141,8 +142,9 @@ The **HTTP+SSE** transport implements the [MCP protocol version 2024-11-05](http
 
 ```bash
 # Set transport to sse for legacy clients
+export MCP_SERVER_USE_HTTP=true
 export MCP_HTTP_TRANSPORT=sse
-npm run dev:http
+npm run dev
 ```
 
 Features:
@@ -167,14 +169,37 @@ For more information on the MCP protocol and transports, see the [Model Context 
 Start the HTTP transport with:
 
 ```bash
-npm run dev:http   # live reload during development
-npm run start:http # run the compiled output
-npm run ngrok:http  # expose the HTTP server via ngrok
+# Start with HTTP enabled
+export MCP_SERVER_USE_HTTP=true
+npm run dev    # live reload during development
+npm run start  # run the compiled output
 ```
 
 By default, the server listens on `127.0.0.1:3000` and exposes the MCP endpoint at `/mcp` (for stream transport) or `/sse` (for SSE transport) with a health check on `/healthz`. Configure the bind address, port, and path using the optional `MCP_HTTP_*` environment variables documented in `.env.example`. The `npm run docker:run:http` helper wraps the HTTP image and publishes the port automatically.
 
-To share the local server with remote tooling, run `npm run ngrok:http` in a separate terminal after signing in with `ngrok config add-authtoken <token>`. The command forwards a public HTTPS URL to `http://localhost:3000` and prints the tunnel address in the console.
+#### Using ngrok (works with both transports)
+
+To share the local server with remote tooling, you can use ngrok to expose the HTTP server publicly. This works with **both stream and SSE transports**.
+
+**Option 1: Built-in ngrok support** (recommended)
+
+Set the following environment variables:
+```bash
+export MCP_HTTP_NGROK_ENABLED=true
+export MCP_HTTP_NGROK_AUTH_TOKEN=your-ngrok-auth-token
+npm run dev
+```
+
+The server will automatically establish an ngrok tunnel and log the public URL.
+
+**Option 2: Manual ngrok setup**
+
+Run ngrok in a separate terminal after starting the server:
+```bash
+ngrok http 3000
+```
+
+This forwards a public HTTPS URL to `http://localhost:3000` and prints the tunnel address in the console.
 
 If an intermediary strips the `Mcp-Session-Id` header, set `MCP_SERVER_STATEFUL=false` to disable server-managed sessions and allow stateless requests.
 
