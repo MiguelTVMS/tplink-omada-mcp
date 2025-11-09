@@ -49,7 +49,6 @@ const envSchema = z
 
         // MCP Server HTTP/SSE Configuration
         httpPort: numericStringSchema,
-        httpHost: z.string().optional(),
         httpTransport: z.enum(['stream', 'sse']).optional().default('stream'),
         httpBindAddr: z.string().optional(),
         httpPath: z.string().optional(),
