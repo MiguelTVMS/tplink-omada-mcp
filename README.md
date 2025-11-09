@@ -50,22 +50,22 @@ The MCP server reads its configuration from environment variables. See `.env.exa
 | `MCP_SERVER_USE_HTTP`    | No       | `false` | Start HTTP server instead of stdio                                          |
 | `MCP_SERVER_STATEFUL`    | No       | `false` | Maintain stateful sessions per client                                       |
 
-#### MCP Server HTTP/SSE Configuration
+#### MCP Server HTTP Configuration
 
 These variables are only used when `MCP_SERVER_USE_HTTP=true`:
 
-| Variable                       | Required | Default     | Description                                                                 |
-| ------------------------------ | -------- | ----------- | --------------------------------------------------------------------------- |
-| `MCP_HTTP_PORT`                | No       | `3000`      | Port for the HTTP/SSE server                                                |
-| `MCP_HTTP_HOST`                | No       | `0.0.0.0`   | Host for the HTTP/SSE server                                                |
-| `MCP_HTTP_PATH`                | No       | `/mcp`      | Base path for MCP HTTP endpoints                                            |
-| `MCP_HTTP_ENABLE_HEALTHCHECK`  | No       | `true`      | Enable a healthcheck endpoint                                               |
-| `MCP_HTTP_HEALTHCHECK_PATH`    | No       | `/healthz`  | Path for the healthcheck endpoint                                           |
-| `MCP_HTTP_ALLOW_CORS`          | No       | `true`      | Enable CORS for the HTTP/SSE server                                         |
-| `MCP_HTTP_ALLOWED_HOSTS`       | No       | -           | Comma-separated list of allowed hosts for requests                          |
-| `MCP_HTTP_ALLOWED_ORIGINS`     | No       | -           | Comma-separated list of allowed origins for CORS                            |
-| `MCP_HTTP_NGROK_ENABLED`       | No       | `false`     | Use ngrok to expose the HTTP/SSE server publicly                            |
-| `MCP_HTTP_NGROK_AUTH_TOKEN`    | No       | -           | Ngrok auth token (required if `MCP_HTTP_NGROK_ENABLED=true`)                |
+| Variable                       | Required | Default                         | Description                                                                 |
+| ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------- |
+| `MCP_HTTP_PORT`                | No       | `3000`                          | Port for the HTTP server                                                    |
+| `MCP_HTTP_TRANSPORT`           | No       | `stream`                        | Transport protocol (`stream` or `sse`). See [Transport Protocols](#transport-protocols) |
+| `MCP_HTTP_BIND_ADDR`           | No       | `127.0.0.1`                     | Bind address (IPv4/IPv6). Use `0.0.0.0` to expose to network               |
+| `MCP_HTTP_PATH`                | No       | `/mcp` or `/sse`*               | Base path for MCP endpoints (*depends on transport)                         |
+| `MCP_HTTP_ENABLE_HEALTHCHECK`  | No       | `true`                          | Enable a healthcheck endpoint                                               |
+| `MCP_HTTP_HEALTHCHECK_PATH`    | No       | `/healthz`                      | Path for the healthcheck endpoint                                           |
+| `MCP_HTTP_ALLOW_CORS`          | No       | `true`                          | Enable CORS for the HTTP server                                             |
+| `MCP_HTTP_ALLOWED_ORIGINS`     | No       | `127.0.0.1, localhost`          | Comma-separated list of allowed origins for DNS rebinding protection        |
+| `MCP_HTTP_NGROK_ENABLED`       | No       | `false`                         | Use ngrok to expose the HTTP server publicly                                |
+| `MCP_HTTP_NGROK_AUTH_TOKEN`    | No       | -                               | Ngrok auth token (required if `MCP_HTTP_NGROK_ENABLED=true`)                |
 
 Create a `.env` file (ignored by git) or export the variables before launching the server.
 
@@ -110,17 +110,69 @@ npm run docker:run:http    # Launch the HTTP/SSE image and publish port 3000
 
 Use `npm run docker:push` and `npm run docker:push:http` to publish the images after authenticating with GitHub Container Registry.
 
-### HTTP/SSE transport
+### Transport Protocols
 
-Some clients, such as the OpenAI MCP connector, require an HTTP endpoint with Server-Sent Events. Start the streamable HTTP transport with:
+The MCP server supports two HTTP transport protocols:
+
+#### Streamable HTTP (Default)
+
+The **Streamable HTTP** transport implements the [MCP protocol version 2025-03-26](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#http-with-sse). This is the recommended transport for new integrations.
+
+```bash
+# Set transport to stream (default)
+export MCP_HTTP_TRANSPORT=stream
+npm run dev:http
+```
+
+Features:
+- Single endpoint for all operations (GET, POST, DELETE)
+- Server-Sent Events for streaming responses
+- Built-in session management with cryptographic session IDs
+- Support for stateless mode when needed
+
+The Streamable HTTP endpoint defaults to `/mcp` and handles:
+- `GET /mcp` - Establish SSE stream and initialize session
+- `POST /mcp` - Send JSON-RPC messages
+- `DELETE /mcp` - Terminate session
+
+#### HTTP with SSE (Legacy)
+
+The **HTTP+SSE** transport implements the [MCP protocol version 2024-11-05](https://modelcontextprotocol.io/specification/2024-11-05/basic/transports#http-with-sse). This transport is provided for backward compatibility with older MCP clients.
+
+```bash
+# Set transport to sse for legacy clients
+export MCP_HTTP_TRANSPORT=sse
+npm run dev:http
+```
+
+Features:
+- Separate endpoints for SSE stream and POST messages
+- Compatible with older MCP client implementations
+
+The SSE transport uses two endpoints:
+- `GET /sse` - Establish SSE connection
+- `POST /messages` - Send JSON-RPC messages
+
+#### Security Considerations
+
+Both transports implement DNS rebinding protection:
+
+- **Origin Validation**: The server validates the `Origin` header on all incoming connections. Configure allowed origins with `MCP_HTTP_ALLOWED_ORIGINS` (default: `127.0.0.1, localhost`).
+- **Network Binding**: The server binds to `127.0.0.1` by default, restricting access to localhost only. Set `MCP_HTTP_BIND_ADDR=0.0.0.0` to expose the server to your network (not recommended for production without additional security measures).
+
+For more information on the MCP protocol and transports, see the [Model Context Protocol documentation](https://modelcontextprotocol.io/).
+
+### HTTP transport usage
+
+Start the HTTP transport with:
 
 ```bash
 npm run dev:http   # live reload during development
 npm run start:http # run the compiled output
-npm run ngrok:http  # expose the HTTP/SSE server via ngrok
+npm run ngrok:http  # expose the HTTP server via ngrok
 ```
 
-By default, the server listens on `0.0.0.0:3000` and exposes the MCP endpoint at `/mcp` with a health check on `/healthz`. Configure the host, port, and path using the optional `MCP_HTTP_*` environment variables documented in `.env.example`. The `npm run docker:run:http` helper wraps the HTTP/SSE image and publishes the port automatically.
+By default, the server listens on `127.0.0.1:3000` and exposes the MCP endpoint at `/mcp` (for stream transport) or `/sse` (for SSE transport) with a health check on `/healthz`. Configure the bind address, port, and path using the optional `MCP_HTTP_*` environment variables documented in `.env.example`. The `npm run docker:run:http` helper wraps the HTTP image and publishes the port automatically.
 
 To share the local server with remote tooling, run `npm run ngrok:http` in a separate terminal after signing in with `ngrok config add-authtoken <token>`. The command forwards a public HTTPS URL to `http://localhost:3000` and prints the tunnel address in the console.
 
