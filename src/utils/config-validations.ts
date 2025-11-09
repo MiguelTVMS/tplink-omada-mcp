@@ -1,0 +1,105 @@
+/**
+ * Configuration validation utilities
+ * All environment variable validation logic should be centralized here
+ */
+
+/**
+ * Validates IPv4 addresses
+ * @param value - The string to validate
+ * @returns true if valid IPv4 address, false otherwise
+ */
+export function isValidIpv4Address(value: string): boolean {
+    const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    return ipv4Regex.test(value);
+}
+
+/**
+ * Validates IPv6 addresses (simplified, supports most common formats)
+ * @param value - The string to validate
+ * @returns true if valid IPv6 address, false otherwise
+ */
+export function isValidIpv6Address(value: string): boolean {
+    // Simplified IPv6 regex supporting common formats
+    const ipv6Regex = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::1|::)$/;
+    return ipv6Regex.test(value);
+}
+
+/**
+ * Validates IPv4 or IPv6 addresses
+ * @param value - The string to validate
+ * @returns true if valid IP address, false otherwise
+ */
+export function isValidIpAddress(value: string): boolean {
+    return isValidIpv4Address(value) || isValidIpv6Address(value);
+}
+
+/**
+ * Validates hostnames according to RFC standards
+ * @param value - The string to validate
+ * @returns true if valid hostname, false otherwise
+ */
+export function isValidHostname(value: string): boolean {
+    // Check for special case of localhost
+    if (value === 'localhost') {
+        return true;
+    }
+
+    // Check if it's an IP address (should not be considered a hostname)
+    if (isValidIpAddress(value)) {
+        return false;
+    }
+
+    // Hostname regex following RFC 1123
+    const hostnameRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
+    return hostnameRegex.test(value);
+}
+
+/**
+ * Validates allowed origin values (hostname, IPv4, or IPv6)
+ * @param value - The string to validate
+ * @returns true if valid origin, false otherwise
+ */
+export function isValidOrigin(value: string): boolean {
+    return isValidIpAddress(value) || isValidHostname(value);
+}
+
+/**
+ * Validates bind address (must be a valid IP address)
+ * @param value - The string to validate
+ * @returns true if valid bind address, false otherwise
+ */
+export function isValidBindAddress(value: string): boolean {
+    return isValidIpAddress(value);
+}
+
+/**
+ * Validates an array of origin values
+ * @param origins - Array of origin strings to validate
+ * @returns Object with isValid flag and optional error message
+ */
+export function validateOrigins(origins: string[]): { isValid: boolean; error?: string } {
+    for (const origin of origins) {
+        if (!isValidOrigin(origin)) {
+            return {
+                isValid: false,
+                error: `Invalid origin: ${origin}`,
+            };
+        }
+    }
+    return { isValid: true };
+}
+
+/**
+ * Validates bind address with detailed error message
+ * @param bindAddr - The bind address to validate
+ * @returns Object with isValid flag and optional error message
+ */
+export function validateBindAddress(bindAddr: string): { isValid: boolean; error?: string } {
+    if (!isValidBindAddress(bindAddr)) {
+        return {
+            isValid: false,
+            error: `Invalid bind address: ${bindAddr}. Must be a valid IPv4 or IPv6 address.`,
+        };
+    }
+    return { isValid: true };
+}

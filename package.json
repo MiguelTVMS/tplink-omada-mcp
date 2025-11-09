@@ -10,6 +10,7 @@
         "lint:fix": "biome check --write .",
         "format": "biome format --write .",
         "check": "npm run lint && tsc --noEmit",
+        "test": "node --import tsx --test 'tests/**/*.test.ts'",
         "dev": "tsx src/index.ts",
         "start": "node dist/index.js",
         "docker:build": "docker build -f Dockerfile -t ghcr.io/migueltvms/tplink-omada-mcp:latest .",

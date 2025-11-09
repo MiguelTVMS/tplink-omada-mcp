@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isValidBindAddress, isValidOrigin } from './utils/config-validations.js';
 
 const createBooleanStringSchema = (
     defaultValue: boolean
@@ -28,27 +29,6 @@ const listStringSchema = z
                   .filter(Boolean)
             : undefined
     );
-
-// Validates IPv4 or IPv6 addresses
-function isValidIpAddress(value: string): boolean {
-    // IPv4 regex
-    const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-    // IPv6 regex (simplified, supports most common formats)
-    const ipv6Regex = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::1|::)$/;
-    return ipv4Regex.test(value) || ipv6Regex.test(value);
-}
-
-// Validates hostname, IPv4, or IPv6
-function isValidOrigin(value: string): boolean {
-    // Check if it's an IP address
-    if (isValidIpAddress(value)) {
-        return true;
-    }
-
-    // Check if it's a valid hostname (including localhost)
-    const hostnameRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
-    return hostnameRegex.test(value) || value === 'localhost';
-}
 
 const envSchema = z
     .object({
@@ -83,7 +63,7 @@ const envSchema = z
     .refine(
         (data) => {
             // Validate httpBindAddr if provided
-            if (data.httpBindAddr && !isValidIpAddress(data.httpBindAddr)) {
+            if (data.httpBindAddr && !isValidBindAddress(data.httpBindAddr)) {
                 throw new Error(`MCP_HTTP_BIND_ADDR must be a valid IPv4 or IPv6 address, got: ${data.httpBindAddr}`);
             }
             return true;
