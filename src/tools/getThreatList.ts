@@ -11,7 +11,7 @@ const getThreatListSchema = z.object({
     pageSize: z.number().int().min(1).max(1000).default(10).describe('Number of entries per page (1-1000)'),
     startTime: z.number().int().describe('Start timestamp in seconds (e.g., 1682000000)'),
     endTime: z.number().int().describe('End timestamp in seconds (e.g., 1682000000)'),
-    severity: z.number().int().min(0).max(4).optional().describe('Threat severity: 0=Critical, 1=Major, 2=Moderate, 3=Minor, 4=Low'),
+    severity: z.number().int().min(0).max(3).optional().describe('Threat severity: 0=Critical, 1=Major, 2=Concerning, 3=Minor'),
     sortTime: z.enum(['asc', 'desc']).optional().describe('Sort by time: asc or desc'),
     searchKey: z.string().optional().describe('Fuzzy search for Threat Description/Classification/Classification Description'),
 });
