@@ -3,12 +3,12 @@ import { z } from 'zod';
 
 import type { OmadaClient } from '../omadaClient/index.js';
 import { toToolResult, wrapToolHandler } from '../server/common.js';
+import { createPaginationSchema } from '../utils/pagination-schema.js';
 
 const portForwardingSchema = z.object({
     type: z.enum(['User', 'UPnP']).describe('Port forwarding type: User (manually configured) or UPnP (automatically configured)'),
     siteId: z.string().min(1).optional(),
-    page: z.number().int().min(1).optional().default(1),
-    pageSize: z.number().int().min(1).max(100).optional().default(10),
+    ...createPaginationSchema(10),
 });
 
 export function registerGetPortForwardingStatusTool(server: McpServer, client: OmadaClient): void {
