@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  MIN_COVERAGE_THRESHOLD: 80
+  MIN_COVERAGE_THRESHOLD: ${{ vars.MIN_COVERAGE_THRESHOLD || '80' }}
 
 jobs:
   build-and-lint:
