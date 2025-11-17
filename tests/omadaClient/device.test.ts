@@ -1,0 +1,167 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DeviceOperations } from '../../src/omadaClient/device.js';
+import type { RequestHandler } from '../../src/omadaClient/request.js';
+import type { SiteOperations } from '../../src/omadaClient/site.js';
+import type { OmadaApiResponse, OmadaDeviceInfo, OswStackDetail } from '../../src/types/index.js';
+
+describe('omadaClient/device', () => {
+    let mockRequest: RequestHandler;
+    let mockSite: SiteOperations;
+    let buildPath: (path: string) => string;
+    let deviceOps: DeviceOperations;
+
+    beforeEach(() => {
+        mockRequest = {
+            fetchPaginated: vi.fn(),
+            get: vi.fn(),
+            ensureSuccess: vi.fn((response) => response.result),
+        } as unknown as RequestHandler;
+
+        mockSite = {
+            resolveSiteId: vi.fn((siteId) => siteId ?? 'default-site'),
+        } as unknown as SiteOperations;
+
+        buildPath = (path: string) => `/api${path}`;
+
+        deviceOps = new DeviceOperations(mockRequest, mockSite, buildPath);
+    });
+
+    describe('listDevices', () => {
+        it('should fetch paginated list of devices', async () => {
+            const mockDevices: OmadaDeviceInfo[] = [
+                { mac: '00:11:22:33:44:55', name: 'Device 1', deviceId: 'dev-1' } as OmadaDeviceInfo,
+                { mac: '00:11:22:33:44:66', name: 'Device 2', deviceId: 'dev-2' } as OmadaDeviceInfo,
+            ];
+
+            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue(mockDevices);
+
+            const devices = await deviceOps.listDevices('test-site');
+
+            expect(devices).toEqual(mockDevices);
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith('test-site');
+            expect(mockRequest.fetchPaginated).toHaveBeenCalledWith('/api/sites/test-site/devices');
+        });
+
+        it('should use default siteId if not provided', async () => {
+            const mockDevices: OmadaDeviceInfo[] = [];
+            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue(mockDevices);
+
+            await deviceOps.listDevices();
+
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+            expect(mockRequest.fetchPaginated).toHaveBeenCalledWith('/api/sites/default-site/devices');
+        });
+    });
+
+    describe('getDevice', () => {
+        it('should find device by MAC address', async () => {
+            const mockDevices: OmadaDeviceInfo[] = [
+                { mac: '00:11:22:33:44:55', name: 'Device 1', deviceId: 'dev-1' } as OmadaDeviceInfo,
+                { mac: '00:11:22:33:44:66', name: 'Device 2', deviceId: 'dev-2' } as OmadaDeviceInfo,
+            ];
+
+            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue(mockDevices);
+
+            const device = await deviceOps.getDevice('00:11:22:33:44:66', 'test-site');
+
+            expect(device).toEqual(mockDevices[1]);
+        });
+
+        it('should find device by device ID', async () => {
+            const mockDevices: OmadaDeviceInfo[] = [
+                { mac: '00:11:22:33:44:55', name: 'Device 1', deviceId: 'dev-1' } as OmadaDeviceInfo,
+                { mac: '00:11:22:33:44:66', name: 'Device 2', deviceId: 'dev-2' } as OmadaDeviceInfo,
+            ];
+
+            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue(mockDevices);
+
+            const device = await deviceOps.getDevice('dev-1', 'test-site');
+
+            expect(device).toEqual(mockDevices[0]);
+        });
+
+        it('should return undefined if device not found', async () => {
+            const mockDevices: OmadaDeviceInfo[] = [];
+            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue(mockDevices);
+
+            const device = await deviceOps.getDevice('nonexistent', 'test-site');
+
+            expect(device).toBeUndefined();
+        });
+    });
+
+    describe('getSwitchStackDetail', () => {
+        it('should get switch stack details', async () => {
+            const mockStack: OswStackDetail = {
+                stackId: 'stack-1',
+                stackName: 'Test Stack',
+            } as OswStackDetail;
+
+            const mockResponse: OmadaApiResponse<OswStackDetail> = {
+                errorCode: 0,
+                msg: 'Success',
+                result: mockStack,
+            };
+
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockStack);
+
+            const stack = await deviceOps.getSwitchStackDetail('stack-1', 'test-site');
+
+            expect(stack).toEqual(mockStack);
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith('test-site');
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/test-site/stacks/stack-1');
+            expect(mockRequest.ensureSuccess).toHaveBeenCalledWith(mockResponse);
+        });
+
+        it('should throw error if stackId is empty', async () => {
+            await expect(deviceOps.getSwitchStackDetail('', 'test-site')).rejects.toThrow(
+                'A stack id must be provided.'
+            );
+        });
+
+        it('should use default siteId if not provided', async () => {
+            const mockStack: OswStackDetail = {
+                stackId: 'stack-1',
+                stackName: 'Test Stack',
+            } as OswStackDetail;
+
+            const mockResponse: OmadaApiResponse<OswStackDetail> = {
+                errorCode: 0,
+                msg: 'Success',
+                result: mockStack,
+            };
+
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockStack);
+
+            await deviceOps.getSwitchStackDetail('stack-1');
+
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/default-site/stacks/stack-1');
+        });
+    });
+
+    describe('searchDevices', () => {
+        it('should search devices globally', async () => {
+            const mockDevices: OmadaDeviceInfo[] = [
+                { mac: '00:11:22:33:44:55', name: 'Device 1', deviceId: 'dev-1' } as OmadaDeviceInfo,
+            ];
+
+            const mockResponse: OmadaApiResponse<OmadaDeviceInfo[]> = {
+                errorCode: 0,
+                msg: 'Success',
+                result: mockDevices,
+            };
+
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockDevices);
+
+            const devices = await deviceOps.searchDevices('Device 1');
+
+            expect(devices).toEqual(mockDevices);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices?searchKey=Device%201');
+            expect(mockRequest.ensureSuccess).toHaveBeenCalledWith(mockResponse);
+        });
+    });
+});

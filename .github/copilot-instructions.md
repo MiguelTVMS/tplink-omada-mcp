@@ -77,6 +77,8 @@ Reference `.env.example`. Primary variables:
 - Test coverage can be generated with `npm run test:coverage`.
 - All configuration validations must be implemented in `src/utils/config-validations.ts` and tested thoroughly.
 - No validation logic should exist outside of `src/config.ts` and `src/utils/config-validations.ts`.
+- Mock external dependencies (e.g., Omada API calls) in tests to ensure isolation. Use Vitest's mocking capabilities for this purpose.
+- Keep the coverage above 90% for all source files. Focus on covering edge cases and error handling. Always validate after making changes.
 
 ## Development Workflow
 
@@ -118,3 +120,4 @@ Reference `.env.example`. Primary variables:
   - **Streamable HTTP** (`stream`) - MCP protocol version 2025-03-26, single endpoint for all operations
   - **HTTP+SSE** (`sse`) - MCP protocol version 2024-11-05, separate endpoints for SSE stream and POST messages
 - Both transports implement DNS rebinding protection via origin validation and bind address restrictions for security.
+- Always reuse the pagination schema in `src/utils/pagination-schema.ts` when implementing list operations that support pagination.

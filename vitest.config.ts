@@ -12,4 +12,7 @@ export default defineConfig({
             exclude: ['src/**/*.test.ts', 'src/types/**'],
         },
     },
+    resolve: {
+        extensions: ['.ts', '.js', '.json'],
+    },
 });
