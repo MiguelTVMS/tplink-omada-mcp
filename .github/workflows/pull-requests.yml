@@ -27,6 +27,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          # Set npm cache to expire after 15 days
+          npm_config_cache_max: 1296000
 
       - name: Build project
         run: npm run build
