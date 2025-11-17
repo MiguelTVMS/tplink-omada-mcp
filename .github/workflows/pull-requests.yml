@@ -5,6 +5,12 @@ on:
     branches:
       - main
       - develop
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "*.json"
+      - "*.ts"
+      - ".github/workflows/*.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
