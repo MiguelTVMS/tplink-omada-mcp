@@ -67,10 +67,7 @@ describe('getPortForwardingStatus Tool', () => {
         if (!toolData) throw new Error('Tool not registered');
         const handler = toolData.handler;
 
-        const result = await handler(
-            { type: 'User', siteId: 'test-site', page: 1, pageSize: 10 },
-            { sessionId: 'test-session' }
-        );
+        const result = await handler({ type: 'User', siteId: 'test-site', page: 1, pageSize: 10 }, { sessionId: 'test-session' });
 
         expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('User', 'test-site', 1, 10);
         expect(result).toEqual({
@@ -105,10 +102,7 @@ describe('getPortForwardingStatus Tool', () => {
         if (!toolData) throw new Error('Tool not registered');
         const handler = toolData.handler;
 
-        const result = await handler(
-            { type: 'UPnP', siteId: 'test-site', page: 1, pageSize: 10 },
-            { sessionId: 'test-session' }
-        );
+        const result = await handler({ type: 'UPnP', siteId: 'test-site', page: 1, pageSize: 10 }, { sessionId: 'test-session' });
 
         expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('UPnP', 'test-site', 1, 10);
         expect(result).toEqual({
@@ -165,10 +159,7 @@ describe('getPortForwardingStatus Tool', () => {
         if (!toolData) throw new Error('Tool not registered');
         const handler = toolData.handler;
 
-        const result = await handler(
-            { type: 'User', siteId: 'test-site', page: 2, pageSize: 50 },
-            { sessionId: 'test-session' }
-        );
+        const result = await handler({ type: 'User', siteId: 'test-site', page: 2, pageSize: 50 }, { sessionId: 'test-session' });
 
         expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('User', 'test-site', 2, 50);
         expect(result).toBeDefined();
@@ -187,12 +178,9 @@ describe('getPortForwardingStatus Tool', () => {
         if (!toolData) throw new Error('Tool not registered');
         const handler = toolData.handler;
 
-        await expect(
-            handler(
-                { type: 'User', siteId: 'test-site', page: 1, pageSize: 10 },
-                { sessionId: 'test-session' }
-            )
-        ).rejects.toThrow('API error: Invalid request parameters');
+        await expect(handler({ type: 'User', siteId: 'test-site', page: 1, pageSize: 10 }, { sessionId: 'test-session' })).rejects.toThrow(
+            'API error: Invalid request parameters'
+        );
 
         expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('User', 'test-site', 1, 10);
     });
