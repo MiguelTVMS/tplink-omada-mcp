@@ -192,7 +192,7 @@ For more information on the MCP protocol and transports, see the [Model Context 
 
 To share the local server with remote tooling, you can use ngrok to expose the HTTP server publicly. This works with **both stream and SSE transports**.
 
-**Built-in ngrok support**
+#### Built-in ngrok support
 
 ```bash
 docker run -d \
@@ -257,7 +257,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 
 Want to help improve this project? Contributions are welcome! Visit our GitHub repository to report issues, suggest features, or submit pull requests:
 
-**<https://github.com/MiguelTVMS/tplink-omada-mcp>**
+**[https://github.com/MiguelTVMS/tplink-omada-mcp](https://github.com/MiguelTVMS/tplink-omada-mcp)**
 
 ## License
 
