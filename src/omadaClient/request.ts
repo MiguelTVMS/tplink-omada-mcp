@@ -24,6 +24,13 @@ export class RequestHandler {
     }
 
     /**
+     * Make a PATCH request to the Omada API.
+     */
+    public async patch<T>(path: string, data?: unknown): Promise<T> {
+        return await this.request<T>({ method: 'PATCH', url: path, data });
+    }
+
+    /**
      * Make an arbitrary HTTP request to the Omada API.
      */
     public async request<T>(config: AxiosRequestConfig, retry = true): Promise<T> {
