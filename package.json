@@ -35,7 +35,6 @@
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.21.0",
         "@ngrok/ngrok": "^1.5.2",
-        "@rollup/rollup-win32-x64-msvc": "^4.59.0",
         "axios": "^1.13.2",
         "dotenv": "^17.2.3",
         "pino": "^10.1.0",
