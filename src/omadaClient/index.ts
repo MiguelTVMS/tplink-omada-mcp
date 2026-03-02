@@ -135,20 +135,31 @@ export class OmadaClient {
     }
 
     // Rate limit operations
-    public async getRateLimitProfiles(siteId?: string): Promise<RateLimitProfile[]> {
-        return await this.clientOps.getRateLimitProfiles(siteId);
+    public async getRateLimitProfiles(siteId?: string, customHeaders?: CustomHeaders): Promise<RateLimitProfile[]> {
+        return await this.clientOps.getRateLimitProfiles(siteId, customHeaders);
     }
 
-    public async setClientRateLimit(clientMac: string, downLimit: number, upLimit: number, siteId?: string): Promise<ClientRateLimitSetting> {
-        return await this.clientOps.setClientRateLimit(clientMac, downLimit, upLimit, siteId);
+    public async setClientRateLimit(
+        clientMac: string,
+        downLimit: number,
+        upLimit: number,
+        siteId?: string,
+        customHeaders?: CustomHeaders
+    ): Promise<ClientRateLimitSetting> {
+        return await this.clientOps.setClientRateLimit(clientMac, downLimit, upLimit, siteId, customHeaders);
     }
 
-    public async setClientRateLimitProfile(clientMac: string, profileId: string, siteId?: string): Promise<ClientRateLimitSetting> {
-        return await this.clientOps.setClientRateLimitProfile(clientMac, profileId, siteId);
+    public async setClientRateLimitProfile(
+        clientMac: string,
+        profileId: string,
+        siteId?: string,
+        customHeaders?: CustomHeaders
+    ): Promise<ClientRateLimitSetting> {
+        return await this.clientOps.setClientRateLimitProfile(clientMac, profileId, siteId, customHeaders);
     }
 
-    public async disableClientRateLimit(clientMac: string, siteId?: string): Promise<ClientRateLimitSetting> {
-        return await this.clientOps.disableClientRateLimit(clientMac, siteId);
+    public async disableClientRateLimit(clientMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<ClientRateLimitSetting> {
+        return await this.clientOps.disableClientRateLimit(clientMac, siteId, customHeaders);
     }
 
     // Security operations

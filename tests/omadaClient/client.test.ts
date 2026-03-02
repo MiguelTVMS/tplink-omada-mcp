@@ -378,7 +378,8 @@ describe('omadaClient/client', () => {
 
             expect(profiles).toEqual(mockProfiles);
             expect(mockSite.resolveSiteId).toHaveBeenCalledWith('test-site');
-            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/test-site/rate-limit-profiles');
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/test-site/rate-limit-profiles', undefined, undefined);
+            expect(mockRequest.ensureSuccess).toHaveBeenCalledWith(mockResponse);
         });
 
         it('should return empty array if result is undefined', async () => {
@@ -392,6 +393,33 @@ describe('omadaClient/client', () => {
             const profiles = await clientOps.getRateLimitProfiles();
 
             expect(profiles).toEqual([]);
+            expect(mockRequest.ensureSuccess).toHaveBeenCalledWith(mockResponse);
+        });
+
+        it('should throw if API returns an error', async () => {
+            const mockResponse: OmadaApiResponse<RateLimitProfile[]> = {
+                errorCode: -1,
+                msg: 'Unauthorized',
+            };
+
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockImplementation(() => {
+                throw new Error('Unauthorized');
+            });
+
+            await expect(clientOps.getRateLimitProfiles('test-site')).rejects.toThrow('Unauthorized');
+        });
+
+        it('should pass customHeaders to get request', async () => {
+            const mockProfiles: RateLimitProfile[] = [];
+            const mockResponse: OmadaApiResponse<RateLimitProfile[]> = { errorCode: 0, result: mockProfiles };
+            const customHeaders = { 'X-Custom': 'value' };
+
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+
+            await clientOps.getRateLimitProfiles('test-site', customHeaders);
+
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/test-site/rate-limit-profiles', undefined, customHeaders);
         });
     });
 
@@ -418,16 +446,20 @@ describe('omadaClient/client', () => {
 
             expect(setting).toEqual(mockSetting);
             expect(mockSite.resolveSiteId).toHaveBeenCalledWith('test-site');
-            expect(mockRequest.patch).toHaveBeenCalledWith('/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit', {
-                mode: 0,
-                customRateLimit: {
-                    enable: true,
-                    upEnable: true,
-                    upLimit: 5120,
-                    downEnable: true,
-                    downLimit: 10240,
+            expect(mockRequest.patch).toHaveBeenCalledWith(
+                '/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
+                {
+                    mode: 0,
+                    customRateLimit: {
+                        enable: true,
+                        upEnable: true,
+                        upLimit: 5120,
+                        downEnable: true,
+                        downLimit: 10240,
+                    },
                 },
-            });
+                undefined
+            );
             expect(mockRequest.ensureSuccess).toHaveBeenCalledWith(mockResponse);
         });
 
@@ -454,7 +486,25 @@ describe('omadaClient/client', () => {
             expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
             expect(mockRequest.patch).toHaveBeenCalledWith(
                 '/api/sites/default-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
-                expect.any(Object)
+                expect.any(Object),
+                undefined
+            );
+        });
+
+        it('should pass customHeaders to patch request', async () => {
+            const mockSetting: ClientRateLimitSetting = { enable: true };
+            const mockResponse: OmadaApiResponse<ClientRateLimitSetting> = { errorCode: 0, result: mockSetting };
+            const customHeaders = { 'X-Custom': 'value' };
+
+            (mockRequest.patch as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockSetting);
+
+            await clientOps.setClientRateLimit('00:11:22:33:44:55', 1024, 512, 'test-site', customHeaders);
+
+            expect(mockRequest.patch).toHaveBeenCalledWith(
+                '/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
+                expect.any(Object),
+                customHeaders
             );
         });
     });
@@ -479,10 +529,11 @@ describe('omadaClient/client', () => {
 
             expect(setting).toEqual(mockSetting);
             expect(mockSite.resolveSiteId).toHaveBeenCalledWith('test-site');
-            expect(mockRequest.patch).toHaveBeenCalledWith('/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit', {
-                mode: 1,
-                rateLimitProfileId: 'profile-1',
-            });
+            expect(mockRequest.patch).toHaveBeenCalledWith(
+                '/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
+                { mode: 1, rateLimitProfileId: 'profile-1' },
+                undefined
+            );
             expect(mockRequest.ensureSuccess).toHaveBeenCalledWith(mockResponse);
         });
 
@@ -506,7 +557,25 @@ describe('omadaClient/client', () => {
             expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
             expect(mockRequest.patch).toHaveBeenCalledWith(
                 '/api/sites/default-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
-                expect.any(Object)
+                expect.any(Object),
+                undefined
+            );
+        });
+
+        it('should pass customHeaders to patch request', async () => {
+            const mockSetting: ClientRateLimitSetting = { rateLimitId: 'profile-1', enable: true };
+            const mockResponse: OmadaApiResponse<ClientRateLimitSetting> = { errorCode: 0, result: mockSetting };
+            const customHeaders = { 'X-Custom': 'value' };
+
+            (mockRequest.patch as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockSetting);
+
+            await clientOps.setClientRateLimitProfile('00:11:22:33:44:55', 'profile-1', 'test-site', customHeaders);
+
+            expect(mockRequest.patch).toHaveBeenCalledWith(
+                '/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
+                expect.any(Object),
+                customHeaders
             );
         });
     });
@@ -530,16 +599,20 @@ describe('omadaClient/client', () => {
 
             expect(setting).toEqual(mockSetting);
             expect(mockSite.resolveSiteId).toHaveBeenCalledWith('test-site');
-            expect(mockRequest.patch).toHaveBeenCalledWith('/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit', {
-                mode: 0,
-                customRateLimit: {
-                    enable: false,
-                    upEnable: false,
-                    upLimit: 1,
-                    downEnable: false,
-                    downLimit: 1,
+            expect(mockRequest.patch).toHaveBeenCalledWith(
+                '/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
+                {
+                    mode: 0,
+                    customRateLimit: {
+                        enable: false,
+                        upEnable: false,
+                        upLimit: 1,
+                        downEnable: false,
+                        downLimit: 1,
+                    },
                 },
-            });
+                undefined
+            );
             expect(mockRequest.ensureSuccess).toHaveBeenCalledWith(mockResponse);
         });
 
@@ -560,6 +633,28 @@ describe('omadaClient/client', () => {
             await clientOps.disableClientRateLimit('00:11:22:33:44:55');
 
             expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+            expect(mockRequest.patch).toHaveBeenCalledWith(
+                '/api/sites/default-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
+                expect.any(Object),
+                undefined
+            );
+        });
+
+        it('should pass customHeaders to patch request', async () => {
+            const mockSetting: ClientRateLimitSetting = { enable: false };
+            const mockResponse: OmadaApiResponse<ClientRateLimitSetting> = { errorCode: 0, result: mockSetting };
+            const customHeaders = { 'X-Custom': 'value' };
+
+            (mockRequest.patch as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockSetting);
+
+            await clientOps.disableClientRateLimit('00:11:22:33:44:55', 'test-site', customHeaders);
+
+            expect(mockRequest.patch).toHaveBeenCalledWith(
+                '/api/sites/test-site/clients/00%3A11%3A22%3A33%3A44%3A55/ratelimit',
+                expect.any(Object),
+                customHeaders
+            );
         });
     });
 });

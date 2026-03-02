@@ -44,7 +44,7 @@ describe('tools - rate limit operations', () => {
             const result = await toolHandler({ siteId: 'site-1' }, {});
 
             expect(result).toBeDefined();
-            expect(mockClient.getRateLimitProfiles).toHaveBeenCalledWith('site-1');
+            expect(mockClient.getRateLimitProfiles).toHaveBeenCalledWith('site-1', undefined);
         });
 
         it('should work without siteId', async () => {
@@ -53,7 +53,17 @@ describe('tools - rate limit operations', () => {
             registerGetRateLimitProfilesTool(mockServer, mockClient);
             await toolHandler({}, {});
 
-            expect(mockClient.getRateLimitProfiles).toHaveBeenCalledWith(undefined);
+            expect(mockClient.getRateLimitProfiles).toHaveBeenCalledWith(undefined, undefined);
+        });
+
+        it('should pass customHeaders to client', async () => {
+            (mockClient.getRateLimitProfiles as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+            const customHeaders = { 'X-Custom': 'value' };
+
+            registerGetRateLimitProfilesTool(mockServer, mockClient);
+            await toolHandler({ siteId: 'site-1', customHeaders }, {});
+
+            expect(mockClient.getRateLimitProfiles).toHaveBeenCalledWith('site-1', customHeaders);
         });
     });
 
@@ -66,7 +76,7 @@ describe('tools - rate limit operations', () => {
             const result = await toolHandler({ clientMac: '00:11:22:33:44:55', downLimit: 2048, upLimit: 1024, siteId: 'site-1' }, {});
 
             expect(result).toBeDefined();
-            expect(mockClient.setClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', 2048, 1024, 'site-1');
+            expect(mockClient.setClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', 2048, 1024, 'site-1', undefined);
         });
 
         it('should work without siteId', async () => {
@@ -75,7 +85,17 @@ describe('tools - rate limit operations', () => {
             registerSetClientRateLimitTool(mockServer, mockClient);
             await toolHandler({ clientMac: '00:11:22:33:44:55', downLimit: 1024, upLimit: 512 }, {});
 
-            expect(mockClient.setClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', 1024, 512, undefined);
+            expect(mockClient.setClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', 1024, 512, undefined, undefined);
+        });
+
+        it('should pass customHeaders to client', async () => {
+            (mockClient.setClientRateLimit as ReturnType<typeof vi.fn>).mockResolvedValue({ enable: true });
+            const customHeaders = { 'X-Custom': 'value' };
+
+            registerSetClientRateLimitTool(mockServer, mockClient);
+            await toolHandler({ clientMac: '00:11:22:33:44:55', downLimit: 1024, upLimit: 512, customHeaders }, {});
+
+            expect(mockClient.setClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', 1024, 512, undefined, customHeaders);
         });
     });
 
@@ -88,7 +108,7 @@ describe('tools - rate limit operations', () => {
             const result = await toolHandler({ clientMac: '00:11:22:33:44:55', profileId: 'profile-1', siteId: 'site-1' }, {});
 
             expect(result).toBeDefined();
-            expect(mockClient.setClientRateLimitProfile).toHaveBeenCalledWith('00:11:22:33:44:55', 'profile-1', 'site-1');
+            expect(mockClient.setClientRateLimitProfile).toHaveBeenCalledWith('00:11:22:33:44:55', 'profile-1', 'site-1', undefined);
         });
 
         it('should work without siteId', async () => {
@@ -97,7 +117,17 @@ describe('tools - rate limit operations', () => {
             registerSetClientRateLimitProfileTool(mockServer, mockClient);
             await toolHandler({ clientMac: '00:11:22:33:44:55', profileId: 'profile-2' }, {});
 
-            expect(mockClient.setClientRateLimitProfile).toHaveBeenCalledWith('00:11:22:33:44:55', 'profile-2', undefined);
+            expect(mockClient.setClientRateLimitProfile).toHaveBeenCalledWith('00:11:22:33:44:55', 'profile-2', undefined, undefined);
+        });
+
+        it('should pass customHeaders to client', async () => {
+            (mockClient.setClientRateLimitProfile as ReturnType<typeof vi.fn>).mockResolvedValue({ enable: true });
+            const customHeaders = { 'X-Custom': 'value' };
+
+            registerSetClientRateLimitProfileTool(mockServer, mockClient);
+            await toolHandler({ clientMac: '00:11:22:33:44:55', profileId: 'profile-1', customHeaders }, {});
+
+            expect(mockClient.setClientRateLimitProfile).toHaveBeenCalledWith('00:11:22:33:44:55', 'profile-1', undefined, customHeaders);
         });
     });
 
@@ -110,7 +140,7 @@ describe('tools - rate limit operations', () => {
             const result = await toolHandler({ clientMac: '00:11:22:33:44:55', siteId: 'site-1' }, {});
 
             expect(result).toBeDefined();
-            expect(mockClient.disableClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', 'site-1');
+            expect(mockClient.disableClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', 'site-1', undefined);
         });
 
         it('should work without siteId', async () => {
@@ -119,7 +149,17 @@ describe('tools - rate limit operations', () => {
             registerDisableClientRateLimitTool(mockServer, mockClient);
             await toolHandler({ clientMac: '00:11:22:33:44:55' }, {});
 
-            expect(mockClient.disableClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', undefined);
+            expect(mockClient.disableClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', undefined, undefined);
+        });
+
+        it('should pass customHeaders to client', async () => {
+            (mockClient.disableClientRateLimit as ReturnType<typeof vi.fn>).mockResolvedValue({ enable: false });
+            const customHeaders = { 'X-Custom': 'value' };
+
+            registerDisableClientRateLimitTool(mockServer, mockClient);
+            await toolHandler({ clientMac: '00:11:22:33:44:55', customHeaders }, {});
+
+            expect(mockClient.disableClientRateLimit).toHaveBeenCalledWith('00:11:22:33:44:55', undefined, customHeaders);
         });
     });
 });

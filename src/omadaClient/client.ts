@@ -144,12 +144,14 @@ export class ClientOperations {
      * @param siteId - Optional site ID, uses default from config if not provided
      * @returns Array of rate limit profiles
      */
-    public async getRateLimitProfiles(siteId?: string): Promise<RateLimitProfile[]> {
+    public async getRateLimitProfiles(siteId?: string, customHeaders?: CustomHeaders): Promise<RateLimitProfile[]> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const response = await this.request.get<OmadaApiResponse<RateLimitProfile[]>>(
-            this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/rate-limit-profiles`)
+            this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/rate-limit-profiles`),
+            undefined,
+            customHeaders
         );
-        return response.result ?? [];
+        return this.request.ensureSuccess(response) ?? [];
     }
 
     /**
@@ -162,7 +164,13 @@ export class ClientOperations {
      * @param siteId - Optional site ID, uses default from config if not provided
      * @returns Updated rate limit setting
      */
-    public async setClientRateLimit(clientMac: string, downLimit: number, upLimit: number, siteId?: string): Promise<ClientRateLimitSetting> {
+    public async setClientRateLimit(
+        clientMac: string,
+        downLimit: number,
+        upLimit: number,
+        siteId?: string,
+        customHeaders?: CustomHeaders
+    ): Promise<ClientRateLimitSetting> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const requestBody: UpdateClientRateLimitRequest = {
             mode: 0, // 0 = custom rate limit
@@ -177,7 +185,8 @@ export class ClientOperations {
 
         const response = await this.request.patch<OmadaApiResponse<ClientRateLimitSetting>>(
             this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/clients/${encodeURIComponent(clientMac)}/ratelimit`),
-            requestBody
+            requestBody,
+            customHeaders
         );
         return this.request.ensureSuccess(response);
     }
@@ -191,7 +200,12 @@ export class ClientOperations {
      * @param siteId - Optional site ID, uses default from config if not provided
      * @returns Updated rate limit setting
      */
-    public async setClientRateLimitProfile(clientMac: string, profileId: string, siteId?: string): Promise<ClientRateLimitSetting> {
+    public async setClientRateLimitProfile(
+        clientMac: string,
+        profileId: string,
+        siteId?: string,
+        customHeaders?: CustomHeaders
+    ): Promise<ClientRateLimitSetting> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const requestBody: UpdateClientRateLimitRequest = {
             mode: 1, // 1 = use rate limit profile
@@ -200,7 +214,8 @@ export class ClientOperations {
 
         const response = await this.request.patch<OmadaApiResponse<ClientRateLimitSetting>>(
             this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/clients/${encodeURIComponent(clientMac)}/ratelimit`),
-            requestBody
+            requestBody,
+            customHeaders
         );
         return this.request.ensureSuccess(response);
     }
@@ -213,7 +228,7 @@ export class ClientOperations {
      * @param siteId - Optional site ID, uses default from config if not provided
      * @returns Updated rate limit setting
      */
-    public async disableClientRateLimit(clientMac: string, siteId?: string): Promise<ClientRateLimitSetting> {
+    public async disableClientRateLimit(clientMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<ClientRateLimitSetting> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
 
         // To disable rate limiting, use mode 0 with enable: false and minimal valid limit values
@@ -230,7 +245,8 @@ export class ClientOperations {
 
         const response = await this.request.patch<OmadaApiResponse<ClientRateLimitSetting>>(
             this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/clients/${encodeURIComponent(clientMac)}/ratelimit`),
-            requestBody
+            requestBody,
+            customHeaders
         );
         return this.request.ensureSuccess(response);
     }

@@ -11,6 +11,8 @@ export function registerGetRateLimitProfilesTool(server: McpServer, client: Omad
                 'Get the list of available rate limit profiles for a site. These profiles can be applied to clients to control their bandwidth usage.',
             inputSchema: siteInputSchema.shape,
         },
-        wrapToolHandler('getRateLimitProfiles', async ({ siteId }) => toToolResult(await client.getRateLimitProfiles(siteId)))
+        wrapToolHandler('getRateLimitProfiles', async ({ siteId, customHeaders }) =>
+            toToolResult(await client.getRateLimitProfiles(siteId, customHeaders))
+        )
     );
 }
