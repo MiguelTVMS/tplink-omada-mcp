@@ -68,7 +68,7 @@ describe('getPortForwardingStatus Tool', () => {
 
         const result = await toolData.handler({ type: 'User', siteId: 'test-site', page: 1, pageSize: 10 }, { sessionId: 'test-session' });
 
-        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('User', 'test-site', 1, 10, undefined);
+        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('user', 'test-site', 1, 10, undefined);
         expect(result).toEqual({
             content: [{ type: 'text', text: JSON.stringify(mockResponse, null, 2) }],
         });
@@ -97,7 +97,7 @@ describe('getPortForwardingStatus Tool', () => {
 
         const result = await toolData.handler({ type: 'UPnP', siteId: 'test-site', page: 1, pageSize: 10 }, { sessionId: 'test-session' });
 
-        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('UPnP', 'test-site', 1, 10, undefined);
+        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('upnp', 'test-site', 1, 10, undefined);
         expect(result).toEqual({
             content: [{ type: 'text', text: JSON.stringify(mockResponse, null, 2) }],
         });
@@ -121,7 +121,7 @@ describe('getPortForwardingStatus Tool', () => {
 
         await toolData.handler({ type: 'user', siteId: 'test-site' }, { sessionId: 'test-session' });
 
-        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('User', 'test-site', 1, 10, undefined);
+        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('user', 'test-site', 1, 10, undefined);
     });
 
     it('should normalise type "upnp" (lowercase) to "UPnP"', async () => {
@@ -142,7 +142,7 @@ describe('getPortForwardingStatus Tool', () => {
 
         await toolData.handler({ type: 'upnp', siteId: 'test-site' }, { sessionId: 'test-session' });
 
-        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('UPnP', 'test-site', 1, 10, undefined);
+        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('upnp', 'test-site', 1, 10, undefined);
     });
 
     it('should normalise type "UPNP" (uppercase) to "UPnP"', async () => {
@@ -163,7 +163,7 @@ describe('getPortForwardingStatus Tool', () => {
 
         await toolData.handler({ type: 'UPNP', siteId: 'test-site' }, { sessionId: 'test-session' });
 
-        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('UPnP', 'test-site', 1, 10, undefined);
+        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('upnp', 'test-site', 1, 10, undefined);
     });
 
     it('should return an error result for invalid type values', async () => {
@@ -199,7 +199,7 @@ describe('getPortForwardingStatus Tool', () => {
 
         await toolData.handler({ type: 'User', siteId: 'test-site' }, { sessionId: 'test-session' });
 
-        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('User', 'test-site', 1, 10, undefined);
+        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('user', 'test-site', 1, 10, undefined);
     });
 
     it('should handle custom pagination parameters', async () => {
@@ -220,7 +220,7 @@ describe('getPortForwardingStatus Tool', () => {
 
         await toolData.handler({ type: 'User', siteId: 'test-site', page: 2, pageSize: 50 }, { sessionId: 'test-session' });
 
-        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('User', 'test-site', 2, 50, undefined);
+        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('user', 'test-site', 2, 50, undefined);
     });
 
     it('should propagate errors from the client', async () => {
@@ -238,6 +238,6 @@ describe('getPortForwardingStatus Tool', () => {
             'API error: Invalid request parameters'
         );
 
-        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('User', 'test-site', 1, 10, undefined);
+        expect(mockClient.getPortForwardingStatus).toHaveBeenCalledWith('user', 'test-site', 1, 10, undefined);
     });
 });

@@ -9,12 +9,18 @@ import { createPaginationSchema } from '../utils/pagination-schema.js';
  * Normalises the port forwarding type string to the exact casing required by
  * the Omada API ('User' or 'UPnP'), regardless of what the AI model sends.
  */
-function normalisePortForwardingType(raw: string): 'User' | 'UPnP' | null {
+/**
+ * Despite the OpenAPI spec listing 'User' and 'UPnP', the Omada controller
+ * actually expects lowercase values ('user' and 'upnp') in the URL path.
+ * This function accepts any casing from the AI model and returns the correct
+ * lowercase value for the API call.
+ */
+function normalisePortForwardingType(raw: string): 'user' | 'upnp' | null {
     switch (raw.toLowerCase()) {
         case 'user':
-            return 'User';
+            return 'user';
         case 'upnp':
-            return 'UPnP';
+            return 'upnp';
         default:
             return null;
     }
