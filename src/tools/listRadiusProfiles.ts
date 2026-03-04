@@ -7,7 +7,8 @@ export function registerListRadiusProfilesTool(server: McpServer, client: OmadaC
     server.registerTool(
         'listRadiusProfiles',
         {
-            description: 'List RADIUS authentication profiles configured for a site.',
+            description:
+                'List RADIUS authentication profiles configured for a site: server IP, port, and profile name. Used by SSIDs for WPA-Enterprise / 802.1X authentication.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('listRadiusProfiles', async ({ siteId, customHeaders }) =>

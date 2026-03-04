@@ -7,7 +7,8 @@ export function registerListSiteToSiteVpnsTool(server: McpServer, client: OmadaC
     server.registerTool(
         'listSiteToSiteVpns',
         {
-            description: 'List site-to-site VPN configurations for a site.',
+            description:
+                'List site-to-site VPN configurations: tunnel name, remote IP, status, protocol (IPsec/OpenVPN/WireGuard), and local/remote subnets.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('listSiteToSiteVpns', async ({ siteId, customHeaders }) =>

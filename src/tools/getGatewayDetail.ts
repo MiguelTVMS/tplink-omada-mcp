@@ -5,7 +5,9 @@ import { siteInputSchema, toToolResult, wrapToolHandler } from '../server/common
 
 const inputSchema = siteInputSchema
     .extend({
-        gatewayMac: siteInputSchema.shape.siteId.unwrap().describe('MAC address of the gateway'),
+        gatewayMac: siteInputSchema.shape.siteId
+            .unwrap()
+            .describe('MAC address of the gateway (e.g. "AA-BB-CC-DD-EE-FF"). Use listDevices to find the gateway MAC.'),
     })
     .required({ gatewayMac: true });
 
@@ -13,7 +15,8 @@ export function registerGetGatewayDetailTool(server: McpServer, client: OmadaCli
     server.registerTool(
         'getGatewayDetail',
         {
-            description: 'Fetch detailed configuration and status information for a specific gateway.',
+            description:
+                'Fetch full configuration and status for a specific gateway: model, firmware, CPU/memory, WAN/LAN ports, routing mode, and feature flags. Use listDevices to get the gatewayMac.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getGatewayDetail', async ({ gatewayMac, siteId, customHeaders }) =>

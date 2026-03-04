@@ -5,7 +5,9 @@ import { siteInputSchema, toToolResult, wrapToolHandler } from '../server/common
 
 const inputSchema = siteInputSchema
     .extend({
-        apMac: siteInputSchema.shape.siteId.unwrap().describe('MAC address of the access point'),
+        apMac: siteInputSchema.shape.siteId
+            .unwrap()
+            .describe('MAC address of the access point (e.g. "AA-BB-CC-DD-EE-FF"). Use listDevices to find AP MACs.'),
     })
     .required({ apMac: true });
 
@@ -13,7 +15,8 @@ export function registerGetApRadiosTool(server: McpServer, client: OmadaClient):
     server.registerTool(
         'getApRadios',
         {
-            description: 'Get radio configuration and status for a specific access point (AP), including channel, power, and band information.',
+            description:
+                'Get radio status for a specific access point: 2.4GHz and 5GHz band config, channel, TX power, channel utilization, and associated client count per radio. Use listDevices to get the apMac.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getApRadios', async ({ apMac, siteId, customHeaders }) =>

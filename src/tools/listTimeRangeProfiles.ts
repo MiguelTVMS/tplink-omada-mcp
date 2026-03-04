@@ -7,7 +7,8 @@ export function registerListTimeRangeProfilesTool(server: McpServer, client: Oma
     server.registerTool(
         'listTimeRangeProfiles',
         {
-            description: 'List time range profiles used for scheduling in a site (e.g., for ACLs, port schedules).',
+            description:
+                'List time range profiles configured for a site. These are named schedules (e.g. "Business Hours", "Weekends") used by ACL rules, port schedules, and other time-based policies.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('listTimeRangeProfiles', async ({ siteId, customHeaders }) =>

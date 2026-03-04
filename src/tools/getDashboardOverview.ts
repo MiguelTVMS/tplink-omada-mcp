@@ -7,7 +7,8 @@ export function registerGetDashboardOverviewTool(server: McpServer, client: Omad
     server.registerTool(
         'getDashboardOverview',
         {
-            description: 'Get the site overview diagram data, including device counts and connectivity topology.',
+            description:
+                "Get the site overview topology: device counts (gateways, switches, APs), client counts (wired, wireless, guest), connectivity graph, and overall health status. Good first call to understand what's in the network.",
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('getDashboardOverview', async ({ siteId, customHeaders }) =>

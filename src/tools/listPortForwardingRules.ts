@@ -7,7 +7,8 @@ export function registerListPortForwardingRulesTool(server: McpServer, client: O
     server.registerTool(
         'listPortForwardingRules',
         {
-            description: 'List NAT port forwarding rules configured for a site.',
+            description:
+                'List all NAT port forwarding rules for a site: external port, internal IP:port, protocol, enabled state, and rule name. Use getPortForwardingStatus to check User vs UPnP rule state.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('listPortForwardingRules', async ({ siteId, customHeaders }) =>

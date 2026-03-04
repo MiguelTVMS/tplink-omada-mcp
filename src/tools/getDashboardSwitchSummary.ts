@@ -7,7 +7,8 @@ export function registerGetDashboardSwitchSummaryTool(server: McpServer, client:
     server.registerTool(
         'getDashboardSwitchSummary',
         {
-            description: 'Get switch summary statistics for a site dashboard, including connected switches, PoE usage, and port counts.',
+            description:
+                'Get switch summary for a site dashboard: total switch count, total ports, active ports, PoE budget used vs available, and aggregate bandwidth.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('getDashboardSwitchSummary', async ({ siteId, customHeaders }) =>

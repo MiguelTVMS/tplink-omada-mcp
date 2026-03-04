@@ -5,7 +5,9 @@ import { siteInputSchema, toToolResult, wrapToolHandler } from '../server/common
 
 const inputSchema = siteInputSchema
     .extend({
-        gatewayMac: siteInputSchema.shape.siteId.unwrap().describe('MAC address of the gateway'),
+        gatewayMac: siteInputSchema.shape.siteId
+            .unwrap()
+            .describe('MAC address of the gateway (e.g. "AA-BB-CC-DD-EE-FF"). Use listDevices to find the gateway MAC.'),
     })
     .required({ gatewayMac: true });
 
@@ -13,7 +15,8 @@ export function registerGetGatewayWanStatusTool(server: McpServer, client: Omada
     server.registerTool(
         'getGatewayWanStatus',
         {
-            description: 'Get the WAN port status and connectivity information for a specific gateway.',
+            description:
+                'Get the WAN port status and connectivity information for a specific gateway. Returns WAN IP, DNS, uptime, link speed, TX/RX rates, and connection type for each WAN port. Use listDevices to find the gatewayMac.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getGatewayWanStatus', async ({ gatewayMac, siteId, customHeaders }) =>

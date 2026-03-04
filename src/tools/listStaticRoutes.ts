@@ -7,7 +7,7 @@ export function registerListStaticRoutesTool(server: McpServer, client: OmadaCli
     server.registerTool(
         'listStaticRoutes',
         {
-            description: 'List static routing rules configured for a site.',
+            description: 'List static routing rules configured for a site: destination network, next-hop IP, interface, metric, and enabled state.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('listStaticRoutes', async ({ siteId, customHeaders }) => toToolResult(await client.listStaticRoutes(siteId, customHeaders)))

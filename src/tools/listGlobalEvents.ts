@@ -8,16 +8,29 @@ import { createPaginationSchema } from '../utils/pagination-schema.js';
 export function registerListGlobalEventsTool(server: McpServer, client: OmadaClient): void {
     const inputSchema = z.object({
         ...createPaginationSchema(100),
-        startTime: z.number().int().optional().describe('Start time as Unix timestamp in milliseconds'),
-        endTime: z.number().int().optional().describe('End time as Unix timestamp in milliseconds'),
-        searchKey: z.string().optional().describe('Search keyword for filtering events'),
+        startTime: z
+            .number()
+            .int()
+            .optional()
+            .describe(
+                'Filter events after this time. Unix timestamp in milliseconds (e.g. Date.now() - 86400000 for last 24h). Both startTime and endTime must be provided together.'
+            ),
+        endTime: z
+            .number()
+            .int()
+            .optional()
+            .describe(
+                'Filter events before this time. Unix timestamp in milliseconds (e.g. Date.now()). Both startTime and endTime must be provided together.'
+            ),
+        searchKey: z.string().optional().describe('Keyword to filter events by description or device name.'),
         customHeaders: customHeadersSchema,
     });
 
     server.registerTool(
         'listGlobalEvents',
         {
-            description: 'List event logs across all sites on the controller, with optional time range and keyword filtering.',
+            description:
+                'List system event logs across all sites on the controller. Returns device online/offline, client connect/disconnect, firmware upgrades, config changes, etc. Use startTime/endTime (both required if filtering by time) to narrow the range.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('listGlobalEvents', async (args) =>

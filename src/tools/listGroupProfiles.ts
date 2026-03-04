@@ -14,7 +14,8 @@ export function registerListGroupProfilesTool(server: McpServer, client: OmadaCl
     server.registerTool(
         'listGroupProfiles',
         {
-            description: 'List group profiles (IP groups, MAC groups, port groups) configured for a site.',
+            description:
+                'List group profiles (IP groups, MAC groups, port groups) configured for a site. These are named sets of addresses/ports reused across ACL rules and firewall policies. Filter by groupType: "ip", "mac", or "port".',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('listGroupProfiles', async ({ siteId, groupType, customHeaders }) =>

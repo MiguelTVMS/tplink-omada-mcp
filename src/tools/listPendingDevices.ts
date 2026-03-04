@@ -7,7 +7,8 @@ export function registerListPendingDevicesTool(server: McpServer, client: OmadaC
     server.registerTool(
         'listPendingDevices',
         {
-            description: 'List devices that are pending adoption in a site.',
+            description:
+                'List devices discovered on the network but not yet adopted into this site. Returns device type, MAC, IP, and model. These are devices waiting to be provisioned.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('listPendingDevices', async ({ siteId, customHeaders }) =>
