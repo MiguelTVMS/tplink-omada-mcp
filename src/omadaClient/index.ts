@@ -335,8 +335,8 @@ export class OmadaClient {
         return await this.securityOps.getTopThreats(customHeaders);
     }
 
-    public async getThreatSeverity(customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.securityOps.getThreatSeverity(customHeaders);
+    public async getThreatSeverity(startTime: number, endTime: number, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.securityOps.getThreatSeverity(startTime, endTime, customHeaders);
     }
 
     // Network operations (extended)
@@ -613,8 +613,8 @@ export class OmadaClient {
         return await this.insightOps.getVpnTunnelStats(siteId, customHeaders);
     }
 
-    public async getIpsecVpnStats(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.insightOps.getIpsecVpnStats(siteId, customHeaders);
+    public async getIpsecVpnStats(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.insightOps.getIpsecVpnStats(page, pageSize, siteId, customHeaders);
     }
 
     public async listInsightClients(

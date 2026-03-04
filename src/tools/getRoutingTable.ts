@@ -2,7 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
 import type { OmadaClient } from '../omadaClient/index.js';
-import { customHeadersSchema, siteInputSchema, toToolResult, wrapToolHandler } from '../server/common.js';
+import { siteInputSchema, toToolResult, wrapToolHandler } from '../server/common.js';
 
 export function registerGetRoutingTableTool(server: McpServer, client: OmadaClient): void {
     const inputSchema = z.object({
@@ -10,7 +10,6 @@ export function registerGetRoutingTableTool(server: McpServer, client: OmadaClie
             .enum(['static', 'policy', 'ospf'])
             .describe('Routing table type: "static" for static routes, "policy" for policy-based routes, "ospf" for OSPF-learned routes.'),
         ...siteInputSchema.shape,
-        customHeaders: customHeadersSchema,
     });
 
     server.registerTool(

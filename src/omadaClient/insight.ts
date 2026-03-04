@@ -99,10 +99,10 @@ export class InsightOperations {
      * Get IPsec VPN statistics for a site.
      * OperationId: getIpsecVpnStats
      */
-    public async getIpsecVpnStats(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getIpsecVpnStats(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/setting/vpn/stats/ipsec`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
         return this.request.ensureSuccess(response);
     }
 
@@ -137,16 +137,14 @@ export class InsightOperations {
      * OperationId: getThreatDetail
      *
      * @param threatId - The ID of the threat to retrieve
-     * @param time - Optional timestamp filter
+     * @param time - Unix timestamp in seconds to scope the threat lookup. Defaults to current time if not provided.
      * @param siteId - Optional site ID (uses default if not provided)
      */
     public async getThreatDetail(threatId: string, time?: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/ips/threat/${encodeURIComponent(threatId)}`);
-        const params: Record<string, unknown> = {};
-        if (time !== undefined) {
-            params.time = time;
-        }
+        const effectiveTime = time ?? Math.floor(Date.now() / 1000);
+        const params: Record<string, unknown> = { time: effectiveTime };
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, params, customHeaders);
         return this.request.ensureSuccess(response);
     }

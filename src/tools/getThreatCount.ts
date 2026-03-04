@@ -6,6 +6,8 @@ import { customHeadersSchema, toToolResult, wrapToolHandler } from '../server/co
 
 export function registerGetThreatCountTool(server: McpServer, client: OmadaClient): void {
     const inputSchema = z.object({
+        startTime: z.number().int().describe('Start of the time range as Unix epoch seconds (e.g. 1682000000).'),
+        endTime: z.number().int().describe('End of the time range as Unix epoch seconds (e.g. 1682086400).'),
         customHeaders: customHeadersSchema,
     });
 
@@ -13,9 +15,11 @@ export function registerGetThreatCountTool(server: McpServer, client: OmadaClien
         'getThreatCount',
         {
             description:
-                'Get the global threat count grouped by severity level (e.g. critical, high, medium, low). Provides a summary view of the current threat landscape across all sites.',
+                'Get the global threat count grouped by severity level (critical, high, medium, low) within a time range. Provides a summary view of the current threat landscape across all sites. Requires startTime and endTime as Unix epoch seconds.',
             inputSchema: inputSchema.shape,
         },
-        wrapToolHandler('getThreatCount', async ({ customHeaders }) => toToolResult(await client.getThreatSeverity(customHeaders)))
+        wrapToolHandler('getThreatCount', async ({ startTime, endTime, customHeaders }) =>
+            toToolResult(await client.getThreatSeverity(startTime, endTime, customHeaders))
+        )
     );
 }

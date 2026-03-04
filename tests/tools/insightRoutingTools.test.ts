@@ -46,20 +46,20 @@ describe('tools - insight & routing tools (issue #43)', () => {
             (mockClient.getIpsecVpnStats as ReturnType<typeof vi.fn>).mockResolvedValue(mockStats);
 
             registerGetIpsecVpnStatsTool(mockServer, mockClient);
-            const result = await toolHandler({}, {});
+            const result = await toolHandler({ page: 1, pageSize: 10 }, {});
 
             expect(mockServer.registerTool).toHaveBeenCalledWith('getIpsecVpnStats', expect.any(Object), expect.any(Function));
             expect(result).toBeDefined();
-            expect(mockClient.getIpsecVpnStats).toHaveBeenCalledOnce();
+            expect(mockClient.getIpsecVpnStats).toHaveBeenCalledWith(1, 10, undefined, undefined);
         });
 
         it('should pass siteId and customHeaders to client', async () => {
             (mockClient.getIpsecVpnStats as ReturnType<typeof vi.fn>).mockResolvedValue({});
 
             registerGetIpsecVpnStatsTool(mockServer, mockClient);
-            await toolHandler({ siteId: 'site123', customHeaders: { 'X-Token': 'abc' } }, {});
+            await toolHandler({ page: 1, pageSize: 20, siteId: 'site123', customHeaders: { 'X-Token': 'abc' } }, {});
 
-            expect(mockClient.getIpsecVpnStats).toHaveBeenCalledWith('site123', { 'X-Token': 'abc' });
+            expect(mockClient.getIpsecVpnStats).toHaveBeenCalledWith(1, 20, 'site123', { 'X-Token': 'abc' });
         });
     });
 
@@ -124,11 +124,11 @@ describe('tools - insight & routing tools (issue #43)', () => {
             (mockClient.getThreatSeverity as ReturnType<typeof vi.fn>).mockResolvedValue(mockCount);
 
             registerGetThreatCountTool(mockServer, mockClient);
-            const result = await toolHandler({}, {});
+            const result = await toolHandler({ startTime: 1700000000, endTime: 1700086400 }, {});
 
             expect(mockServer.registerTool).toHaveBeenCalledWith('getThreatCount', expect.any(Object), expect.any(Function));
             expect(result).toBeDefined();
-            expect(mockClient.getThreatSeverity).toHaveBeenCalledOnce();
+            expect(mockClient.getThreatSeverity).toHaveBeenCalledWith(1700000000, 1700086400, undefined);
         });
     });
 
@@ -138,20 +138,20 @@ describe('tools - insight & routing tools (issue #43)', () => {
             (mockClient.getThreatDetail as ReturnType<typeof vi.fn>).mockResolvedValue(mockDetail);
 
             registerGetThreatDetailTool(mockServer, mockClient);
-            const result = await toolHandler({ threatId: 'threat-001' }, {});
+            const result = await toolHandler({ threatId: 'threat-001', time: 1700000000 }, {});
 
             expect(mockServer.registerTool).toHaveBeenCalledWith('getThreatDetail', expect.any(Object), expect.any(Function));
             expect(result).toBeDefined();
-            expect(mockClient.getThreatDetail).toHaveBeenCalledWith('threat-001', undefined, undefined, undefined);
+            expect(mockClient.getThreatDetail).toHaveBeenCalledWith('threat-001', 1700000000, undefined, undefined);
         });
 
-        it('should pass optional time parameter', async () => {
+        it('should pass time and siteId to client', async () => {
             (mockClient.getThreatDetail as ReturnType<typeof vi.fn>).mockResolvedValue({});
 
             registerGetThreatDetailTool(mockServer, mockClient);
-            await toolHandler({ threatId: 'threat-002', time: 1700000000000, siteId: 'siteXYZ' }, {});
+            await toolHandler({ threatId: 'threat-002', time: 1700000000, siteId: 'siteXYZ' }, {});
 
-            expect(mockClient.getThreatDetail).toHaveBeenCalledWith('threat-002', 1700000000000, 'siteXYZ', undefined);
+            expect(mockClient.getThreatDetail).toHaveBeenCalledWith('threat-002', 1700000000, 'siteXYZ', undefined);
         });
     });
 });

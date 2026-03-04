@@ -2,14 +2,13 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
 import type { OmadaClient } from '../omadaClient/index.js';
-import { customHeadersSchema, siteInputSchema, toToolResult, wrapToolHandler } from '../server/common.js';
+import { siteInputSchema, toToolResult, wrapToolHandler } from '../server/common.js';
 
 export function registerGetThreatDetailTool(server: McpServer, client: OmadaClient): void {
     const inputSchema = z.object({
         threatId: z.string().describe('The unique ID of the threat to retrieve details for.'),
-        time: z.number().int().optional().describe('Optional timestamp (Unix epoch milliseconds) to scope the threat lookup.'),
+        time: z.number().int().describe('Required timestamp (Unix epoch seconds, e.g. 1682000000) to scope the threat lookup.'),
         ...siteInputSchema.shape,
-        customHeaders: customHeadersSchema,
     });
 
     server.registerTool(
