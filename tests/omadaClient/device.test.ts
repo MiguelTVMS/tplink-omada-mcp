@@ -453,6 +453,11 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.listSwitchNetworks('AA-BB-CC-DD-EE-FF', 1, 10, 'site-1');
             expect(result).toEqual({ data: [] });
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/api/sites/site-1/switches/AA-BB-CC-DD-EE-FF/networks',
+                { page: 1, pageSize: 10 },
+                undefined
+            );
         });
 
         it('should throw if switchMac is empty', async () => {
@@ -480,6 +485,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getCableTestLogs('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ logs: [] });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/cable-test/switches/AA-BB-CC-DD-EE-FF/logs', undefined, undefined);
         });
 
         it('should throw if switchMac is empty', async () => {
@@ -493,6 +499,11 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getCableTestFullResults('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ ports: [] });
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/api/sites/site-1/cable-test/switches/AA-BB-CC-DD-EE-FF/full-results',
+                undefined,
+                undefined
+            );
         });
 
         it('should throw if switchMac is empty', async () => {
@@ -521,6 +532,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getStackNetworkList('stack-1', 1, 10, 'site-1');
             expect(result).toEqual({ data: [] });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/stacks/stack-1/networks', { page: 1, pageSize: 10 }, undefined);
         });
 
         it('should throw if stackId is empty', async () => {
@@ -548,6 +560,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getRadiosConfig('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ radios: [] });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/radio-config', undefined, undefined);
         });
 
         it('should throw if apMac is empty', async () => {
@@ -561,6 +574,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getApVlanConfig('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ managementVlan: 10 });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/vlan', undefined, undefined);
         });
 
         it('should throw if apMac is empty', async () => {
@@ -574,6 +588,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getMeshStatistics('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ linkQuality: 90 });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/mesh/statistics', undefined, undefined);
         });
 
         it('should throw if apMac is empty', async () => {
@@ -587,6 +602,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getRFScanResult('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ channels: [] });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/rf-scan-result', undefined, undefined);
         });
 
         it('should throw if apMac is empty', async () => {
@@ -600,6 +616,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getSpeedTestResults('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ download: 500, upload: 200 });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/speed-test-result', undefined, undefined);
         });
 
         it('should throw if apMac is empty', async () => {
@@ -613,6 +630,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getApSnmpConfig('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ snmpEnabled: true });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/snmp', undefined, undefined);
         });
 
         it('should throw if apMac is empty', async () => {
@@ -626,6 +644,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getApLldpConfig('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ lldpEnabled: true });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/lldp', undefined, undefined);
         });
 
         it('should throw if apMac is empty', async () => {
@@ -653,6 +672,7 @@ describe('omadaClient/device', () => {
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getUplinkWiredDetail('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual({ switchMac: '11:22:33:44:55:66', port: 3 });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/wired-uplink', undefined, undefined);
         });
 
         it('should throw if apMac is empty', async () => {
