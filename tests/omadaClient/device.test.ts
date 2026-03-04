@@ -415,10 +415,11 @@ describe('omadaClient/device', () => {
     describe('getAllDeviceBySite', () => {
         it('should fetch all devices including offline', async () => {
             const mockDevices = [{ mac: 'AA:BB:CC:DD:EE:FF' }];
-            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue(mockDevices);
+            const mockResponse: OmadaApiResponse<unknown[]> = { errorCode: 0, result: mockDevices };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getAllDeviceBySite('site-1');
             expect(result).toEqual(mockDevices);
-            expect(mockRequest.fetchPaginated).toHaveBeenCalledWith('/api/sites/site-1/devices/all', {}, undefined);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/devices/all', undefined, undefined);
         });
     });
 
@@ -502,10 +503,11 @@ describe('omadaClient/device', () => {
     describe('getOswStackLagList', () => {
         it('should return stack LAG list', async () => {
             const mockLags = [{ lagId: 'lag-1' }];
-            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue(mockLags);
+            const mockResponse: OmadaApiResponse<unknown[]> = { errorCode: 0, result: mockLags };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getOswStackLagList('stack-1', 'site-1');
             expect(result).toEqual(mockLags);
-            expect(mockRequest.fetchPaginated).toHaveBeenCalledWith('/api/sites/site-1/stacks/stack-1/lags', {}, undefined);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/stacks/stack-1/lags', undefined, undefined);
         });
 
         it('should throw if stackId is empty', async () => {
@@ -659,12 +661,20 @@ describe('omadaClient/device', () => {
     });
 
     describe('getDownlinkWiredDevices', () => {
-        it('should return AP wired downlink devices', async () => {
+        it('should return AP wired downlink devices from wiredDownlinkList', async () => {
             const mockDevices = [{ mac: '11:22:33:44:55:66' }];
-            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue(mockDevices);
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { wiredDownlinkList: mockDevices } };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             const result = await deviceOps.getDownlinkWiredDevices('AA-BB-CC-DD-EE-FF', 'site-1');
             expect(result).toEqual(mockDevices);
-            expect(mockRequest.fetchPaginated).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/wired-downlink', {}, undefined);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/aps/AA-BB-CC-DD-EE-FF/wired-downlink', undefined, undefined);
+        });
+
+        it('should return empty array when wiredDownlinkList is absent', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            const result = await deviceOps.getDownlinkWiredDevices('AA-BB-CC-DD-EE-FF', 'site-1');
+            expect(result).toEqual([]);
         });
 
         it('should throw if apMac is empty', async () => {

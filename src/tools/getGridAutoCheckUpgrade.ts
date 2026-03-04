@@ -1,10 +1,10 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 import type { OmadaClient } from '../omadaClient/index.js';
-import { toToolResult, wrapToolHandler } from '../server/common.js';
+import { customHeadersSchema, toToolResult, wrapToolHandler } from '../server/common.js';
 import { createPaginationSchema } from '../utils/pagination-schema.js';
 
-const inputSchema = { ...createPaginationSchema() };
+const inputSchema = { ...createPaginationSchema(), customHeaders: customHeadersSchema };
 
 export function registerGetGridAutoCheckUpgradeTool(server: McpServer, client: OmadaClient): void {
     server.registerTool(

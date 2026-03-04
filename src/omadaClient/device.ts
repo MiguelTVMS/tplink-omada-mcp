@@ -225,7 +225,8 @@ export class DeviceOperations {
     public async getAllDeviceBySite(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown[]> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/devices/all`);
-        return await this.request.fetchPaginated<unknown>(path, {}, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown[]>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
     }
 
     /**
@@ -312,7 +313,8 @@ export class DeviceOperations {
         if (!stackId) throw new Error('A stackId must be provided.');
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/stacks/${encodeURIComponent(stackId)}/lags`);
-        return await this.request.fetchPaginated<unknown>(path, {}, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown[]>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
     }
 
     /**
@@ -461,6 +463,8 @@ export class DeviceOperations {
         if (!apMac) throw new Error('An apMac must be provided.');
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/aps/${encodeURIComponent(apMac)}/wired-downlink`);
-        return await this.request.fetchPaginated<unknown>(path, {}, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<{ wiredDownlinkList?: unknown[] }>>(path, undefined, customHeaders);
+        const result = this.request.ensureSuccess(response) as { wiredDownlinkList?: unknown[] };
+        return result?.wiredDownlinkList ?? [];
     }
 }
