@@ -124,11 +124,30 @@ export class InsightOperations {
 
     /**
      * Get routing table for a site.
-     * OperationId: getRoutingTable
+     * OperationId: getGridRouting
      */
     public async getRoutingTable(type: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown[]> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/insight/routing/${encodeURIComponent(type)}`);
         return await this.request.fetchPaginated<unknown>(path, {}, customHeaders);
+    }
+
+    /**
+     * Get threat detail by ID for a site.
+     * OperationId: getThreatDetail
+     *
+     * @param threatId - The ID of the threat to retrieve
+     * @param time - Optional timestamp filter
+     * @param siteId - Optional site ID (uses default if not provided)
+     */
+    public async getThreatDetail(threatId: string, time?: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/ips/threat/${encodeURIComponent(threatId)}`);
+        const params: Record<string, unknown> = {};
+        if (time !== undefined) {
+            params.time = time;
+        }
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, params, customHeaders);
+        return this.request.ensureSuccess(response);
     }
 }

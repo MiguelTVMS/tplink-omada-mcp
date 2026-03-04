@@ -630,6 +630,10 @@ export class OmadaClient {
         return await this.insightOps.getRoutingTable(type, siteId, customHeaders);
     }
 
+    public async getThreatDetail(threatId: string, time?: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.insightOps.getThreatDetail(threatId, time, siteId, customHeaders);
+    }
+
     // Log operations
     public async listSiteEvents(options: LogQueryOptions, siteId?: string, customHeaders?: CustomHeaders): Promise<PaginatedResult<unknown>> {
         return await this.logOps.listSiteEvents(options, siteId, customHeaders);
