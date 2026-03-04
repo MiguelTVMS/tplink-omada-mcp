@@ -296,7 +296,7 @@ export class OmadaClient {
     ): Promise<unknown> {
         return await this.deviceOps.getStackNetworkList(stackId, page, pageSize, siteId, customHeaders);
     }
-    public async getApUplinkConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getApUplinkConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown[]> {
         return await this.deviceOps.getApUplinkConfig(apMac, siteId, customHeaders);
     }
     public async getRadiosConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {

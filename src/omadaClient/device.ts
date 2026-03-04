@@ -339,11 +339,11 @@ export class DeviceOperations {
      * Get AP uplink configuration.
      * OperationId: getApUplinkConfig
      */
-    public async getApUplinkConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getApUplinkConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown[]> {
         if (!apMac) throw new Error('An apMac must be provided.');
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/aps/${encodeURIComponent(apMac)}/uplink-config`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown[]>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
     }
 
