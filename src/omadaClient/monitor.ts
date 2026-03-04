@@ -172,7 +172,7 @@ export class MonitorOperations {
      * Get VPN tunnel statistics by type.
      * OperationId: getGridDashboardTunnelStats
      */
-    public async getGridDashboardTunnelStats(siteId?: string, type?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getGridDashboardTunnelStats(siteId?: string, type?: number, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/dashboard/vpn-tunnel-stats`);
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, { type }, customHeaders);
@@ -194,7 +194,7 @@ export class MonitorOperations {
      * Get OpenVPN tunnel statistics by type.
      * OperationId: getGridDashboardOpenVpnTunnelStats
      */
-    public async getGridDashboardOpenVpnTunnelStats(siteId?: string, type?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getGridDashboardOpenVpnTunnelStats(siteId?: string, type?: number, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/dashboard/open-vpn-tunnel-stats`);
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, { type }, customHeaders);

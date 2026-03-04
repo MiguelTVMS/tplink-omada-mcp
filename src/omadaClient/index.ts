@@ -419,7 +419,7 @@ export class OmadaClient {
         return await this.monitorOps.getInterference(siteId, customHeaders);
     }
 
-    public async getGridDashboardTunnelStats(siteId?: string, type?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getGridDashboardTunnelStats(siteId?: string, type?: number, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.monitorOps.getGridDashboardTunnelStats(siteId, type, customHeaders);
     }
 
@@ -427,7 +427,7 @@ export class OmadaClient {
         return await this.monitorOps.getGridDashboardIpsecTunnelStats(siteId, customHeaders);
     }
 
-    public async getGridDashboardOpenVpnTunnelStats(siteId?: string, type?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getGridDashboardOpenVpnTunnelStats(siteId?: string, type?: number, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.monitorOps.getGridDashboardOpenVpnTunnelStats(siteId, type, customHeaders);
     }
 

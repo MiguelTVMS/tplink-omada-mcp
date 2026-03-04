@@ -5,10 +5,7 @@ import type { OmadaClient } from '../omadaClient/index.js';
 import { siteInputSchema, toToolResult, wrapToolHandler } from '../server/common.js';
 
 const inputSchema = siteInputSchema.extend({
-    type: z
-        .string()
-        .min(1)
-        .describe('OpenVPN tunnel type filter. Determines which OpenVPN tunnel statistics are returned. Check your controller for supported values.'),
+    type: z.number().int().min(0).max(1).describe('OpenVPN tunnel role to query: 0 = Server, 1 = Client.'),
 });
 
 export function registerGetGridDashboardOpenVpnTunnelStatsTool(server: McpServer, client: OmadaClient): void {
@@ -16,7 +13,7 @@ export function registerGetGridDashboardOpenVpnTunnelStatsTool(server: McpServer
         'getGridDashboardOpenVpnTunnelStats',
         {
             description:
-                'Get OpenVPN tunnel statistics by type for the site dashboard. Returns connection counts, traffic volumes, and status for OpenVPN tunnels.',
+                'Get OpenVPN tunnel statistics for the site dashboard filtered by role. Returns connection counts, traffic volumes, and status for OpenVPN tunnels. type must be 0 (Server) or 1 (Client).',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getGridDashboardOpenVpnTunnelStats', async ({ siteId, type, customHeaders }) =>

@@ -10,13 +10,13 @@ const inputSchema = siteInputSchema.extend({
         .int()
         .positive()
         .describe(
-            'Start of the time range as a Unix timestamp in milliseconds (e.g. Date.now() - 3600000 for the last hour). Must be paired with end.'
+            'Start of the time range as a Unix timestamp in seconds (e.g. Math.floor(Date.now() / 1000) - 3600 for the last hour). Must be paired with end.'
         ),
     end: z
         .number()
         .int()
         .positive()
-        .describe('End of the time range as a Unix timestamp in milliseconds (e.g. Date.now()). Must be paired with start.'),
+        .describe('End of the time range as a Unix timestamp in seconds (e.g. Math.floor(Date.now() / 1000)). Must be paired with start.'),
 });
 
 export function registerGetTrafficDistributionTool(server: McpServer, client: OmadaClient): void {
@@ -24,7 +24,7 @@ export function registerGetTrafficDistributionTool(server: McpServer, client: Om
         'getTrafficDistribution',
         {
             description:
-                'Get traffic distribution by protocol and application type over a time range. Shows breakdown of traffic by category (video, gaming, web, etc.) helping identify what is consuming bandwidth on the network.',
+                'Get traffic distribution by protocol and application type over a time range. Shows breakdown of traffic by category (video, gaming, web, etc.) helping identify what is consuming bandwidth on the network. start and end are Unix timestamps in seconds.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getTrafficDistribution', async ({ siteId, start, end, customHeaders }) =>

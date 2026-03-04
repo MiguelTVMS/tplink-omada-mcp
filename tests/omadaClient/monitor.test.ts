@@ -219,7 +219,7 @@ describe('MonitorOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { total: 2 } };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
 
-            const result = await monitorOps.getGridDashboardTunnelStats('site-123', 'ipsec');
+            const result = await monitorOps.getGridDashboardTunnelStats('site-123', 0);
 
             expect(result).toEqual({ total: 2 });
         });
@@ -241,7 +241,7 @@ describe('MonitorOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { connected: 3 } };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
 
-            const result = await monitorOps.getGridDashboardOpenVpnTunnelStats('site-123', 'server');
+            const result = await monitorOps.getGridDashboardOpenVpnTunnelStats('site-123', 0);
 
             expect(result).toEqual({ connected: 3 });
         });

@@ -103,9 +103,9 @@ describe('tools - dashboard & monitor tools (issue #34)', () => {
     describe('getGridDashboardTunnelStats', () => {
         it('should call client with type param', async () => {
             registerGetGridDashboardTunnelStatsTool(mockServer, mockClient);
-            const result = await toolHandler({ type: 'ipsec' }, {});
+            const result = await toolHandler({ type: 0 }, {});
             expect(result).toBeDefined();
-            expect(mockClient.getGridDashboardTunnelStats).toHaveBeenCalledWith(undefined, 'ipsec', undefined);
+            expect(mockClient.getGridDashboardTunnelStats).toHaveBeenCalledWith(undefined, 0, undefined);
         });
     });
 
@@ -121,9 +121,9 @@ describe('tools - dashboard & monitor tools (issue #34)', () => {
     describe('getGridDashboardOpenVpnTunnelStats', () => {
         it('should call client with type param', async () => {
             registerGetGridDashboardOpenVpnTunnelStatsTool(mockServer, mockClient);
-            const result = await toolHandler({ type: 'server' }, {});
+            const result = await toolHandler({ type: 0 }, {});
             expect(result).toBeDefined();
-            expect(mockClient.getGridDashboardOpenVpnTunnelStats).toHaveBeenCalledWith(undefined, 'server', undefined);
+            expect(mockClient.getGridDashboardOpenVpnTunnelStats).toHaveBeenCalledWith(undefined, 0, undefined);
         });
     });
 });
