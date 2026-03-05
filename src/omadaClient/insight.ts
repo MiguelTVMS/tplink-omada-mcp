@@ -88,10 +88,10 @@ export class InsightOperations {
      * Get VPN tunnel statistics for a site.
      * OperationId: getVpnTunnelStats
      */
-    public async getVpnTunnelStats(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getVpnTunnelStats(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/setting/vpn/stats/tunnel`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
         return this.request.ensureSuccess(response);
     }
 

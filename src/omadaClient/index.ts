@@ -609,8 +609,8 @@ export class OmadaClient {
         return await this.insightOps.getRogueAps(siteId, customHeaders);
     }
 
-    public async getVpnTunnelStats(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.insightOps.getVpnTunnelStats(siteId, customHeaders);
+    public async getVpnTunnelStats(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.insightOps.getVpnTunnelStats(page, pageSize, siteId, customHeaders);
     }
 
     public async getIpsecVpnStats(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
