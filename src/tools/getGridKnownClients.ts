@@ -9,8 +9,8 @@ export function registerGetGridKnownClientsTool(server: McpServer, client: Omada
     const inputSchema = z.object({
         ...createPaginationSchema(),
         sortLastSeen: z.string().optional().describe('Sort direction for lastSeen field (e.g. "asc" or "desc").'),
-        timeStart: z.string().optional().describe('Filter start time (Unix epoch seconds as string).'),
-        timeEnd: z.string().optional().describe('Filter end time (Unix epoch seconds as string).'),
+        timeStart: z.string().optional().describe('Filter start time (Unix epoch milliseconds as string).'),
+        timeEnd: z.string().optional().describe('Filter end time (Unix epoch milliseconds as string).'),
         guest: z.string().optional().describe('Filter by guest status ("true" or "false").'),
         searchKey: z.string().optional().describe('Search keyword to filter clients by name, MAC, or IP.'),
         ...siteInputSchema.shape,
