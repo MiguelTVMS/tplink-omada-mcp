@@ -50,11 +50,17 @@ describe('tools - wireless/SSID tools (issue #35)', () => {
             getEapDot1xSetting: vi.fn().mockResolvedValue({}),
         } as unknown as OmadaClient;
 
-        vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => { /* noop */ });
-        vi.spyOn(loggerModule.logger, 'error').mockImplementation(() => { /* noop */ });
+        vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {
+            /* noop */
+        });
+        vi.spyOn(loggerModule.logger, 'error').mockImplementation(() => {
+            /* noop */
+        });
     });
 
-    afterEach(() => { vi.restoreAllMocks(); });
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
 
     it('getSsidsBySite calls client with type param', async () => {
         registerGetSsidsBySiteTool(mockServer, mockClient);

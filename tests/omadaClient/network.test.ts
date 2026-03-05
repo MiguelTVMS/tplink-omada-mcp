@@ -893,11 +893,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [] };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getSsidsBySite(1, 'site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/wireless-network/ssids',
-                { type: 1 },
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/wireless-network/ssids', { type: 1 }, undefined);
         });
     });
 
@@ -906,9 +902,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getRadioFrequencyPlanningConfig('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/rfPlanning', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/rfPlanning', undefined, undefined);
         });
     });
 
@@ -917,9 +911,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getRadioFrequencyPlanningResult('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/rfPlanning/result', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/rfPlanning/result', undefined, undefined);
         });
     });
 
@@ -928,9 +920,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getBandSteeringSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/band-steering', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/band-steering', undefined, undefined);
         });
     });
 
@@ -939,9 +929,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getBeaconControlSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/beacon-control', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/beacon-control', undefined, undefined);
         });
     });
 
@@ -950,9 +938,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getChannelLimitSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/channel-limit', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/channel-limit', undefined, undefined);
         });
     });
 
@@ -961,9 +947,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getMeshSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/mesh', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/mesh', undefined, undefined);
         });
     });
 
@@ -972,9 +956,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getRoamingSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/roaming', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/roaming', undefined, undefined);
         });
     });
 
@@ -983,11 +965,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { data: [] } };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getOuiProfileList(1, 10, 'site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/oui-profiles',
-                { page: 1, pageSize: 10 },
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/oui-profiles', { page: 1, pageSize: 10 }, undefined);
         });
     });
 
@@ -996,9 +974,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getMacAuthSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/mac-auth', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/mac-auth', undefined, undefined);
         });
     });
 
@@ -1007,9 +983,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [] };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getMacAuthSsids('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/mac-auth/ssids', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/mac-auth/ssids', undefined, undefined);
         });
     });
 
@@ -1018,9 +992,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getMacFilteringGeneralSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/mac-filter', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/mac-filter', undefined, undefined);
         });
     });
 
@@ -1055,9 +1027,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getSwitchDot1xSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/dot1x', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/dot1x', undefined, undefined);
         });
     });
 
@@ -1066,9 +1036,7 @@ describe('NetworkOperations', () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.getEapDot1xSetting('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/dot1x/eap', undefined, undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/dot1x/eap', undefined, undefined);
         });
     });
 });
