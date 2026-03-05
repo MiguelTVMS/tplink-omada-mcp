@@ -208,6 +208,8 @@ export class OmadaClient {
     public async getPastClientNum(start: number, end: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.clientOps.getPastClientNum(start, end, siteId, customHeaders);
     }
+
+    // Security operations
     public async getThreatList(options: GetThreatListOptions, customHeaders?: CustomHeaders): Promise<PaginatedResult<ThreatInfo>> {
         return await this.securityOps.getThreatList(options, customHeaders);
     }
