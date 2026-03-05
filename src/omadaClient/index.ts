@@ -552,6 +552,7 @@ export class OmadaClient {
         return await this.networkOps.getGridVirtualWan(page, pageSize, siteId, customHeaders);
     }
 
+    // Wireless/SSID tools (issue #35)
     public async getSsidsBySite(type: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.networkOps.getSsidsBySite(type, siteId, customHeaders);
     }

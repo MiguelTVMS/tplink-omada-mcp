@@ -7,7 +7,7 @@ export function registerGetChannelLimitSettingTool(server: McpServer, client: Om
     server.registerTool(
         'getChannelLimitSetting',
         {
-            description: 'Get the channel limit setting that restricts which channels access points are allowed to use on the site.',
+            description: '[DEPRECATED] Get the channel limit setting that restricts which channels access points are allowed to use on the site.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('getChannelLimitSetting', async ({ siteId, customHeaders }) =>
