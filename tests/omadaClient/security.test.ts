@@ -178,4 +178,38 @@ describe('omadaClient/security', () => {
             expect(result).toBeUndefined();
         });
     });
+
+    describe('getGlobalTopThreatList', () => {
+        it('should return global top threats for a time range', async () => {
+            const mockThreats = [{ id: 'threat-1', name: 'CVE-2024-001' }];
+            const mockResponse = { errorCode: 0, result: mockThreats };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+
+            const result = await securityOps.getGlobalTopThreatList(1700000000, 1700086400);
+
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/api/security/threat-management/top',
+                { startTime: 1700000000, endTime: 1700086400 },
+                undefined
+            );
+            expect(result).toEqual(mockThreats);
+        });
+    });
+
+    describe('getGlobalThreatCount', () => {
+        it('should return global threat count by severity for a time range', async () => {
+            const mockCount = { low: 10, medium: 5, high: 2, critical: 0 };
+            const mockResponse = { errorCode: 0, result: mockCount };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+
+            const result = await securityOps.getGlobalThreatCount(1700000000, 1700086400);
+
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/api/security/threat-management/severity',
+                { startTime: 1700000000, endTime: 1700086400 },
+                undefined
+            );
+            expect(result).toEqual(mockCount);
+        });
+    });
 });
