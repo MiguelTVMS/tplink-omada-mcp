@@ -402,7 +402,7 @@ export class OmadaClient {
         return await this.networkOps.getWireguardSummary(siteId, customHeaders);
     }
 
-    public async listClientToSiteVpnClients(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown[]> {
+    public async listClientToSiteVpnClients(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.networkOps.listClientToSiteVpnClients(siteId, customHeaders);
     }
 

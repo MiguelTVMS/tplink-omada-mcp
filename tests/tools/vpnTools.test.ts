@@ -30,7 +30,7 @@ describe('tools - VPN tools (issue #39)', () => {
             listWireguardPeers: vi.fn().mockResolvedValue({ data: [] }),
             getWireguardSummary: vi.fn().mockResolvedValue({}),
             listClientToSiteVpnServers: vi.fn().mockResolvedValue([]),
-            listClientToSiteVpnClients: vi.fn().mockResolvedValue([]),
+            listClientToSiteVpnClients: vi.fn().mockResolvedValue({}),
             getClientToSiteVpnServerInfo: vi.fn().mockResolvedValue({}),
             getSslVpnServerSetting: vi.fn().mockResolvedValue({}),
             getGridIpsecFailover: vi.fn().mockResolvedValue({ data: [] }),

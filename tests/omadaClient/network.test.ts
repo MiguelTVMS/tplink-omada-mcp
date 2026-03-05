@@ -356,11 +356,12 @@ describe('NetworkOperations', () => {
 
     describe('listClientToSiteVpnClients', () => {
         it('should list C2S VPN clients', async () => {
-            vi.mocked(mockRequest.fetchPaginated).mockResolvedValue([]);
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { data: [], supportL2tp: true } };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             await networkOps.listClientToSiteVpnClients('site-123');
-            expect(mockRequest.fetchPaginated).toHaveBeenCalledWith(
+            expect(mockRequest.get).toHaveBeenCalledWith(
                 '/openapi/v1/test-omadac/sites/site-123/vpn/client-to-site-vpn-clients',
-                {},
+                undefined,
                 undefined
             );
         });

@@ -874,16 +874,6 @@ export class NetworkOperations {
     public async getAclConfigTypeSetting(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/acls/osg-config-mode`);
-
-    // VPN tools (issue #39)
-
-    /**
-     * Get single site-to-site VPN detail by ID.
-     * OperationId: getSiteToSiteVpnInfo
-     */
-    public async getSiteToSiteVpnInfo(vpnId: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        const resolvedSiteId = this.site.resolveSiteId(siteId);
-        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/vpn/site-to-site-vpns/${encodeURIComponent(vpnId)}`);
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
     }
@@ -945,13 +935,6 @@ export class NetworkOperations {
     ): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/network-security/ips/grid/allow-list`);
-
-     * List WireGuard tunnels (paginated, optional searchKey).
-     * OperationId: listWireguard
-     */
-    public async listWireguard(page: number, pageSize: number, searchKey?: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        const resolvedSiteId = this.site.resolveSiteId(siteId);
-        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/vpn/wireguards`);
         const params: Record<string, unknown> = { page, pageSize };
         if (searchKey !== undefined) params.searchKey = searchKey;
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, params, customHeaders);
@@ -1006,13 +989,6 @@ export class NetworkOperations {
     public async getGridGatewayRule(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/url-filters/gateway`);
-
-     * List WireGuard peers (paginated).
-     * OperationId: listPeer
-     */
-    public async listWireguardPeers(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        const resolvedSiteId = this.site.resolveSiteId(siteId);
-        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/vpn/wireguard-peers`);
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
         return this.request.ensureSuccess(response);
     }
@@ -1024,7 +1000,48 @@ export class NetworkOperations {
     public async getGridEapRule(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/url-filters/eap`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
 
+    // VPN tools (issue #39)
+
+    /**
+     * Get single site-to-site VPN detail by ID.
+     * OperationId: getSiteToSiteVpnInfo
+     */
+    public async getSiteToSiteVpnInfo(vpnId: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/vpn/site-to-site-vpns/${encodeURIComponent(vpnId)}`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * List WireGuard tunnels (paginated, optional searchKey).
+     * OperationId: listWireguard
+     */
+    public async listWireguard(page: number, pageSize: number, searchKey?: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/vpn/wireguards`);
+        const params: Record<string, unknown> = { page, pageSize };
+        if (searchKey !== undefined) params.searchKey = searchKey;
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, params, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * List WireGuard peers (paginated).
+     * OperationId: listPeer
+     */
+    public async listWireguardPeers(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/vpn/wireguard-peers`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
      * Get WireGuard summary.
      * OperationId: getWireguardSummary
      */
@@ -1039,10 +1056,11 @@ export class NetworkOperations {
      * Get client-to-site VPN client list.
      * OperationId: getClientToSiteVpnClientList
      */
-    public async listClientToSiteVpnClients(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown[]> {
+    public async listClientToSiteVpnClients(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/vpn/client-to-site-vpn-clients`);
-        return await this.request.fetchPaginated<unknown>(path, {}, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
     }
 
     /**
