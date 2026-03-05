@@ -18,7 +18,7 @@ import * as loggerModule from '../../src/utils/logger.js';
 describe('tools - firewall/ACL/security tools (issue #37)', () => {
     let mockServer: McpServer;
     let mockClient: OmadaClient;
-    let toolHandler: (args: unknown, extra: { sessionId?: string }) => Promise<unknown>;
+    let toolHandler!: (args: unknown, extra: { sessionId?: string }) => Promise<unknown>;
 
     const captureHandler = (_name: string, _schema: unknown, handler: typeof toolHandler): void => {
         toolHandler = handler;
