@@ -178,19 +178,4 @@ describe('InsightOperations', () => {
             expect(mockRequest.fetchPaginated).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/insight/routing/static', {}, undefined);
         });
     });
-
-    describe('getPortForwardStatus', () => {
-        it('should get port forward status with type and pagination', async () => {
-            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { data: [] } };
-            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
-
-            await insightOps.getPortForwardStatus('dnat', 1, 10, 'site-123');
-
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/insight/port-forwarding/dnat',
-                { page: 1, pageSize: 10 },
-                undefined
-            );
-        });
-    });
 });

@@ -4,8 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { OmadaClient } from '../../src/omadaClient/index.js';
 import { registerGetAclConfigTypeSettingTool } from '../../src/tools/getAclConfigTypeSetting.js';
 import { registerGetAttackDefenseSettingTool } from '../../src/tools/getAttackDefenseSetting.js';
-import { registerGetGlobalThreatCountTool } from '../../src/tools/getGlobalThreatCount.js';
-import { registerGetGlobalTopThreatListTool } from '../../src/tools/getGlobalTopThreatList.js';
 import { registerGetGridAllowListTool } from '../../src/tools/getGridAllowList.js';
 import { registerGetGridBlockListTool } from '../../src/tools/getGridBlockList.js';
 import { registerGetGridEapRuleTool } from '../../src/tools/getGridEapRule.js';
@@ -14,7 +12,6 @@ import { registerGetGridSignatureTool } from '../../src/tools/getGridSignature.j
 import { registerGetIpsConfigTool } from '../../src/tools/getIpsConfig.js';
 import { registerGetOsgCustomAclListTool } from '../../src/tools/getOsgCustomAclList.js';
 import { registerGetOswAclListTool } from '../../src/tools/getOswAclList.js';
-import { registerGetPortForwardStatusTool } from '../../src/tools/getPortForwardStatus.js';
 import { registerGetUrlFilterGeneralTool } from '../../src/tools/getUrlFilterGeneral.js';
 import * as loggerModule from '../../src/utils/logger.js';
 
@@ -41,9 +38,6 @@ describe('tools - firewall/ACL/security tools (issue #37)', () => {
             getUrlFilterGeneral: vi.fn().mockResolvedValue({}),
             getGridGatewayRule: vi.fn().mockResolvedValue({ data: [] }),
             getGridEapRule: vi.fn().mockResolvedValue({ data: [] }),
-            getPortForwardStatus: vi.fn().mockResolvedValue({ data: [] }),
-            getGlobalTopThreatList: vi.fn().mockResolvedValue([]),
-            getGlobalThreatCount: vi.fn().mockResolvedValue({}),
         } as unknown as OmadaClient;
 
         vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {
@@ -139,26 +133,5 @@ describe('tools - firewall/ACL/security tools (issue #37)', () => {
         const result = await toolHandler({ page: 1, pageSize: 10 }, {});
         expect(result).toBeDefined();
         expect(mockClient.getGridEapRule).toHaveBeenCalledWith(1, 10, undefined, undefined);
-    });
-
-    it('getPortForwardStatus calls client with type and pagination', async () => {
-        registerGetPortForwardStatusTool(mockServer, mockClient);
-        const result = await toolHandler({ type: 'dnat', page: 1, pageSize: 10 }, {});
-        expect(result).toBeDefined();
-        expect(mockClient.getPortForwardStatus).toHaveBeenCalledWith('dnat', 1, 10, undefined, undefined);
-    });
-
-    it('getGlobalTopThreatList calls client with time range', async () => {
-        registerGetGlobalTopThreatListTool(mockServer, mockClient);
-        const result = await toolHandler({ startTime: 1700000000, endTime: 1700086400 }, {});
-        expect(result).toBeDefined();
-        expect(mockClient.getGlobalTopThreatList).toHaveBeenCalledWith(1700000000, 1700086400, undefined);
-    });
-
-    it('getGlobalThreatCount calls client with time range', async () => {
-        registerGetGlobalThreatCountTool(mockServer, mockClient);
-        const result = await toolHandler({ startTime: 1700000000, endTime: 1700086400 }, {});
-        expect(result).toBeDefined();
-        expect(mockClient.getGlobalThreatCount).toHaveBeenCalledWith(1700000000, 1700086400, undefined);
     });
 });

@@ -148,21 +148,4 @@ export class InsightOperations {
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, params, customHeaders);
         return this.request.ensureSuccess(response);
     }
-
-    /**
-     * Get port forwarding active status (paginated).
-     * OperationId: getPortForwardStatus
-     */
-    public async getPortForwardStatus(
-        type: string,
-        page: number,
-        pageSize: number,
-        siteId?: string,
-        customHeaders?: CustomHeaders
-    ): Promise<unknown> {
-        const resolvedSiteId = this.site.resolveSiteId(siteId);
-        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/insight/port-forwarding/${encodeURIComponent(type)}`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
-        return this.request.ensureSuccess(response);
-    }
 }

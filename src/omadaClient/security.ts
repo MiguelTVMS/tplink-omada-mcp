@@ -76,24 +76,4 @@ export class SecurityOperations {
         const response = await this.request.get<{ errorCode: number; result: unknown }>(path, { startTime, endTime }, customHeaders);
         return response.result;
     }
-
-    /**
-     * Get top global threats (no siteId).
-     * OperationId: getGlobalTopThreatList
-     */
-    public async getGlobalTopThreatList(startTime: number, endTime: number, customHeaders?: CustomHeaders): Promise<unknown> {
-        const path = this.buildPath('/security/threat-management/top');
-        const response = await this.request.get<{ errorCode: number; result: unknown }>(path, { startTime, endTime }, customHeaders);
-        return response.result;
-    }
-
-    /**
-     * Get global threat count by severity (no siteId).
-     * OperationId: getThreatCount
-     */
-    public async getGlobalThreatCount(startTime: number, endTime: number, customHeaders?: CustomHeaders): Promise<unknown> {
-        const path = this.buildPath('/security/threat-management/severity');
-        const response = await this.request.get<{ errorCode: number; result: unknown }>(path, { startTime, endTime }, customHeaders);
-        return response.result;
-    }
 }

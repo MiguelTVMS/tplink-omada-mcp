@@ -674,24 +674,6 @@ export class OmadaClient {
         return await this.networkOps.getGridEapRule(page, pageSize, siteId, customHeaders);
     }
 
-    public async getPortForwardStatus(
-        type: string,
-        page: number,
-        pageSize: number,
-        siteId?: string,
-        customHeaders?: CustomHeaders
-    ): Promise<unknown> {
-        return await this.insightOps.getPortForwardStatus(type, page, pageSize, siteId, customHeaders);
-    }
-
-    public async getGlobalTopThreatList(startTime: number, endTime: number, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.securityOps.getGlobalTopThreatList(startTime, endTime, customHeaders);
-    }
-
-    public async getGlobalThreatCount(startTime: number, endTime: number, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.securityOps.getGlobalThreatCount(startTime, endTime, customHeaders);
-    }
-
     // Monitor / dashboard operations
     public async getDashboardWifiSummary(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.monitorOps.getDashboardWifiSummary(siteId, customHeaders);
