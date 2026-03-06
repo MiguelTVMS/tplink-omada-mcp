@@ -34,7 +34,7 @@ export default defineConfig({
                 lines: 90,
                 functions: 90,
                 statements: 90,
-                branches: 0, // not enforced per-file; track globally via CI summary
+                branches: 0, // not enforced per-file; global branch coverage (≥70%) is enforced by the CI "Check global branch coverage" step
                 perFile: true,
             },
             reportOnFailure: true,

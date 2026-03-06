@@ -222,15 +222,15 @@ describe('omadaClient/security', () => {
         it('should get webhook dispatch logs with required params', async () => {
             const mockResponse = { errorCode: 0, result: { data: [] } };
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
-            await securityOps.getWebhookLogsForGlobal(1, 10, 'wh-1', 1700000000, 1700086400);
+            await securityOps.getWebhookLogsForGlobal(1, 10, 'wh-1', 1700000000000, 1700086400000);
             expect(mockRequest.get).toHaveBeenCalledWith(
                 '/api/webhook/settings/dispatch-logs',
                 {
                     page: 1,
                     pageSize: 10,
                     'filters.webhookId': 'wh-1',
-                    'filters.timeStart': 1700000000,
-                    'filters.timeEnd': 1700086400,
+                    'filters.timeStart': 1700000000000,
+                    'filters.timeEnd': 1700086400000,
                 },
                 undefined
             );

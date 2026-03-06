@@ -46,6 +46,12 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
+      - name: Check global branch coverage
+        run: |
+          BRANCHES=$(node -e "const s=require('./coverage/coverage-summary.json');console.log(s.total.branches.pct)")
+          echo "Global branch coverage: ${BRANCHES}%"
+          node -e "const s=require('./coverage/coverage-summary.json');const pct=s.total.branches.pct;if(pct<70){console.error('Branch coverage '+pct+'% is below 70% threshold');process.exit(1);}else{console.log('Branch coverage OK: '+pct+'%')}"
+
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
         if: always()

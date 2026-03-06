@@ -118,9 +118,9 @@ describe('tools - Global Controller settings (issue #41)', () => {
 
     it('getWebhookLogsForGlobal calls client with required params', async () => {
         registerGetWebhookLogsForGlobalTool(mockServer, mockClient);
-        const result = await toolHandler({ webhookId: 'wh-1', timeStart: 1700000000, timeEnd: 1700086400 }, {});
+        const result = await toolHandler({ webhookId: 'wh-1', timeStart: 1700000000000, timeEnd: 1700086400000 }, {});
         expect(result).toBeDefined();
-        expect(mockClient.getWebhookLogsForGlobal).toHaveBeenCalledWith(1, 10, 'wh-1', 1700000000, 1700086400, undefined);
+        expect(mockClient.getWebhookLogsForGlobal).toHaveBeenCalledWith(1, 10, 'wh-1', 1700000000000, 1700086400000, undefined);
     });
 
     it('getMailServerStatus calls client', async () => {

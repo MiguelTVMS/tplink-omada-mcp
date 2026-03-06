@@ -182,6 +182,8 @@ export class SecurityOperations {
     /**
      * Get webhook dispatch logs (paginated, required filters).
      * OperationId: getWebhookLogsForGlobal
+     * @param timeStart - Start of time range in epoch milliseconds (e.g. 1679297710438)
+     * @param timeEnd - End of time range in epoch milliseconds (e.g. 1681889710438)
      */
     public async getWebhookLogsForGlobal(
         page: number,

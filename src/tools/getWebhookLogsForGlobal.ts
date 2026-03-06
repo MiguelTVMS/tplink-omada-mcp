@@ -9,8 +9,8 @@ export function registerGetWebhookLogsForGlobalTool(server: McpServer, client: O
     const inputSchema = z.object({
         ...createPaginationSchema(),
         webhookId: z.string().min(1).describe('Webhook ID to filter dispatch logs for.'),
-        timeStart: z.number().int().describe('Start of time range in Unix seconds (epoch).'),
-        timeEnd: z.number().int().describe('End of time range in Unix seconds (epoch).'),
+        timeStart: z.number().int().describe('Start of time range in Unix epoch milliseconds (e.g. 1679297710438).'),
+        timeEnd: z.number().int().describe('End of time range in Unix epoch milliseconds (e.g. 1681889710438).'),
         customHeaders: customHeadersSchema,
     });
 
@@ -18,7 +18,7 @@ export function registerGetWebhookLogsForGlobalTool(server: McpServer, client: O
         'getWebhookLogsForGlobal',
         {
             description:
-                'Get webhook dispatch logs (paginated). Requires webhookId and a time range (Unix seconds). Returns delivery attempts and their status.',
+                'Get webhook dispatch logs (paginated). Requires webhookId and a time range in epoch milliseconds. Returns delivery attempts and their status.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getWebhookLogsForGlobal', async ({ page, pageSize, webhookId, timeStart, timeEnd, customHeaders }) =>
