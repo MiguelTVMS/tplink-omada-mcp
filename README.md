@@ -4,6 +4,18 @@ A Model Context Protocol (MCP) server implemented in TypeScript that exposes the
 
 > **Compatibility:** Tested with Omada Controller versions 5.x and 6.x
 
+---
+
+> ## 🤖 AI-Developed Repository
+>
+> Since **March 2, 2026**, this repository contains no human-written code.
+>
+> All planning, development, and code review is performed by AI agents. Humans remain in the loop for direction, decisions, and final approval — but every line of code, every test, every commit, and every PR is the work of AI.
+>
+> This is not an experiment. This is how it works now.
+
+---
+
 ## Quick Start
 
 ### Using with Claude Desktop (stdio)
