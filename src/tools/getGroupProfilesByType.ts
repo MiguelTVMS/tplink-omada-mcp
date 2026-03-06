@@ -6,10 +6,7 @@ import { siteInputSchema, toToolResult, wrapToolHandler } from '../server/common
 
 export function registerGetGroupProfilesByTypeTool(server: McpServer, client: OmadaClient): void {
     const inputSchema = z.object({
-        groupType: z
-            .string()
-            .min(1)
-            .describe('Group type to filter by. Common values: "ip" (IP address groups), "port" (port groups), "domain" (domain groups).'),
+        groupType: z.enum(['0', '1', '2']).describe('Group type: "0" = IP Group, "1" = IP Port Group, "2" = Mac Group.'),
         ...siteInputSchema.shape,
     });
 

@@ -60,15 +60,15 @@ describe('tools - Profiles & Policies tools (issue #40)', () => {
 
     it('getGroupProfilesByType calls client with groupType', async () => {
         registerGetGroupProfilesByTypeTool(mockServer, mockClient);
-        const result = await toolHandler({ groupType: 'ip' }, {});
+        const result = await toolHandler({ groupType: '0' }, {});
         expect(result).toBeDefined();
-        expect(mockClient.getGroupProfilesByType).toHaveBeenCalledWith('ip', undefined, undefined);
+        expect(mockClient.getGroupProfilesByType).toHaveBeenCalledWith('0', undefined, undefined);
     });
 
     it('getGroupProfilesByType passes siteId', async () => {
         registerGetGroupProfilesByTypeTool(mockServer, mockClient);
-        await toolHandler({ groupType: 'port', siteId: 'site-1' }, {});
-        expect(mockClient.getGroupProfilesByType).toHaveBeenCalledWith('port', 'site-1', undefined);
+        await toolHandler({ groupType: '1', siteId: 'site-1' }, {});
+        expect(mockClient.getGroupProfilesByType).toHaveBeenCalledWith('1', 'site-1', undefined);
     });
 
     it('getLdapProfileList calls client', async () => {
