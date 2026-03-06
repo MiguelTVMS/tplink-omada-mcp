@@ -7,7 +7,7 @@ export function registerGetWireguardSummaryTool(server: McpServer, client: Omada
     server.registerTool(
         'getWireguardSummary',
         {
-            description: 'Get the WireGuard VPN summary for the site, including overall tunnel count and connection status.',
+            description: 'Get a summary of WireGuard VPN configurations for the site, including each WireGuard ID and name.',
             inputSchema: siteInputSchema.shape,
         },
         wrapToolHandler('getWireguardSummary', async ({ siteId, customHeaders }) =>
