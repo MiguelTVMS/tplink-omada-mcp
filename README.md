@@ -1,11 +1,5 @@
 # TP-Link Omada MCP server
 
-A Model Context Protocol (MCP) server implemented in TypeScript that exposes the TP-Link Omada controller APIs to AI copilots and automation workflows. The server authenticates against a controller, lists sites, devices, and connected clients, and offers a generic tool to invoke arbitrary Omada API endpoints.
-
-> **Compatibility:** Tested with Omada Controller versions 5.x and 6.x
-
----
-
 > ## 🤖 AI-Developed Repository
 >
 > Since **March 2, 2026**, this repository contains no human-written code.
@@ -15,6 +9,12 @@ A Model Context Protocol (MCP) server implemented in TypeScript that exposes the
 > This is not an experiment. This is how it works now.
 
 ---
+
+A Model Context Protocol (MCP) server implemented in TypeScript that exposes the TP-Link Omada controller APIs to AI copilots and automation workflows. The server authenticates against a controller, lists sites, devices, and connected clients, and offers a generic tool to invoke arbitrary Omada API endpoints.
+
+> **Compatibility:** Tested with Omada Controller versions 5.x and 6.x
+
+
 
 ## Quick Start
 
