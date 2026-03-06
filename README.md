@@ -6,7 +6,7 @@
 >
 > All planning, development, and code review is performed by AI agents. Humans remain in the loop for direction, decisions, and final approval — but every line of code, every test, every commit, and every PR is the work of AI.
 >
-> This is not an experiment. This is how it works now.
+> This is not an experiment. This is how it works now. [Know more](https://miguel.ms)
 
 ---
 
