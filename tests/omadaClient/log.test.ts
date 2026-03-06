@@ -146,11 +146,7 @@ describe('LogOperations', () => {
         it('should get site log notification settings (v1)', async () => {
             vi.mocked(mockRequest.get).mockResolvedValue(makeSimpleResponse({ enabled: true }));
             await logOps.getLogSettingForSite();
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/default-site/site/log-notification',
-                undefined,
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/default-site/site/log-notification', undefined, undefined);
         });
     });
 
@@ -158,11 +154,7 @@ describe('LogOperations', () => {
         it('should get site log notification settings (v2)', async () => {
             vi.mocked(mockRequest.get).mockResolvedValue(makeSimpleResponse({}));
             await logOps.getLogSettingForSiteV2();
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v2/test-omadac/sites/default-site/site/log-notification',
-                undefined,
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v2/test-omadac/sites/default-site/site/log-notification', undefined, undefined);
         });
     });
 
@@ -170,11 +162,7 @@ describe('LogOperations', () => {
         it('should get site audit log notification settings', async () => {
             vi.mocked(mockRequest.get).mockResolvedValue(makeSimpleResponse({}));
             await logOps.getAuditLogSettingForSite();
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/default-site/site/audit-notification',
-                undefined,
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/default-site/site/audit-notification', undefined, undefined);
         });
     });
 
@@ -182,11 +170,7 @@ describe('LogOperations', () => {
         it('should get global log notification settings (v1)', async () => {
             vi.mocked(mockRequest.get).mockResolvedValue(makeSimpleResponse({}));
             await logOps.getLogSettingForGlobal();
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/log-notification',
-                undefined,
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/log-notification', undefined, undefined);
         });
     });
 
@@ -194,11 +178,7 @@ describe('LogOperations', () => {
         it('should get global log notification settings (v2)', async () => {
             vi.mocked(mockRequest.get).mockResolvedValue(makeSimpleResponse({}));
             await logOps.getLogSettingForGlobalV2();
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v2/test-omadac/log-notification',
-                undefined,
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v2/test-omadac/log-notification', undefined, undefined);
         });
     });
 
@@ -206,11 +186,7 @@ describe('LogOperations', () => {
         it('should get global audit log notification settings', async () => {
             vi.mocked(mockRequest.get).mockResolvedValue(makeSimpleResponse({}));
             await logOps.getAuditLogSettingForGlobal();
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/audit-notification',
-                undefined,
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/audit-notification', undefined, undefined);
         });
     });
 
@@ -218,11 +194,7 @@ describe('LogOperations', () => {
         it('should get global audit logs with pagination only', async () => {
             vi.mocked(mockRequest.get).mockResolvedValue(makeSimpleResponse({ data: [] }));
             await logOps.getAuditLogsForGlobal(1, 10);
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/audit-logs',
-                { page: 1, pageSize: 10 },
-                undefined
-            );
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/audit-logs', { page: 1, pageSize: 10 }, undefined);
         });
 
         it('should pass optional filters', async () => {
@@ -231,6 +203,33 @@ describe('LogOperations', () => {
             expect(mockRequest.get).toHaveBeenCalledWith(
                 '/openapi/v1/test-omadac/audit-logs',
                 { page: 1, pageSize: 10, 'sorts.time': 'desc', 'filters.level': 'warning', searchKey: 'admin' },
+                undefined
+            );
+        });
+    });
+
+    describe('listSiteAlerts - optional params', () => {
+        it('should pass optional startTime, endTime, searchKey', async () => {
+            vi.mocked(mockRequest.get).mockResolvedValue(makePaginatedResponse([{ id: 'alert-1' }]));
+            await logOps.listSiteAlerts({ page: 1, pageSize: 10, startTime: 1640000000000, endTime: 1640100000000, searchKey: 'test' }, 'site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/openapi/v1/test-omadac/sites/site-123/logs/alerts',
+                { page: 1, pageSize: 10, 'filters.startTime': 1640000000000, 'filters.endTime': 1640100000000, searchKey: 'test' },
+                undefined
+            );
+        });
+    });
+
+    describe('listSiteAuditLogs - optional params', () => {
+        it('should pass optional startTime, endTime, searchKey', async () => {
+            vi.mocked(mockRequest.get).mockResolvedValue(makePaginatedResponse([{ id: 'audit-1' }]));
+            await logOps.listSiteAuditLogs(
+                { page: 1, pageSize: 10, startTime: 1640000000000, endTime: 1640100000000, searchKey: 'test' },
+                'site-123'
+            );
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/openapi/v1/test-omadac/sites/site-123/audit-logs',
+                { page: 1, pageSize: 10, 'filters.startTime': 1640000000000, 'filters.endTime': 1640100000000, searchKey: 'test' },
                 undefined
             );
         });
