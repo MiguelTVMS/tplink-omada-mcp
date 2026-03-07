@@ -728,6 +728,21 @@ describe('NetworkOperations', () => {
         });
     });
 
+    describe('getGridStaticRouting', () => {
+        it('should get static routing rules with pagination', async () => {
+            const mockData = { data: [{ id: 'r1', destination: '10.0.0.0/8' }], totalRows: 1 };
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: mockData };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await networkOps.getGridStaticRouting(1, 10, 'site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/openapi/v1/test-omadac/sites/site-123/routing/static-routings',
+                { page: 1, pageSize: 10 },
+                undefined
+            );
+            expect(result).toEqual(mockData);
+        });
+    });
+
     describe('getStaticRoutingInterfaceList', () => {
         it('should get static routing interfaces', async () => {
             const mockData = [{ name: 'WAN1' }];

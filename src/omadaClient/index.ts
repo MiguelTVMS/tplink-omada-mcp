@@ -606,6 +606,9 @@ export class OmadaClient {
     public async getGridPolicyRouting(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.networkOps.getGridPolicyRouting(page, pageSize, siteId, customHeaders);
     }
+    public async getGridStaticRouting(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.getGridStaticRouting(page, pageSize, siteId, customHeaders);
+    }
     public async getStaticRoutingInterfaceList(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.networkOps.getStaticRoutingInterfaceList(siteId, customHeaders);
     }

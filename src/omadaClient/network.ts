@@ -229,6 +229,17 @@ export class NetworkOperations {
     }
 
     /**
+     * Get static routing rules with explicit pagination.
+     * OperationId: getGridStaticRouting
+     */
+    public async getGridStaticRouting(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/routing/static-routings`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
      * List policy routing rules.
      * OperationId: getPolicyRoutingList
      */
