@@ -90,7 +90,7 @@ Coverage is enforced at two levels:
 
 - Per-file thresholds are enforced by Vitest (`vitest.config.ts` — `thresholds.perFile: true`).
 - Global branch coverage is enforced by a dedicated CI step reading `coverage-summary.json`.
-- The following files are excluded from per-file thresholds (infrastructure/bootstrap code):
+- The following files are excluded from coverage reporting (infrastructure/bootstrap code):
   - `src/omadaClient/index.ts`
   - `src/server/http.ts`
   - `src/server/stream.ts`
@@ -99,25 +99,17 @@ Coverage is enforced at two levels:
 
 ### Integration Tests (Docker)
 
-Integration tests run against a real Omada Software Controller in a Docker container. They are **not** run on every PR — they serve as a milestone release gate and a harness for Phase 2 (write tools).
+> **Not implemented yet** — this section documents the planned integration testing strategy tracked in **#57** (v0.10.0 gate) and **#58** (v1.0.0 Docker infra).
 
-- Integration test files live in `tests/integration/`.
-- Run with `npm run test:integration` (separate from unit tests).
-- The test environment is defined in `test/docker/` — see `test/docker/README.md` for setup and snapshot management.
-- **Phase 2 write tools MUST be tested against the Docker controller — never against `omada.miguel.ms` or any production controller.**
-- CI job: `integration-tests.yml` — runs on demand or nightly (not per-PR).
+Integration tests will run against a real Omada Software Controller in a Docker container. They are **not** planned to run on every PR — they serve as a milestone release gate and a harness for Phase 2 (write tools).
 
-#### Docker controller quick start
+Planned components:
+- `tests/integration/`
+- `npm run test:integration`
+- `test/docker/` + `test/docker/README.md`
+- CI workflow `integration-tests.yml` (on demand or nightly; not per-PR)
 
-```sh
-cd test/docker
-docker compose up -d
-# wait for controller to be ready (~60s)
-npm run test:integration
-docker compose down
-```
-
-See `test/docker/README.md` for snapshot restore, version pinning, and re-seeding procedures.
+**Phase 2 write tools MUST be tested against the Docker controller — never against `omada.miguel.ms` or any production controller.**
 
 ## Development Workflow
 

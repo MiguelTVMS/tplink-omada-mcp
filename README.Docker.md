@@ -224,14 +224,14 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getStackNetworkList`  | Gets VLAN network list for a switch stack (paginated). Requires `stackId`.        |
 | `getApUplinkConfig`    | Gets uplink configuration for an AP (wired/mesh mode). Requires `apMac`.          |
 | `getRadiosConfig`      | Gets per-radio configuration for an AP (channel, power, width). Requires `apMac`. |
-| `getApVlanConfig`      | Gets VLAN configuration for an AP. Requires `apMac`.                              |
+| `getApVlanConfig` | Get VLAN configuration for an access point, including management VLAN and per-SSID VLAN tagging settings. | `getApVlanConfig` |
 | `getMeshStatistics`    | Gets mesh link statistics for an AP. Requires `apMac`.                            |
 | `getRFScanResult`      | Gets last RF scan results for an AP. Requires `apMac`.                            |
 | `getSpeedTestResults`  | Gets last speed test results for an AP. Requires `apMac`.                         |
 | `getApSnmpConfig`      | Gets SNMP configuration for an AP. Requires `apMac`.                              |
 | `getApLldpConfig`      | Gets LLDP configuration for an AP. Requires `apMac`.                              |
 | `getApGeneralConfig`   | Gets general configuration for an AP (name, LED, country). Requires `apMac`.     |
-| `getUplinkWiredDetail` | Gets wired uplink detail for an AP (switch port, PoE). Requires `apMac`.          |
+| `getUplinkWiredDetail` | Get wired uplink detail for an access point: uplink switch, port number, link speed, and PoE status. | `getUplinkWiredDetail` |
 | `getDownlinkWiredDevices` | Gets wired downlink devices on an AP's LAN ports. Requires `apMac`.           |
 
 ### Network
@@ -247,9 +247,9 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getGridVirtualWan`           | Gets virtual WAN list (paginated).                                          |
 | `getPortForwardingStatus`     | Gets port forwarding status and rules (User or UPnP types).                 |
 | `getLanNetworkList`           | Gets the list of LAN networks configured in a site.                         |
-| `getLanNetworkListV2`         | Gets LAN network list via v2 API with richer VLAN/DHCP data (paginated).    |
+| `getLanNetworkListV2` | Get the LAN network list using the v2 API, with richer VLAN and DHCP data (paginated). | `getLanNetworkListV2` |
 | `getInterfaceLanNetwork`      | Gets interface-level LAN network bindings. Optional type filter.            |
-| `getInterfaceLanNetworkV2`    | Gets interface-level LAN network bindings via v2 API.                       |
+| `getInterfaceLanNetworkV2` | Get interface-level LAN network bindings (v2 API). Returns richer per-interface VLAN and network data. | `getInterfaceLanNetworkV2` |
 | `getLanProfileList`           | Gets the list of LAN profiles configured in a site.                         |
 | `getWlanGroupList`            | Gets the list of WLAN groups configured in a site.                          |
 | `getSsidList`                 | Gets the list of SSIDs in a WLAN group.                                     |
@@ -309,7 +309,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getDashboardTopMemoryUsage`     | Gets top memory usage data from the site dashboard.             |
 | `getDashboardMostActiveSwitches` | Gets most active switches from the site dashboard.              |
 | `getDashboardMostActiveEaps`     | Gets most active access points from the site dashboard.         |
-| `getDashboardOverview`           | Gets overview data from the site dashboard.                     |
+| `getDashboardOverview` | Get the site overview: device counts, client counts, connectivity graph, and overall health status. | `getDashboardOverview` |
 | `getTrafficDistribution`         | Gets traffic distribution by protocol/app type over a time range. Requires `start` and `end` timestamps (seconds). |
 | `getRetryAndDroppedRate`         | Gets wireless retry rate and dropped packet rate over a time range. Requires `start` and `end` timestamps (seconds). |
 | `getIspLoad`                     | Gets per-WAN ISP link load over a time range. Requires `start` and `end` timestamps (seconds). |
@@ -366,7 +366,6 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getTopThreatList`                  | Get top threats from global threat management.            | `getTopThreats`               |
 | `getInternet`                       | Get internet configuration info for a site.               | `getInternetInfo`             |
 | `getPortForwardStatus`              | Get port forwarding status by type.                       | `getPortForwardingStatus`     |
-| `getLanNetworkListV2`               | Get LAN network list (v2 API).                            | `getLanNetworkList`           |
 | `getLanProfileList`                 | Get LAN profile list.                                     | `getLanProfileList`           |
 | `getWlanGroupList`                  | Get WLAN group list.                                      | `getWlanGroupList`            |
 | `getSsidList`                       | Get SSID list for a WLAN group.                           | `getSsidList`                 |
@@ -404,13 +403,11 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getApRadios` | Get radio status for a specific access point: 2.4GHz and 5GHz band .... | `getApRadios` |
 | `getApSnmpConfig` | Get SNMP configuration for an access point. | `getApSnmpConfig` |
 | `getApUplinkConfig` | Get the uplink configuration for an access point. | `getApUplinkConfig` |
-| `getApVlanConfig` | —. | `getApVlanConfig` |
 | `getBandwidthControl` | Get the global bandwidth control configuration for the site. | `getBandwidthControl` |
 | `getCableTestLogs` | Get cable test logs for a switch. | `getCableTestLogs` |
 | `getChannels` | Get channel distribution and utilization across all APs. | `getChannels` |
 | `getClient` | Fetch details for a specific Omada client. | `getClient` |
 | `getDashboardMostActiveEaps` | Get the most active access points (EAPs) in a site, sorted by traff.... | `getDashboardMostActiveEaps` |
-| `getDashboardOverview` | —. | `getDashboardOverview` |
 | `getDashboardPoEUsage` | Get PoE (Power over Ethernet) usage statistics for a site, showing .... | `getDashboardPoEUsage` |
 | `getDashboardSwitchSummary` | Get switch summary for a site dashboard: total switch count, total .... | `getDashboardSwitchSummary` |
 | `getDashboardTopCpuUsage` | Get the top devices by CPU usage for a site, useful for identifying.... | `getDashboardTopCpuUsage` |
@@ -437,7 +434,6 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getGridVirtualWan` | Get virtual WAN list for the site gateway. | `getGridVirtualWan` |
 | `getIgmp` | Get IGMP (Internet Group Management Protocol) setting for the site. | `getIgmp` |
 | `getInterfaceLanNetwork` | Get interface-level LAN network bindings. | `getInterfaceLanNetwork` |
-| `getInterfaceLanNetworkV2` | Get interface-level LAN network bindings (v2 API). | `—` |
 | `getInterference` | Get top RF interference sources detected by APs. | `getInterference` |
 | `getInternet` | Get full WAN/Internet configuration for the site gateway. | `getInternet` |
 | `getInternetBasicPortInfo` | Get WAN port summary / basic info for the site gateway. | `getInternetBasicPortInfo` |
@@ -445,7 +441,6 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getInternetLoadBalance` | Get WAN load balancing configuration for the site gateway. | `getInternetLoadBalance` |
 | `getIspLoad` | Get per-WAN ISP link load over a time range. | `getIspLoad` |
 | `getLanNetworkList` | Get the list of LAN networks configured in a site, including VLAN s.... | `getLanNetworkList` |
-| `getLanNetworkListV2` | Get the LAN network list using the v2 API. | `—` |
 | `getLanProfileList` | Get the list of LAN profiles configured in a site. | `getLanProfileList` |
 | `getLldpSetting` | Get LLDP (Link Layer Discovery Protocol) global setting for the site. | `getLldpSetting` |
 | `getMeshStatistics` | Get mesh link statistics for an access point. | `getMeshStatistics` |

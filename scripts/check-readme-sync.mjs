@@ -38,10 +38,14 @@ const toolFiles = readdirSync(toolsDir).filter((f) => f.endsWith('.ts') && f !==
 const missingReadme = [];
 const missingDockerReadme = [];
 
+let verifiedToolCount = 0;
+
 for (const file of toolFiles) {
     const content = readFileSync(join(toolsDir, file), 'utf8');
     const toolName = extractToolName(content);
     if (!toolName) continue;
+
+    verifiedToolCount += 1;
 
     if (!readmeTools.has(toolName)) missingReadme.push(toolName);
     if (!dockerReadmeTools.has(toolName)) missingDockerReadme.push(toolName);
@@ -66,5 +70,5 @@ if (failed) {
     console.error('See CLAUDE.md — Documentation Synchronization.\n');
     process.exit(1);
 } else {
-    console.log(`✅ All ${toolFiles.length} tools are documented in README.md and README.Docker.md.`);
+    console.log(`✅ All ${verifiedToolCount} tools are documented in README.md and README.Docker.md.`);
 }

@@ -42,13 +42,22 @@ const testContents = collectTestContents(testsDir);
 const toolFiles = readdirSync(toolsDir).filter((f) => f.endsWith('.ts') && f !== 'index.ts');
 
 const missing = [];
+let verifiedToolCount = 0;
+
+function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 for (const file of toolFiles) {
     const content = readFileSync(join(toolsDir, file), 'utf8');
     const toolName = extractToolName(content);
     if (!toolName) continue; // skip non-tool files
 
-    if (!testContents.includes(toolName)) {
+    verifiedToolCount += 1;
+
+    // Use word-boundary match to avoid false positives (e.g. getClient vs getClientDetail)
+    const pattern = new RegExp(`\\b${escapeRegExp(toolName)}\\b`, 'm');
+    if (!pattern.test(testContents)) {
         missing.push({ file, toolName });
     }
 }
@@ -62,5 +71,5 @@ if (missing.length > 0) {
     console.error('See CLAUDE.md — Testing section for the test strategy.\n');
     process.exit(1);
 } else {
-    console.log(`✅ All ${toolFiles.length} tools have test coverage.`);
+    console.log(`✅ All ${verifiedToolCount} tools have test coverage.`);
 }
