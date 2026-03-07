@@ -3,7 +3,7 @@
  * check-tool-tests.mjs
  *
  * Enforces strict 1:1 test file mirroring (Option B):
- *   - Every src/tools/<name>.ts must have tests/tools/<name>.test.ts
+ *   - Every src/tools/<name>.ts (except index.ts and types.ts) must have tests/tools/<name>.test.ts
  *   - Every src/omadaClient/<name>.ts (except index.ts) must have tests/omadaClient/<name>.test.ts
  *
  * This replaced Option A ("tool referenced somewhere in tests") after issue #57
