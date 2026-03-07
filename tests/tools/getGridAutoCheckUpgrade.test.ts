@@ -48,7 +48,7 @@ describe('tools/getGridAutoCheckUpgrade', () => {
 
             const result = await toolHandler({}, { sessionId: 'test-session' });
 
-            expect(mockClient.getGridAutoCheckUpgrade).toHaveBeenCalledWith(undefined, undefined, undefined);
+            expect(mockClient.getGridAutoCheckUpgrade).toHaveBeenCalledWith(1, 10, undefined);
             expect(result).toEqual({
                 content: [{ type: 'text', text: JSON.stringify(mockData, null, 2) }],
             });

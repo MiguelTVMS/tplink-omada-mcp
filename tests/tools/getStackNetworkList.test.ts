@@ -43,7 +43,7 @@ describe('tools/getStackNetworkList', () => {
             (mockClient.getStackNetworkList as ReturnType<typeof vi.fn>).mockResolvedValue(mockData);
             registerGetStackNetworkListTool(mockServer, mockClient);
             const result = await toolHandler({ stackId: 'stack-123' }, { sessionId: 'test-session' });
-            expect(mockClient.getStackNetworkList).toHaveBeenCalledWith('stack-123', undefined, undefined, undefined, undefined);
+            expect(mockClient.getStackNetworkList).toHaveBeenCalledWith('stack-123', 1, 10, undefined, undefined);
             expect(result).toEqual({
                 content: [{ type: 'text', text: JSON.stringify(mockData, null, 2) }],
             });
