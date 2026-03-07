@@ -695,6 +695,11 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `listServiceType` | List service type profiles (paginated). | `listServiceType` |
 | `listWireguard` | List WireGuard VPN tunnels (paginated). | `listWireguard` |
 | `listWireguardPeers` | List WireGuard peers (paginated). | `listWireguardPeers` |
+| `getDashboardMostActiveEaps` | Get the most active access points from the site dashboard by traffic. | `getDashboardMostActiveEaps` |
+| `getDashboardTopMemoryUsage` | Get top memory usage data for devices from the site dashboard. | `getDashboardTopMemoryUsage` |
+| `getDashboardTrafficActivities` | Get traffic activity data and throughput summary from the site dashboard. | `getDashboardTrafficActivities` |
+| `getGridDashboardTunnelStats` | Get VPN tunnel statistics for the grid dashboard view. | `getGridDashboardTunnelStats` |
+| `setClientRateLimitProfile` | Apply a predefined rate limit profile to a specific client. | `setClientRateLimitProfile` |
 
 ## Devcontainer support
 

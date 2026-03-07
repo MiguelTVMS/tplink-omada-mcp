@@ -569,6 +569,13 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `listServiceType` | List service type profiles (paginated). | `listServiceType` |
 | `listWireguard` | List WireGuard VPN tunnels (paginated). | `listWireguard` |
 | `listWireguardPeers` | List WireGuard peers (paginated). | `listWireguardPeers` |
+| `getSwitchStackDetail` | Retrieve detailed configuration and status for a switch stack. | `getSwitchStackDetail` |
+| `getThreatList` | Get global threat management list with filtering and pagination. | `getThreatList` |
+| `getTopThreats` | Get the top threats from the global threat management view. | `getTopThreats` |
+| `listClientsActivity` | List client activity statistics over time (paginated). | `listClientsActivity` |
+| `listClientsPastConnections` | List past connection history for clients. | `listClientsPastConnections` |
+| `listSiteAuditLogs` | List site audit logs (paginated). | `listSiteAuditLogs` |
+| `listSiteThreatManagement` | List site-level threat management events (paginated). | `listSiteThreatManagement` |
 
 ## Contributing
 
