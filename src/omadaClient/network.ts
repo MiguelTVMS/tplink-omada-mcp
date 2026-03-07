@@ -184,12 +184,7 @@ export class NetworkOperations {
      * @param page - Page number (required by API, default: 1)
      * @param pageSize - Page size (required by API, range: 1-1000, default: 10)
      */
-    public async getPortForwardingListPage(
-        page = 1,
-        pageSize = 10,
-        siteId?: string,
-        customHeaders?: CustomHeaders
-    ): Promise<unknown> {
+    public async getPortForwardingListPage(page = 1, pageSize = 10, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/nat/port-forwardings`);
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
