@@ -163,6 +163,38 @@ npm run build
 npm run check
 ```
 
+### Testing
+
+#### Unit tests
+
+```bash
+npm test               # run all unit tests
+npm run test:watch     # watch mode
+npm run test:coverage  # with coverage report
+```
+
+Coverage thresholds:
+
+| Level | Metric | Threshold |
+|-------|--------|-----------|
+| Per-file | Lines, Statements, Functions | 90% |
+| Global | Branches | 70% |
+
+#### Integration tests (Docker)
+
+Integration tests run against a real Omada Software Controller in a Docker container. They are **not** run on every PR — they serve as a milestone release gate and a test harness for write tools.
+
+```bash
+cd test/docker
+docker compose up -d      # start controller (restores from snapshot)
+npm run test:integration  # run integration suite
+docker compose down       # tear down
+```
+
+See [`test/docker/README.md`](test/docker/README.md) for snapshot management, version pinning, and re-seeding.
+
+> ⚠️ **Phase 2 write tools must only be tested against the Docker controller — never against a production controller.**
+
 ### Running the MCP server
 
 ```bash
