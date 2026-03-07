@@ -224,14 +224,14 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getStackNetworkList`  | Gets VLAN network list for a switch stack (paginated). Requires `stackId`.        |
 | `getApUplinkConfig`    | Gets uplink configuration for an AP (wired/mesh mode). Requires `apMac`.          |
 | `getRadiosConfig`      | Gets per-radio configuration for an AP (channel, power, width). Requires `apMac`. |
-| `getApVlanConfig` | Get VLAN configuration for an access point, including management VLAN and per-SSID VLAN tagging settings. | `getApVlanConfig` |
+| `getApVlanConfig` | Get VLAN configuration for an access point, including management VLAN and per-SSID VLAN tagging settings. |
 | `getMeshStatistics`    | Gets mesh link statistics for an AP. Requires `apMac`.                            |
 | `getRFScanResult`      | Gets last RF scan results for an AP. Requires `apMac`.                            |
 | `getSpeedTestResults`  | Gets last speed test results for an AP. Requires `apMac`.                         |
 | `getApSnmpConfig`      | Gets SNMP configuration for an AP. Requires `apMac`.                              |
 | `getApLldpConfig`      | Gets LLDP configuration for an AP. Requires `apMac`.                              |
 | `getApGeneralConfig`   | Gets general configuration for an AP (name, LED, country). Requires `apMac`.     |
-| `getUplinkWiredDetail` | Get wired uplink detail for an access point: uplink switch, port number, link speed, and PoE status. | `getUplinkWiredDetail` |
+| `getUplinkWiredDetail` | Get wired uplink detail for an access point: uplink switch, port number, link speed, and PoE status. |
 | `getDownlinkWiredDevices` | Gets wired downlink devices on an AP's LAN ports. Requires `apMac`.           |
 
 ### Network
@@ -247,9 +247,9 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getGridVirtualWan`           | Gets virtual WAN list (paginated).                                          |
 | `getPortForwardingStatus`     | Gets port forwarding status and rules (User or UPnP types).                 |
 | `getLanNetworkList`           | Gets the list of LAN networks configured in a site.                         |
-| `getLanNetworkListV2` | Get the LAN network list using the v2 API, with richer VLAN and DHCP data (paginated). | `getLanNetworkListV2` |
+| `getLanNetworkListV2` | Get the LAN network list using the v2 API, with richer VLAN and DHCP data (paginated). |
 | `getInterfaceLanNetwork`      | Gets interface-level LAN network bindings. Optional type filter.            |
-| `getInterfaceLanNetworkV2` | Get interface-level LAN network bindings (v2 API). Returns richer per-interface VLAN and network data. | `getInterfaceLanNetworkV2` |
+| `getInterfaceLanNetworkV2` | Get interface-level LAN network bindings (v2 API). Returns richer per-interface VLAN and network data. |
 | `getLanProfileList`           | Gets the list of LAN profiles configured in a site.                         |
 | `getWlanGroupList`            | Gets the list of WLAN groups configured in a site.                          |
 | `getSsidList`                 | Gets the list of SSIDs in a WLAN group.                                     |
@@ -309,7 +309,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getDashboardTopMemoryUsage`     | Gets top memory usage data from the site dashboard.             |
 | `getDashboardMostActiveSwitches` | Gets most active switches from the site dashboard.              |
 | `getDashboardMostActiveEaps`     | Gets most active access points from the site dashboard.         |
-| `getDashboardOverview` | Get the site overview: device counts, client counts, connectivity graph, and overall health status. | `getDashboardOverview` |
+| `getDashboardOverview` | Get the site overview: device counts, client counts, connectivity graph, and overall health status. |
 | `getTrafficDistribution`         | Gets traffic distribution by protocol/app type over a time range. Requires `start` and `end` timestamps (seconds). |
 | `getRetryAndDroppedRate`         | Gets wireless retry rate and dropped packet rate over a time range. Requires `start` and `end` timestamps (seconds). |
 | `getIspLoad`                     | Gets per-WAN ISP link load over a time range. Requires `start` and `end` timestamps (seconds). |
