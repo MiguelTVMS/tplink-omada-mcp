@@ -61,7 +61,7 @@ describe('tools - Global Controller settings (issue #41)', () => {
         expect(mockClient.getControllerStatus).toHaveBeenCalledWith(undefined);
     });
 
-    it('getGernalSettings calls client', async () => {
+    it('getGeneralSettings calls client', async () => {
         registerGetGernalSettingsTool(mockServer, mockClient);
         const result = await toolHandler({}, {});
         expect(result).toBeDefined();
