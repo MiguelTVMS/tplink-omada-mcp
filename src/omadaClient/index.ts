@@ -513,6 +513,10 @@ export class OmadaClient {
         return await this.networkOps.listPortForwardingRules(siteId, customHeaders);
     }
 
+    public async getPortForwardingListPage(page: number, pageSize: number, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.getPortForwardingListPage(page, pageSize, siteId, customHeaders);
+    }
+
     public async listOneToOneNatRules(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown[]> {
         return await this.networkOps.listOneToOneNatRules(siteId, customHeaders);
     }

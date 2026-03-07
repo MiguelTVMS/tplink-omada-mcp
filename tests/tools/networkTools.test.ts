@@ -127,7 +127,7 @@ describe('registerGetGridStaticRoutingTool', () => {
     it('should register the tool and handle successful response', async () => {
         const { registerGetGridStaticRoutingTool } = await import('../../src/tools/getGridStaticRouting.js');
 
-        const mockResult = { result: [{ id: 'route1', destination: '10.0.0.0/8', gateway: '192.168.1.1' }], totalRows: 1 };
+        const mockResult = { data: [{ id: 'route1', destination: '10.0.0.0/8', gateway: '192.168.1.1' }], totalRows: 1 };
         const mockClient = { getGridStaticRouting: vi.fn().mockResolvedValue(mockResult) };
         const mockServer = { registerTool: vi.fn((_, _schema, handler) => handler({ page: 1, pageSize: 10, siteId: 'site1' }, {})) };
 
@@ -146,9 +146,9 @@ describe('registerGetPortForwardingListTool', () => {
     it('should register the tool and handle successful response', async () => {
         const { registerGetPortForwardingListTool } = await import('../../src/tools/getPortForwardingList.js');
 
-        const mockRules = [{ id: 'fwd1', externalPort: 80, internalPort: 8080, internalIp: '192.168.1.10' }];
-        const mockClient = { listPortForwardingRules: vi.fn().mockResolvedValue(mockRules) };
-        const mockServer = { registerTool: vi.fn((_, _schema, handler) => handler({ siteId: 'site1' }, {})) };
+        const mockResult = { data: [{ id: 'fwd1', externalPort: 80, internalPort: 8080, internalIp: '192.168.1.10' }], totalRows: 1 };
+        const mockClient = { getPortForwardingListPage: vi.fn().mockResolvedValue(mockResult) };
+        const mockServer = { registerTool: vi.fn((_, _schema, handler) => handler({ page: 1, pageSize: 10, siteId: 'site1' }, {})) };
 
         registerGetPortForwardingListTool(mockServer as never, mockClient as never);
 
@@ -157,7 +157,7 @@ describe('registerGetPortForwardingListTool', () => {
             expect.objectContaining({ description: expect.any(String) }),
             expect.any(Function)
         );
-        expect(mockClient.listPortForwardingRules).toHaveBeenCalledWith('site1', undefined);
+        expect(mockClient.getPortForwardingListPage).toHaveBeenCalledWith(1, 10, 'site1', undefined);
     });
 });
 

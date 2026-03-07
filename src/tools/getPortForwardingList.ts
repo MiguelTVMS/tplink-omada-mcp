@@ -2,8 +2,10 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 import type { OmadaClient } from '../omadaClient/index.js';
 import { customHeadersSchema, siteInputSchema, toToolResult, wrapToolHandler } from '../server/common.js';
+import { createPaginationSchema } from '../utils/pagination-schema.js';
 
 const inputSchema = siteInputSchema.extend({
+    ...createPaginationSchema(),
     customHeaders: customHeadersSchema,
 });
 
@@ -12,11 +14,11 @@ export function registerGetPortForwardingListTool(server: McpServer, client: Oma
         'getPortForwardingList',
         {
             description:
-                'Get all port forwarding rules for the site gateway. Returns the complete list of NAT port forwarding entries that map external ports to internal hosts.',
+                'Get a paginated page of NAT port forwarding rules for the site gateway. Returns the list of entries that map external ports to internal hosts for the requested page.',
             inputSchema: inputSchema.shape,
         },
-        wrapToolHandler('getPortForwardingList', async ({ siteId, customHeaders }) =>
-            toToolResult(await client.listPortForwardingRules(siteId, customHeaders))
+        wrapToolHandler('getPortForwardingList', async ({ page, pageSize, siteId, customHeaders }) =>
+            toToolResult(await client.getPortForwardingListPage(page, pageSize, siteId, customHeaders))
         )
     );
 }
