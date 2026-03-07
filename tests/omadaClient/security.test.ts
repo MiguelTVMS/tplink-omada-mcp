@@ -190,11 +190,11 @@ describe('omadaClient/security', () => {
         });
     });
 
-    describe('getGernalSettings', () => {
+    describe('getGeneralSettings', () => {
         it('should get global general settings', async () => {
             const mockResponse = { errorCode: 0, result: {} };
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
-            await securityOps.getGernalSettings();
+            await securityOps.getGeneralSettings();
             expect(mockRequest.get).toHaveBeenCalledWith('/api/global/controller/setting/general', undefined, undefined);
         });
     });

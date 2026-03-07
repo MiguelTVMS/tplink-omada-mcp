@@ -5,7 +5,7 @@ import type { OmadaClient } from '../../src/omadaClient/index.js';
 import { registerGetClientActiveTimeoutTool } from '../../src/tools/getClientActiveTimeout.js';
 import { registerGetControllerStatusTool } from '../../src/tools/getControllerStatus.js';
 import { registerGetDeviceAccessManagementTool } from '../../src/tools/getDeviceAccessManagement.js';
-import { registerGetGernalSettingsTool } from '../../src/tools/getGernalSettings.js';
+import { registerGetGeneralSettingsTool } from '../../src/tools/getGeneralSettings.js';
 import { registerGetLoggingTool } from '../../src/tools/getLogging.js';
 import { registerGetMailServerStatusTool } from '../../src/tools/getMailServerStatus.js';
 import { registerGetRadiusServerTool } from '../../src/tools/getRadiusServer.js';
@@ -29,7 +29,7 @@ describe('tools - Global Controller settings (issue #41)', () => {
         mockServer = { registerTool: vi.fn(captureHandler) } as unknown as McpServer;
         mockClient = {
             getControllerStatus: vi.fn().mockResolvedValue({}),
-            getGernalSettings: vi.fn().mockResolvedValue({}),
+            getGeneralSettings: vi.fn().mockResolvedValue({}),
             getRetention: vi.fn().mockResolvedValue({}),
             getClientActiveTimeout: vi.fn().mockResolvedValue({}),
             getRemoteLogging: vi.fn().mockResolvedValue({}),
@@ -62,10 +62,10 @@ describe('tools - Global Controller settings (issue #41)', () => {
     });
 
     it('getGeneralSettings calls client', async () => {
-        registerGetGernalSettingsTool(mockServer, mockClient);
+        registerGetGeneralSettingsTool(mockServer, mockClient);
         const result = await toolHandler({}, {});
         expect(result).toBeDefined();
-        expect(mockClient.getGernalSettings).toHaveBeenCalledWith(undefined);
+        expect(mockClient.getGeneralSettings).toHaveBeenCalledWith(undefined);
     });
 
     it('getRetention calls client', async () => {

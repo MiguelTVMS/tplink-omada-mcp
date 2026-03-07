@@ -377,8 +377,8 @@ export class OmadaClient {
         return await this.securityOps.getControllerStatus(customHeaders);
     }
 
-    public async getGernalSettings(customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.securityOps.getGernalSettings(customHeaders);
+    public async getGeneralSettings(customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.securityOps.getGeneralSettings(customHeaders);
     }
 
     public async getRetention(customHeaders?: CustomHeaders): Promise<unknown> {

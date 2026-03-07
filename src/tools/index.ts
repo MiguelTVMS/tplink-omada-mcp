@@ -54,7 +54,7 @@ import { registerGetGatewayDetailTool } from './getGatewayDetail.js';
 import { registerGetGatewayLanStatusTool } from './getGatewayLanStatus.js';
 import { registerGetGatewayPortsTool } from './getGatewayPorts.js';
 import { registerGetGatewayWanStatusTool } from './getGatewayWanStatus.js';
-import { registerGetGernalSettingsTool } from './getGernalSettings.js';
+import { registerGetGeneralSettingsTool } from './getGeneralSettings.js';
 import { registerGetGridAllowListTool } from './getGridAllowList.js';
 import { registerGetGridAllowMacFilteringTool } from './getGridAllowMacFiltering.js';
 import { registerGetGridAutoCheckUpgradeTool } from './getGridAutoCheckUpgrade.js';
@@ -399,7 +399,7 @@ export function registerAllTools(server: McpServer, client: OmadaClient): void {
 
     // Global Controller settings (issue #41)
     registerGetControllerStatusTool(server, client);
-    registerGetGernalSettingsTool(server, client);
+    registerGetGeneralSettingsTool(server, client);
     registerGetRetentionTool(server, client);
     registerGetClientActiveTimeoutTool(server, client);
     registerGetRemoteLoggingTool(server, client);

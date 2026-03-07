@@ -91,9 +91,9 @@ export class SecurityOperations {
 
     /**
      * Get global general settings.
-     * OperationId: getGernalSettings
+     * OperationId: getGeneralSettings
      */
-    public async getGernalSettings(customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getGeneralSettings(customHeaders?: CustomHeaders): Promise<unknown> {
         const path = this.buildPath('/global/controller/setting/general');
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
