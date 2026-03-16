@@ -715,15 +715,13 @@ describe('omadaClient/device', () => {
         (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
         (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockData);
 
-        // biome-ignore lint/suspicious/noExplicitAny: dynamic method call in test helper
-        const result = await (deviceOps[method] as (...args: any[]) => Promise<unknown>)(macArg, 'site-1');
+        const result = await (deviceOps[method] as (mac: string, siteId: string) => Promise<unknown>)(macArg, 'site-1');
         expect(result).toEqual(mockData);
         expect(mockRequest.get).toHaveBeenCalledWith(expectedPath, undefined, undefined);
         vi.clearAllMocks();
 
         // Test empty mac throws
-        // biome-ignore lint/suspicious/noExplicitAny: dynamic method call in test helper
-        await expect((deviceOps[method] as (...args: any[]) => Promise<unknown>)('', 'site-1')).rejects.toThrow(errorMsg);
+        await expect((deviceOps[method] as (mac: string, siteId: string) => Promise<unknown>)('', 'site-1')).rejects.toThrow(errorMsg);
     }
 
     describe('getFirmwareUpgradePlan', () => {
