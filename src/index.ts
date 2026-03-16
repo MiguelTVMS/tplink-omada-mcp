@@ -46,6 +46,8 @@ async function main(): Promise<void> {
 }
 main().catch((error) => {
     const message = error instanceof Error ? error.message : String(error);
-    logger.error('Failed to start Omada MCP server', { error: message });
+    // Use process.stderr.write directly — logger may not have been initialized yet
+    // (e.g. if loadConfigFromEnv() threw before initLogger() was called)
+    process.stderr.write(`Failed to start Omada MCP server: ${message}\n`);
     process.exitCode = 1;
 });

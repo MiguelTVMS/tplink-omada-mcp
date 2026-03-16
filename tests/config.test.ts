@@ -392,10 +392,17 @@ describe('parseToolCategories', () => {
         vi.restoreAllMocks();
     });
 
-    it('should warn for future categories expanded from group aliases', () => {
+    it('should warn for future atomic categories used directly', () => {
+        const { categories, warnings } = parseToolCategories('insights:r');
+        expect(categories.has('insights')).toBe(false);
+        expect(warnings.some((w) => w.includes('insights'))).toBe(true);
+    });
+
+    it('network-all no longer contains future categories and expands without warnings', () => {
         const { categories, warnings } = parseToolCategories('network-all:r');
         expect(categories.has('network-sim-lte')).toBe(false);
-        expect(warnings.some((w) => w.includes('network-sim-lte'))).toBe(true);
+        expect(warnings.some((w) => w.includes('network-sim-lte'))).toBe(false);
+        expect(warnings.length).toBe(0);
     });
 
     it('should not warn for valid implemented categories in group aliases', () => {

@@ -19,11 +19,13 @@ const loadEntry = async () => import('../src/index.js');
 describe('src/index main entry', () => {
     let mockInitLogger: ReturnType<typeof vi.fn>;
     let loggerInfo: ReturnType<typeof vi.fn>;
+    let loggerWarn: ReturnType<typeof vi.fn>;
     let loggerError: ReturnType<typeof vi.fn>;
     let startHttpServer: ReturnType<typeof vi.fn>;
     let startStdioServer: ReturnType<typeof vi.fn>;
     let OmadaClient: ReturnType<typeof vi.fn>;
     let loadConfigFromEnv: ReturnType<typeof vi.fn>;
+    let stderrWrite: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
         vi.resetModules();
@@ -32,6 +34,7 @@ describe('src/index main entry', () => {
 
         mockInitLogger = vi.fn();
         loggerInfo = vi.fn();
+        loggerWarn = vi.fn();
         loggerError = vi.fn();
         startHttpServer = vi.fn(async () => undefined);
         startStdioServer = vi.fn(async () => undefined);
@@ -39,6 +42,7 @@ describe('src/index main entry', () => {
         OmadaClient = vi.fn(function OmadaClientMock(config: Record<string, unknown>) {
             return { client: 'instance', config };
         });
+        stderrWrite = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
 
         vi.doMock('../src/env.js', () => ({}));
         vi.doMock('../src/config.js', () => ({
@@ -57,9 +61,14 @@ describe('src/index main entry', () => {
             initLogger: mockInitLogger,
             logger: {
                 info: loggerInfo,
+                warn: loggerWarn,
                 error: loggerError,
             },
         }));
+    });
+
+    afterEach(() => {
+        stderrWrite.mockRestore();
     });
 
     it('starts stdio server when HTTP is disabled', async () => {
@@ -85,14 +94,30 @@ describe('src/index main entry', () => {
         expect(startStdioServer).not.toHaveBeenCalled();
     });
 
-    it('logs startup failures and sets exit code', async () => {
+    it('writes startup failures to stderr and sets exit code', async () => {
         loadConfigFromEnv.mockReturnValue({ ...baseConfig, useHttp: false });
         const failure = new Error('boom');
         startStdioServer.mockRejectedValueOnce(failure);
 
         await loadEntry();
 
-        expect(loggerError).toHaveBeenCalledWith('Failed to start Omada MCP server', { error: 'boom' });
+        expect(stderrWrite).toHaveBeenCalledWith(expect.stringContaining('Failed to start Omada MCP server: boom'));
         expect(process.exitCode).toBe(1);
+    });
+
+    it('emits startup warnings only after logger is initialized', async () => {
+        loadConfigFromEnv.mockReturnValue({
+            ...baseConfig,
+            useHttp: false,
+            startupWarnings: ['Unknown category: "network-sim-lte" is a future/unimplemented category'],
+        });
+
+        await loadEntry();
+
+        expect(loggerWarn).toHaveBeenCalledWith('Unknown category: "network-sim-lte" is a future/unimplemented category');
+        // initLogger must have been called before any warning was emitted
+        const initOrder = mockInitLogger.mock.invocationCallOrder[0];
+        const warnOrder = loggerWarn.mock.invocationCallOrder[0];
+        expect(initOrder).toBeLessThan(warnOrder);
     });
 });

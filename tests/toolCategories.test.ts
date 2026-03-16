@@ -174,22 +174,16 @@ describe('parseToolCategories', () => {
         }
     });
 
-    it('hotspot-all expands but all are future categories', () => {
+    it('hotspot-all is no longer a recognized alias and generates an unknown category warning', () => {
         const { categories, warnings } = parseToolCategories('hotspot-all:r');
-        const expected = CATEGORY_GROUP_ALIASES['hotspot-all'];
-        for (const cat of expected) {
-            expect(categories.has(cat)).toBe(false);
-            expect(warnings.some((w) => w.includes(cat))).toBe(true);
-        }
+        expect(categories.size).toBe(0);
+        expect(warnings.some((w) => w.includes('hotspot-all'))).toBe(true);
     });
 
-    it('account-all expands but all are future categories', () => {
+    it('account-all is no longer a recognized alias and generates an unknown category warning', () => {
         const { categories, warnings } = parseToolCategories('account-all:r');
-        const expected = CATEGORY_GROUP_ALIASES['account-all'];
-        for (const cat of expected) {
-            expect(categories.has(cat)).toBe(false);
-            expect(warnings.some((w) => w.includes(cat))).toBe(true);
-        }
+        expect(categories.size).toBe(0);
+        expect(warnings.some((w) => w.includes('account-all'))).toBe(true);
     });
 
     // -----------------------------------------------------------------------

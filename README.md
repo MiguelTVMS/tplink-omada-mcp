@@ -144,11 +144,9 @@ Group aliases expand to all categories in their group:
 | `all`          | Every category                                                                                |
 | `devices-all`  | `devices-general`, `devices-ap`, `devices-switch`, `devices-gateway`                          |
 | `wireless-all` | `wireless-ssid`, `wireless-radio`, `wireless-auth`                                            |
-| `network-all`  | `network-wan`, `network-lan`, `network-routing`, `network-nat`, `network-services` (excludes `network-sim-lte`*) |
+| `network-all`  | `network-wan`, `network-lan`, `network-routing`, `network-nat`, `network-services`            |
 | `firewall-all` | `firewall-acl`, `firewall-traffic`, `firewall-ids`                                            |
 | `security-all` | `security-threat`, `security-wids`                                                            |
-| `hotspot-all`  | future-only alias (`hotspot-portal`*, `hotspot-vouchers`*, `hotspot-users`*)                  |
-| `account-all`  | future-only alias (`account-users`*, `account-sso`*, `account-cloud`*)                        |
 
 Examples:
 

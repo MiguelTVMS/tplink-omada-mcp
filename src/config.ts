@@ -89,11 +89,9 @@ export const CATEGORY_GROUP_ALIASES: Record<string, ToolCategory[]> = {
     all: [...ALL_CATEGORIES],
     'devices-all': ['devices-general', 'devices-ap', 'devices-switch', 'devices-gateway'],
     'wireless-all': ['wireless-ssid', 'wireless-radio', 'wireless-auth'],
-    'network-all': ['network-wan', 'network-sim-lte', 'network-lan', 'network-routing', 'network-nat', 'network-services'],
+    'network-all': ['network-wan', 'network-lan', 'network-routing', 'network-nat', 'network-services'],
     'firewall-all': ['firewall-acl', 'firewall-traffic', 'firewall-ids'],
     'security-all': ['security-threat', 'security-wids'],
-    'hotspot-all': ['hotspot-portal', 'hotspot-vouchers', 'hotspot-users'],
-    'account-all': ['account-users', 'account-sso', 'account-cloud'],
 };
 
 export interface ActiveCategoryEntry {
