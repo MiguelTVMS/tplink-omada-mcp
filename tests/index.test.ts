@@ -10,6 +10,8 @@ const baseConfig = {
     strictSsl: true,
     requestTimeout: 15_000,
     httpTransport: 'stream',
+    toolCategories: new Map(),
+    startupWarnings: [],
 };
 
 const loadEntry = async () => import('../src/index.js');
@@ -67,7 +69,7 @@ describe('src/index main entry', () => {
 
         expect(mockInitLogger).toHaveBeenCalledWith('info', 'plain', true);
         expect(OmadaClient).toHaveBeenCalledWith(expect.objectContaining({ baseUrl: 'https://controller.local' }));
-        expect(startStdioServer).toHaveBeenCalledWith(expect.objectContaining({ client: 'instance' }), undefined);
+        expect(startStdioServer).toHaveBeenCalledWith(expect.objectContaining({ client: 'instance' }), new Map());
         expect(startHttpServer).not.toHaveBeenCalled();
         expect(loggerInfo).toHaveBeenCalledWith('Loaded Omada configuration', expect.objectContaining({ omadacId: 'omada-1' }));
     });

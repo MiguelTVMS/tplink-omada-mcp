@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 import { isValidBindAddress, isValidOrigin } from './utils/config-validations.js';
-import { logger } from './utils/logger.js';
 
 // ---------------------------------------------------------------------------
 // Tool category types
@@ -67,6 +66,24 @@ export const ALL_CATEGORIES = [
 
 export type ToolCategory = (typeof ALL_CATEGORIES)[number];
 
+/** Categories declared in ALL_CATEGORIES but with no tool implementations yet (reserved for future phases). */
+export const FUTURE_CATEGORIES = new Set<ToolCategory>([
+    'insights',
+    'network-sim-lte',
+    'schedules',
+    'maintenance',
+    'account-users',
+    'account-sso',
+    'account-cloud',
+    'hotspot-portal',
+    'hotspot-vouchers',
+    'hotspot-users',
+    'site-templates',
+    'voip',
+    'olt',
+    'msp',
+]);
+
 /** Group aliases that expand to multiple categories */
 export const CATEGORY_GROUP_ALIASES: Record<string, ToolCategory[]> = {
     all: [...ALL_CATEGORIES],
@@ -84,6 +101,11 @@ export interface ActiveCategoryEntry {
     permissions: Set<ToolPermission>;
 }
 
+export interface ParseToolCategoriesResult {
+    categories: Map<ToolCategory, Set<ToolPermission>>;
+    warnings: string[];
+}
+
 /**
  * Parse OMADA_TOOL_CATEGORIES string into a map of category → allowed permissions.
  *
@@ -95,11 +117,13 @@ export interface ActiveCategoryEntry {
  *
  * Group aliases (e.g. `all`, `devices-all`) are expanded before the suffix is applied.
  * Unknown category names produce a warning and are skipped.
+ * Future (unimplemented) categories produce a warning and are skipped.
  *
- * Returns a Map<ToolCategory, Set<ToolPermission>>.
+ * Returns a ParseToolCategoriesResult with categories map and buffered warnings.
  */
-export function parseToolCategories(raw: string): Map<ToolCategory, Set<ToolPermission>> {
-    const result = new Map<ToolCategory, Set<ToolPermission>>();
+export function parseToolCategories(raw: string): ParseToolCategoriesResult {
+    const categories = new Map<ToolCategory, Set<ToolPermission>>();
+    const warnings: string[] = [];
 
     const tokens = raw
         .split(',')
@@ -140,21 +164,33 @@ export function parseToolCategories(raw: string): Map<ToolCategory, Set<ToolPerm
         // Expand group aliases
         if (name in CATEGORY_GROUP_ALIASES) {
             for (const cat of CATEGORY_GROUP_ALIASES[name]) {
-                mergePermissions(result, cat, permissions);
+                if (FUTURE_CATEGORIES.has(cat)) {
+                    warnings.push(
+                        `OMADA_TOOL_CATEGORIES: category "${cat}" (from alias "${name}") is reserved for a future phase and has no tools yet — skipping`
+                    );
+                } else {
+                    mergePermissions(categories, cat, permissions);
+                }
             }
             continue;
         }
 
         // Validate atomic category name
         if (!(ALL_CATEGORIES as readonly string[]).includes(name)) {
-            logger.warn(`OMADA_TOOL_CATEGORIES: unknown category "${name}" — skipping`);
+            warnings.push(`OMADA_TOOL_CATEGORIES: unknown category "${name}" — skipping`);
             continue;
         }
 
-        mergePermissions(result, name as ToolCategory, permissions);
+        // Skip future/unimplemented categories
+        if (FUTURE_CATEGORIES.has(name as ToolCategory)) {
+            warnings.push(`OMADA_TOOL_CATEGORIES: category "${name}" is reserved for a future phase and has no tools yet — skipping`);
+            continue;
+        }
+
+        mergePermissions(categories, name as ToolCategory, permissions);
     }
 
-    return result;
+    return { categories, warnings };
 }
 
 function mergePermissions(map: Map<ToolCategory, Set<ToolPermission>>, cat: ToolCategory, perms: Set<ToolPermission>): void {
@@ -167,7 +203,7 @@ function mergePermissions(map: Map<ToolCategory, Set<ToolPermission>>, cat: Tool
 }
 
 /** Default value for OMADA_TOOL_CATEGORIES */
-export const DEFAULT_TOOL_CATEGORIES = 'dashboard:r,client-insights:r,insights:r,clients:r,devices-all:r';
+export const DEFAULT_TOOL_CATEGORIES = 'dashboard:r,client-insights:r,clients:r,devices-all:r';
 
 const createBooleanStringSchema = (
     defaultValue: boolean
@@ -285,6 +321,7 @@ export interface OmadaConnectionConfig {
 export interface EnvironmentConfig {
     // Tool category filtering
     toolCategories: Map<ToolCategory, Set<ToolPermission>>;
+    startupWarnings: string[];
 
     // Omada Client Configuration
     // baseUrl is always required (from env)
@@ -358,19 +395,23 @@ export function loadConfigFromEnv(env: NodeJS.ProcessEnv = process.env): Environ
     const httpBindAddr = parsed.data.httpBindAddr ?? '127.0.0.1';
     let httpAllowedOrigins = parsed.data.httpAllowedOrigins ?? ['127.0.0.1', 'localhost'];
 
+    const warnings: string[] = [];
+
     // If wildcard is present, use empty array to disable SDK origin validation
     // (we'll handle it in our error handler with better logging)
     if (httpAllowedOrigins.includes('*')) {
-        logger.warn('Wildcard (*) origin allowed - origin validation is disabled. This should only be used in development.');
+        warnings.push('Wildcard (*) origin allowed - origin validation is disabled. This should only be used in development.');
         httpAllowedOrigins = [];
     }
 
     // Parse tool categories
-    const toolCategories = parseToolCategories(parsed.data.toolCategories);
+    const { categories: toolCategories, warnings: categoryWarnings } = parseToolCategories(parsed.data.toolCategories);
+    warnings.push(...categoryWarnings);
 
     return {
         // Tool category filtering
         toolCategories,
+        startupWarnings: warnings,
 
         // Omada Client Configuration
         baseUrl: parsed.data.baseUrl.replace(/\/$/, ''),

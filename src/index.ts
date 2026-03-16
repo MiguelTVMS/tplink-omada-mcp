@@ -15,6 +15,10 @@ async function main(): Promise<void> {
     // Initialize logger with configured level, format, and output stream
     initLogger(config.logLevel, config.logFormat, useStderr);
 
+    for (const warning of config.startupWarnings) {
+        logger.warn(warning);
+    }
+
     logger.info('Loaded Omada configuration', {
         baseUrl: config.baseUrl,
         omadacId: config.omadacId ?? '(from headers)',

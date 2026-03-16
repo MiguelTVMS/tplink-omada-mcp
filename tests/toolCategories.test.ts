@@ -1,6 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ALL_CATEGORIES, CATEGORY_GROUP_ALIASES, DEFAULT_TOOL_CATEGORIES, parseToolCategories } from '../src/config.js';
+import { ALL_CATEGORIES, CATEGORY_GROUP_ALIASES, DEFAULT_TOOL_CATEGORIES, FUTURE_CATEGORIES, parseToolCategories } from '../src/config.js';
 import type { OmadaClient } from '../src/omadaClient/index.js';
 import { registerAllTools } from '../src/tools/index.js';
 import * as loggerModule from '../src/utils/logger.js';
@@ -21,22 +21,26 @@ describe('parseToolCategories', () => {
     // -----------------------------------------------------------------------
 
     it('parses the default OMADA_TOOL_CATEGORIES without error', () => {
-        const result = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
-        expect(result.size).toBeGreaterThan(0);
+        const { categories } = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
+        expect(categories.size).toBeGreaterThan(0);
     });
 
-    it('default includes dashboard, client-insights, insights, clients with only read', () => {
-        const result = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
-        expect(result.get('dashboard')).toEqual(new Set(['read']));
-        expect(result.get('client-insights')).toEqual(new Set(['read']));
-        expect(result.get('insights')).toEqual(new Set(['read']));
-        expect(result.get('clients')).toEqual(new Set(['read']));
+    it('default includes dashboard, client-insights, clients with only read', () => {
+        const { categories } = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
+        expect(categories.get('dashboard')).toEqual(new Set(['read']));
+        expect(categories.get('client-insights')).toEqual(new Set(['read']));
+        expect(categories.get('clients')).toEqual(new Set(['read']));
+    });
+
+    it('default does not include insights (future category)', () => {
+        const { categories } = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
+        expect(categories.has('insights')).toBe(false);
     });
 
     it('default expands devices-all:r to all four device categories with read', () => {
-        const result = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
+        const { categories } = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
         for (const cat of CATEGORY_GROUP_ALIASES['devices-all']) {
-            expect(result.get(cat)).toEqual(new Set(['read']));
+            expect(categories.get(cat)).toEqual(new Set(['read']));
         }
     });
 
@@ -45,23 +49,23 @@ describe('parseToolCategories', () => {
     // -----------------------------------------------------------------------
 
     it(':r suffix produces read-only permission', () => {
-        const result = parseToolCategories('clients:r');
-        expect(result.get('clients')).toEqual(new Set(['read']));
+        const { categories } = parseToolCategories('clients:r');
+        expect(categories.get('clients')).toEqual(new Set(['read']));
     });
 
     it(':w suffix produces write-only permission', () => {
-        const result = parseToolCategories('clients:w');
-        expect(result.get('clients')).toEqual(new Set(['write']));
+        const { categories } = parseToolCategories('clients:w');
+        expect(categories.get('clients')).toEqual(new Set(['write']));
     });
 
     it(':rw suffix produces read and write permissions', () => {
-        const result = parseToolCategories('clients:rw');
-        expect(result.get('clients')).toEqual(new Set(['read', 'write']));
+        const { categories } = parseToolCategories('clients:rw');
+        expect(categories.get('clients')).toEqual(new Set(['read', 'write']));
     });
 
     it('no suffix defaults to read+write', () => {
-        const result = parseToolCategories('clients');
-        expect(result.get('clients')).toEqual(new Set(['read', 'write']));
+        const { categories } = parseToolCategories('clients');
+        expect(categories.get('clients')).toEqual(new Set(['read', 'write']));
     });
 
     // -----------------------------------------------------------------------
@@ -69,16 +73,16 @@ describe('parseToolCategories', () => {
     // -----------------------------------------------------------------------
 
     it('parses multiple comma-separated categories', () => {
-        const result = parseToolCategories('dashboard:r,clients:w,vpn:rw');
-        expect(result.get('dashboard')).toEqual(new Set(['read']));
-        expect(result.get('clients')).toEqual(new Set(['write']));
-        expect(result.get('vpn')).toEqual(new Set(['read', 'write']));
+        const { categories } = parseToolCategories('dashboard:r,clients:w,vpn:rw');
+        expect(categories.get('dashboard')).toEqual(new Set(['read']));
+        expect(categories.get('clients')).toEqual(new Set(['write']));
+        expect(categories.get('vpn')).toEqual(new Set(['read', 'write']));
     });
 
     it('handles extra whitespace around tokens', () => {
-        const result = parseToolCategories(' dashboard:r , clients:r ');
-        expect(result.get('dashboard')).toEqual(new Set(['read']));
-        expect(result.get('clients')).toEqual(new Set(['read']));
+        const { categories } = parseToolCategories(' dashboard:r , clients:r ');
+        expect(categories.get('dashboard')).toEqual(new Set(['read']));
+        expect(categories.get('clients')).toEqual(new Set(['read']));
     });
 
     // -----------------------------------------------------------------------
@@ -86,33 +90,37 @@ describe('parseToolCategories', () => {
     // -----------------------------------------------------------------------
 
     it('merges permissions when the same category appears twice', () => {
-        const result = parseToolCategories('clients:r,clients:w');
-        expect(result.get('clients')).toEqual(new Set(['read', 'write']));
+        const { categories } = parseToolCategories('clients:r,clients:w');
+        expect(categories.get('clients')).toEqual(new Set(['read', 'write']));
     });
 
     // -----------------------------------------------------------------------
     // Group alias: all
     // -----------------------------------------------------------------------
 
-    it('all alias expands to every category', () => {
-        const result = parseToolCategories('all:r');
-        for (const cat of ALL_CATEGORIES) {
-            expect(result.has(cat)).toBe(true);
-        }
-        expect(result.size).toBe(ALL_CATEGORIES.length);
+    it('all alias expands to every non-future category', () => {
+        const { categories } = parseToolCategories('all:r');
+        const expectedCount = ALL_CATEGORIES.filter((c) => !FUTURE_CATEGORIES.has(c)).length;
+        expect(categories.size).toBe(expectedCount);
     });
 
-    it('all:rw gives read+write to every category', () => {
-        const result = parseToolCategories('all:rw');
+    it('all:rw gives read+write to every non-future category', () => {
+        const { categories } = parseToolCategories('all:rw');
         for (const cat of ALL_CATEGORIES) {
-            expect(result.get(cat)).toEqual(new Set(['read', 'write']));
+            if (FUTURE_CATEGORIES.has(cat)) {
+                expect(categories.has(cat)).toBe(false);
+            } else {
+                expect(categories.get(cat)).toEqual(new Set(['read', 'write']));
+            }
         }
     });
 
-    it('all (no suffix) gives read+write to every category', () => {
-        const result = parseToolCategories('all');
+    it('all (no suffix) gives read+write to every non-future category', () => {
+        const { categories } = parseToolCategories('all');
         for (const cat of ALL_CATEGORIES) {
-            expect(result.get(cat)).toEqual(new Set(['read', 'write']));
+            if (!FUTURE_CATEGORIES.has(cat)) {
+                expect(categories.get(cat)).toEqual(new Set(['read', 'write']));
+            }
         }
     });
 
@@ -121,59 +129,66 @@ describe('parseToolCategories', () => {
     // -----------------------------------------------------------------------
 
     it('devices-all expands to the four device categories', () => {
-        const result = parseToolCategories('devices-all:r');
+        const { categories } = parseToolCategories('devices-all:r');
         const expected = CATEGORY_GROUP_ALIASES['devices-all'];
-        expect(result.size).toBe(expected.length);
+        expect(categories.size).toBe(expected.length);
         for (const cat of expected) {
-            expect(result.get(cat)).toEqual(new Set(['read']));
+            expect(categories.get(cat)).toEqual(new Set(['read']));
         }
     });
 
     it('wireless-all expands correctly', () => {
-        const result = parseToolCategories('wireless-all:r');
+        const { categories } = parseToolCategories('wireless-all:r');
         const expected = CATEGORY_GROUP_ALIASES['wireless-all'];
         for (const cat of expected) {
-            expect(result.get(cat)).toEqual(new Set(['read']));
+            expect(categories.get(cat)).toEqual(new Set(['read']));
         }
     });
 
-    it('network-all expands correctly', () => {
-        const result = parseToolCategories('network-all:r');
+    it('network-all expands correctly (skips future network-sim-lte)', () => {
+        const { categories, warnings } = parseToolCategories('network-all:r');
         const expected = CATEGORY_GROUP_ALIASES['network-all'];
         for (const cat of expected) {
-            expect(result.get(cat)).toEqual(new Set(['read']));
+            if (FUTURE_CATEGORIES.has(cat)) {
+                expect(categories.has(cat)).toBe(false);
+                expect(warnings.some((w) => w.includes(cat))).toBe(true);
+            } else {
+                expect(categories.get(cat)).toEqual(new Set(['read']));
+            }
         }
     });
 
     it('firewall-all expands correctly', () => {
-        const result = parseToolCategories('firewall-all:r');
+        const { categories } = parseToolCategories('firewall-all:r');
         const expected = CATEGORY_GROUP_ALIASES['firewall-all'];
         for (const cat of expected) {
-            expect(result.get(cat)).toEqual(new Set(['read']));
+            expect(categories.get(cat)).toEqual(new Set(['read']));
         }
     });
 
     it('security-all expands correctly', () => {
-        const result = parseToolCategories('security-all:r');
+        const { categories } = parseToolCategories('security-all:r');
         const expected = CATEGORY_GROUP_ALIASES['security-all'];
         for (const cat of expected) {
-            expect(result.get(cat)).toEqual(new Set(['read']));
+            expect(categories.get(cat)).toEqual(new Set(['read']));
         }
     });
 
-    it('hotspot-all expands correctly', () => {
-        const result = parseToolCategories('hotspot-all:r');
+    it('hotspot-all expands but all are future categories', () => {
+        const { categories, warnings } = parseToolCategories('hotspot-all:r');
         const expected = CATEGORY_GROUP_ALIASES['hotspot-all'];
         for (const cat of expected) {
-            expect(result.get(cat)).toEqual(new Set(['read']));
+            expect(categories.has(cat)).toBe(false);
+            expect(warnings.some((w) => w.includes(cat))).toBe(true);
         }
     });
 
-    it('account-all expands correctly', () => {
-        const result = parseToolCategories('account-all:r');
+    it('account-all expands but all are future categories', () => {
+        const { categories, warnings } = parseToolCategories('account-all:r');
         const expected = CATEGORY_GROUP_ALIASES['account-all'];
         for (const cat of expected) {
-            expect(result.get(cat)).toEqual(new Set(['read']));
+            expect(categories.has(cat)).toBe(false);
+            expect(warnings.some((w) => w.includes(cat))).toBe(true);
         }
     });
 
@@ -182,27 +197,29 @@ describe('parseToolCategories', () => {
     // -----------------------------------------------------------------------
 
     it('alias suffix :r propagates read-only to all expanded categories', () => {
-        const result = parseToolCategories('devices-all:r');
+        const { categories } = parseToolCategories('devices-all:r');
         for (const cat of CATEGORY_GROUP_ALIASES['devices-all']) {
-            const perms = result.get(cat);
+            const perms = categories.get(cat);
             expect(perms?.has('read')).toBe(true);
             expect(perms?.has('write')).toBe(false);
         }
     });
 
     it('alias suffix :w propagates write-only to all expanded categories', () => {
-        const result = parseToolCategories('wireless-all:w');
+        const { categories } = parseToolCategories('wireless-all:w');
         for (const cat of CATEGORY_GROUP_ALIASES['wireless-all']) {
-            const perms = result.get(cat);
+            const perms = categories.get(cat);
             expect(perms?.has('write')).toBe(true);
             expect(perms?.has('read')).toBe(false);
         }
     });
 
-    it('alias with no suffix propagates read+write to all expanded categories', () => {
-        const result = parseToolCategories('network-all');
+    it('alias with no suffix propagates read+write to all expanded non-future categories', () => {
+        const { categories } = parseToolCategories('network-all');
         for (const cat of CATEGORY_GROUP_ALIASES['network-all']) {
-            expect(result.get(cat)).toEqual(new Set(['read', 'write']));
+            if (!FUTURE_CATEGORIES.has(cat)) {
+                expect(categories.get(cat)).toEqual(new Set(['read', 'write']));
+            }
         }
     });
 
@@ -210,23 +227,25 @@ describe('parseToolCategories', () => {
     // Invalid category names
     // -----------------------------------------------------------------------
 
-    it('warns and skips unknown category names', () => {
-        const result = parseToolCategories('totally-fake-cat:r');
-        expect(loggerModule.logger.warn).toHaveBeenCalledWith(expect.stringContaining('unknown category "totally-fake-cat"'));
-        expect(result.size).toBe(0);
+    it('warns (via warnings array) and skips unknown category names', () => {
+        const { categories, warnings } = parseToolCategories('totally-fake-cat:r');
+        expect(warnings.some((w) => w.includes('unknown category "totally-fake-cat"'))).toBe(true);
+        expect(loggerModule.logger.warn).not.toHaveBeenCalled();
+        expect(categories.size).toBe(0);
     });
 
     it('skips invalid categories but still parses valid ones', () => {
-        const result = parseToolCategories('dashboard:r,invalid-cat:r,clients:r');
-        expect(result.get('dashboard')).toEqual(new Set(['read']));
-        expect(result.get('clients')).toEqual(new Set(['read']));
-        expect(result.has('invalid-cat' as never)).toBe(false);
-        expect(loggerModule.logger.warn).toHaveBeenCalledWith(expect.stringContaining('unknown category "invalid-cat"'));
+        const { categories, warnings } = parseToolCategories('dashboard:r,invalid-cat:r,clients:r');
+        expect(categories.get('dashboard')).toEqual(new Set(['read']));
+        expect(categories.get('clients')).toEqual(new Set(['read']));
+        expect(categories.has('invalid-cat' as never)).toBe(false);
+        expect(warnings.some((w) => w.includes('unknown category "invalid-cat"'))).toBe(true);
+        expect(loggerModule.logger.warn).not.toHaveBeenCalled();
     });
 
-    it('returns empty map for empty string', () => {
-        const result = parseToolCategories('');
-        expect(result.size).toBe(0);
+    it('returns empty categories for empty string', () => {
+        const { categories } = parseToolCategories('');
+        expect(categories.size).toBe(0);
     });
 });
 
@@ -256,7 +275,7 @@ describe('registerAllTools category filtering', () => {
     });
 
     it('registers only tools matching active categories and permissions', () => {
-        const activeCategories = parseToolCategories('dashboard:r');
+        const { categories: activeCategories } = parseToolCategories('dashboard:r');
         registerAllTools(mockServer, mockClient, activeCategories);
 
         expect((mockServer.registerTool as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(0);
@@ -275,7 +294,7 @@ describe('registerAllTools category filtering', () => {
     });
 
     it('registers all tools when all:rw is active', () => {
-        const activeCategories = parseToolCategories('all:rw');
+        const { categories: activeCategories } = parseToolCategories('all:rw');
         registerAllTools(mockServer, mockClient, activeCategories);
         expect(mockServer.registerTool).toHaveBeenCalledTimes(197);
     });
@@ -283,13 +302,13 @@ describe('registerAllTools category filtering', () => {
     it('write-only filter registers only write tools for clients category', () => {
         // clients:w should only register write tools:
         // setClientRateLimit, setClientRateLimitProfile, disableClientRateLimit
-        const activeCategories = parseToolCategories('clients:w');
+        const { categories: activeCategories } = parseToolCategories('clients:w');
         registerAllTools(mockServer, mockClient, activeCategories);
         expect((mockServer.registerTool as ReturnType<typeof vi.fn>).mock.calls.length).toBe(3);
     });
 
     it('logs active categories and tool count on startup', () => {
-        const activeCategories = parseToolCategories('dashboard:r');
+        const { categories: activeCategories } = parseToolCategories('dashboard:r');
         registerAllTools(mockServer, mockClient, activeCategories);
         expect(loggerModule.logger.info).toHaveBeenCalledWith('Tool categories loaded', expect.objectContaining({ toolCount: expect.any(Number) }));
     });

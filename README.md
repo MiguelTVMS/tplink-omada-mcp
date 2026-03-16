@@ -107,7 +107,7 @@ The MCP server reads its configuration from environment variables. See `.env.exa
 
 | Variable                  | Required | Default                                                      | Description                                          |
 | ------------------------- | -------- | ------------------------------------------------------------ | ---------------------------------------------------- |
-| `OMADA_TOOL_CATEGORIES`   | No       | `dashboard:r,client-insights:r,insights:r,clients:r,devices-all:r` | Comma-separated categories to enable at startup |
+| `OMADA_TOOL_CATEGORIES`   | No       | `dashboard:r,client-insights:r,clients:r,devices-all:r` | Comma-separated categories to enable at startup |
 
 Each token is `<category>[:<suffix>]`. Permission suffixes:
 
@@ -120,33 +120,35 @@ Each token is `<category>[:<suffix>]`. Permission suffixes:
 
 ##### Category Reference
 
+Categories marked with `*` are reserved for upcoming phases and have no tool implementations yet. Specifying them will produce a startup warning and they will be skipped.
+
 | Group                   | Categories                                                                    |
 | ----------------------- | ----------------------------------------------------------------------------- |
-| Dashboard & Insights    | `dashboard`, `client-insights`, `insights`                                    |
+| Dashboard & Insights    | `dashboard`, `client-insights`, `insights`*                                   |
 | Clients                 | `clients`                                                                     |
 | Devices                 | `devices-general`, `devices-ap`, `devices-switch`, `devices-gateway`          |
 | Wireless                | `wireless-ssid`, `wireless-radio`, `wireless-auth`                            |
-| Network                 | `network-wan`, `network-sim-lte`, `network-lan`, `network-routing`, `network-nat`, `network-services` |
+| Network                 | `network-wan`, `network-sim-lte`*, `network-lan`, `network-routing`, `network-nat`, `network-services` |
 | Firewall & Security     | `firewall-acl`, `firewall-traffic`, `firewall-ids`, `security-threat`, `security-wids` |
 | VPN                     | `vpn`                                                                         |
-| Profiles & Schedules    | `profiles`, `schedules`, `auth-profiles`                                      |
+| Profiles & Schedules    | `profiles`, `schedules`*, `auth-profiles`                                     |
 | Logs                    | `logs`                                                                        |
-| Controller & Org        | `controller`, `sites`, `maintenance`, `account-users`, `account-sso`, `account-cloud` |
-| Hotspot                 | `hotspot-portal`, `hotspot-vouchers`, `hotspot-users`                         |
-| Niche                   | `site-templates`, `voip`, `olt`, `msp`                                        |
+| Controller & Org        | `controller`, `sites`, `maintenance`*, `account-users`*, `account-sso`*, `account-cloud`* |
+| Hotspot                 | `hotspot-portal`*, `hotspot-vouchers`*, `hotspot-users`*                      |
+| Niche                   | `site-templates`*, `voip`*, `olt`*, `msp`*                                    |
 
 Group aliases expand to all categories in their group:
 
-| Alias          | Expands to                                                             |
-| -------------- | ---------------------------------------------------------------------- |
-| `all`          | Every category                                                         |
-| `devices-all`  | `devices-general`, `devices-ap`, `devices-switch`, `devices-gateway`   |
-| `wireless-all` | `wireless-ssid`, `wireless-radio`, `wireless-auth`                     |
-| `network-all`  | `network-wan`, `network-sim-lte`, `network-lan`, `network-routing`, `network-nat`, `network-services` |
-| `firewall-all` | `firewall-acl`, `firewall-traffic`, `firewall-ids`                     |
-| `security-all` | `security-threat`, `security-wids`                                     |
-| `hotspot-all`  | `hotspot-portal`, `hotspot-vouchers`, `hotspot-users`                  |
-| `account-all`  | `account-users`, `account-sso`, `account-cloud`                        |
+| Alias          | Expands to                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------------- |
+| `all`          | Every category                                                                                |
+| `devices-all`  | `devices-general`, `devices-ap`, `devices-switch`, `devices-gateway`                          |
+| `wireless-all` | `wireless-ssid`, `wireless-radio`, `wireless-auth`                                            |
+| `network-all`  | `network-wan`, `network-lan`, `network-routing`, `network-nat`, `network-services` (excludes `network-sim-lte`*) |
+| `firewall-all` | `firewall-acl`, `firewall-traffic`, `firewall-ids`                                            |
+| `security-all` | `security-threat`, `security-wids`                                                            |
+| `hotspot-all`  | future-only alias (`hotspot-portal`*, `hotspot-vouchers`*, `hotspot-users`*)                  |
+| `account-all`  | future-only alias (`account-users`*, `account-sso`*, `account-cloud`*)                        |
 
 Examples:
 
@@ -155,7 +157,7 @@ Examples:
 OMADA_TOOL_CATEGORIES=all:r
 
 # Default safe subset (read only)
-OMADA_TOOL_CATEGORIES=dashboard:r,client-insights:r,insights:r,clients:r,devices-all:r
+OMADA_TOOL_CATEGORIES=dashboard:r,client-insights:r,clients:r,devices-all:r
 
 # Full access including write operations
 OMADA_TOOL_CATEGORIES=all:rw
