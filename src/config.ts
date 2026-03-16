@@ -3,6 +3,172 @@ import { z } from 'zod';
 import { isValidBindAddress, isValidOrigin } from './utils/config-validations.js';
 import { logger } from './utils/logger.js';
 
+// ---------------------------------------------------------------------------
+// Tool category types
+// ---------------------------------------------------------------------------
+
+export type ToolPermission = 'read' | 'write';
+
+/** All known atomic category names */
+export const ALL_CATEGORIES = [
+    // Dashboard & Insights
+    'dashboard',
+    'client-insights',
+    'insights',
+    // Clients
+    'clients',
+    // Devices
+    'devices-general',
+    'devices-ap',
+    'devices-switch',
+    'devices-gateway',
+    // Wireless
+    'wireless-ssid',
+    'wireless-radio',
+    'wireless-auth',
+    // Network
+    'network-wan',
+    'network-sim-lte',
+    'network-lan',
+    'network-routing',
+    'network-nat',
+    'network-services',
+    // Firewall & Security
+    'firewall-acl',
+    'firewall-traffic',
+    'firewall-ids',
+    'security-threat',
+    'security-wids',
+    // VPN
+    'vpn',
+    // Profiles & Schedules
+    'profiles',
+    'schedules',
+    'auth-profiles',
+    // Logs
+    'logs',
+    // Controller & Org
+    'controller',
+    'sites',
+    'maintenance',
+    'account-users',
+    'account-sso',
+    'account-cloud',
+    // Hotspot
+    'hotspot-portal',
+    'hotspot-vouchers',
+    'hotspot-users',
+    // Niche
+    'site-templates',
+    'voip',
+    'olt',
+    'msp',
+] as const;
+
+export type ToolCategory = (typeof ALL_CATEGORIES)[number];
+
+/** Group aliases that expand to multiple categories */
+export const CATEGORY_GROUP_ALIASES: Record<string, ToolCategory[]> = {
+    all: [...ALL_CATEGORIES],
+    'devices-all': ['devices-general', 'devices-ap', 'devices-switch', 'devices-gateway'],
+    'wireless-all': ['wireless-ssid', 'wireless-radio', 'wireless-auth'],
+    'network-all': ['network-wan', 'network-sim-lte', 'network-lan', 'network-routing', 'network-nat', 'network-services'],
+    'firewall-all': ['firewall-acl', 'firewall-traffic', 'firewall-ids'],
+    'security-all': ['security-threat', 'security-wids'],
+    'hotspot-all': ['hotspot-portal', 'hotspot-vouchers', 'hotspot-users'],
+    'account-all': ['account-users', 'account-sso', 'account-cloud'],
+};
+
+export interface ActiveCategoryEntry {
+    category: ToolCategory;
+    permissions: Set<ToolPermission>;
+}
+
+/**
+ * Parse OMADA_TOOL_CATEGORIES string into a map of category → allowed permissions.
+ *
+ * Syntax: comma-separated tokens, each token is `<name>[:<suffix>]`
+ *   - suffix `:r`  → read only
+ *   - suffix `:w`  → write only
+ *   - suffix `:rw` → read and write
+ *   - no suffix    → read and write (`:rw`)
+ *
+ * Group aliases (e.g. `all`, `devices-all`) are expanded before the suffix is applied.
+ * Unknown category names produce a warning and are skipped.
+ *
+ * Returns a Map<ToolCategory, Set<ToolPermission>>.
+ */
+export function parseToolCategories(raw: string): Map<ToolCategory, Set<ToolPermission>> {
+    const result = new Map<ToolCategory, Set<ToolPermission>>();
+
+    const tokens = raw
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+    for (const token of tokens) {
+        // Split on the LAST colon to separate name from suffix
+        const lastColon = token.lastIndexOf(':');
+        let name: string;
+        let suffix: string | undefined;
+
+        if (lastColon !== -1) {
+            const candidate = token.slice(lastColon + 1);
+            if (candidate === 'r' || candidate === 'w' || candidate === 'rw') {
+                name = token.slice(0, lastColon);
+                suffix = candidate;
+            } else {
+                // Colon present but not a valid suffix — treat whole token as name
+                name = token;
+                suffix = undefined;
+            }
+        } else {
+            name = token;
+            suffix = undefined;
+        }
+
+        const permissions: Set<ToolPermission> = new Set();
+        if (!suffix || suffix === 'rw') {
+            permissions.add('read');
+            permissions.add('write');
+        } else if (suffix === 'r') {
+            permissions.add('read');
+        } else {
+            permissions.add('write');
+        }
+
+        // Expand group aliases
+        if (name in CATEGORY_GROUP_ALIASES) {
+            for (const cat of CATEGORY_GROUP_ALIASES[name]) {
+                mergePermissions(result, cat, permissions);
+            }
+            continue;
+        }
+
+        // Validate atomic category name
+        if (!(ALL_CATEGORIES as readonly string[]).includes(name)) {
+            logger.warn(`OMADA_TOOL_CATEGORIES: unknown category "${name}" — skipping`);
+            continue;
+        }
+
+        mergePermissions(result, name as ToolCategory, permissions);
+    }
+
+    return result;
+}
+
+function mergePermissions(map: Map<ToolCategory, Set<ToolPermission>>, cat: ToolCategory, perms: Set<ToolPermission>): void {
+    const existing = map.get(cat);
+    if (existing) {
+        for (const p of perms) existing.add(p);
+    } else {
+        map.set(cat, new Set(perms));
+    }
+}
+
+/** Default value for OMADA_TOOL_CATEGORIES */
+export const DEFAULT_TOOL_CATEGORIES = 'dashboard:r,client-insights:r,insights:r,clients:r,devices-all:r';
+
 const createBooleanStringSchema = (
     defaultValue: boolean
 ): z.ZodEffects<z.ZodOptional<z.ZodUnion<[z.ZodLiteral<'true'>, z.ZodLiteral<'false'>]>>, boolean, 'true' | 'false' | undefined> =>
@@ -34,6 +200,9 @@ const listStringSchema = z
 
 const envSchema = z
     .object({
+        // Tool category filtering
+        toolCategories: z.string().optional().default(DEFAULT_TOOL_CATEGORIES),
+
         // Omada Client Configuration
         baseUrl: z.string().url({ message: 'OMADA_BASE_URL must be a valid URL' }),
         clientId: z.string().min(1, 'OMADA_CLIENT_ID must not be empty').optional(),
@@ -114,6 +283,9 @@ export interface OmadaConnectionConfig {
 }
 
 export interface EnvironmentConfig {
+    // Tool category filtering
+    toolCategories: Map<ToolCategory, Set<ToolPermission>>;
+
     // Omada Client Configuration
     // baseUrl is always required (from env)
     // clientId, clientSecret, omadacId are optional in HTTP mode (can come from request headers)
@@ -145,6 +317,9 @@ export interface EnvironmentConfig {
 
 export function loadConfigFromEnv(env: NodeJS.ProcessEnv = process.env): EnvironmentConfig {
     const parsed = envSchema.safeParse({
+        // Tool category filtering
+        toolCategories: env.OMADA_TOOL_CATEGORIES,
+
         // Omada Client Configuration
         baseUrl: env.OMADA_BASE_URL,
         clientId: env.OMADA_CLIENT_ID,
@@ -190,7 +365,13 @@ export function loadConfigFromEnv(env: NodeJS.ProcessEnv = process.env): Environ
         httpAllowedOrigins = [];
     }
 
+    // Parse tool categories
+    const toolCategories = parseToolCategories(parsed.data.toolCategories);
+
     return {
+        // Tool category filtering
+        toolCategories,
+
         // Omada Client Configuration
         baseUrl: parsed.data.baseUrl.replace(/\/$/, ''),
         clientId: parsed.data.clientId,

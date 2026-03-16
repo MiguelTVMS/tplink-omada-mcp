@@ -37,7 +37,7 @@ async function main(): Promise<void> {
             requestTimeout: config.requestTimeout,
         };
         const client = new OmadaClient(omadaConfig);
-        await startStdioServer(client);
+        await startStdioServer(client, config.toolCategories);
     }
 }
 main().catch((error) => {

@@ -67,7 +67,7 @@ describe('src/index main entry', () => {
 
         expect(mockInitLogger).toHaveBeenCalledWith('info', 'plain', true);
         expect(OmadaClient).toHaveBeenCalledWith(expect.objectContaining({ baseUrl: 'https://controller.local' }));
-        expect(startStdioServer).toHaveBeenCalledWith(expect.objectContaining({ client: 'instance' }));
+        expect(startStdioServer).toHaveBeenCalledWith(expect.objectContaining({ client: 'instance' }), undefined);
         expect(startHttpServer).not.toHaveBeenCalled();
         expect(loggerInfo).toHaveBeenCalledWith('Loaded Omada configuration', expect.objectContaining({ omadacId: 'omada-1' }));
     });

@@ -331,7 +331,7 @@ describe('config', () => {
 
             const config = loadConfigFromEnv(mockEnv);
 
-            expect(config).toEqual({
+            expect(config).toMatchObject({
                 baseUrl: 'https://omada.example.com',
                 clientId: 'client-123',
                 clientSecret: 'secret-456',
@@ -353,6 +353,7 @@ describe('config', () => {
                 httpNgrokEnabled: true,
                 httpNgrokAuthToken: 'ngrok-token-xyz',
             });
+            expect(config.toolCategories).toBeInstanceOf(Map);
         });
     });
 });
