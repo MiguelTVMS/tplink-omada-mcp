@@ -363,6 +363,247 @@ export class OmadaClient {
         return await this.deviceOps.getDownlinkWiredDevices(apMac, siteId, customHeaders);
     }
 
+    // Device Management — Phase 2 Read Tools (issue #73)
+
+    // devices-general
+    public async getFirmwareUpgradePlan(page: number, pageSize: number, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getFirmwareUpgradePlan(page, pageSize, customHeaders);
+    }
+    public async getUpgradePlanList(page: number, pageSize: number, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getUpgradePlanList(page, pageSize, customHeaders);
+    }
+    public async getUpgradeLogs(page: number, pageSize: number, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getUpgradeLogs(page, pageSize, customHeaders);
+    }
+    public async getGridBatchConfig(page: number, pageSize: number, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGridBatchConfig(page, pageSize, customHeaders);
+    }
+    public async getDevicePortConfig(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDevicePortConfig(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceLldpNeighbors(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceLldpNeighbors(deviceMac, siteId, customHeaders);
+    }
+    public async getDevicePoEStatus(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDevicePoEStatus(deviceMac, siteId, customHeaders);
+    }
+    public async getDevicePoEConfig(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDevicePoEConfig(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceLedConfig(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceLedConfig(deviceMac, siteId, customHeaders);
+    }
+    public async getDevicePortMirror(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDevicePortMirror(deviceMac, siteId, customHeaders);
+    }
+    public async getPortSchedule(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getPortSchedule(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceStaticIp(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceStaticIp(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceIsolation(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceIsolation(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceTagList(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceTagList(siteId, customHeaders);
+    }
+    public async getDeviceCountByType(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceCountByType(siteId, customHeaders);
+    }
+    public async getDeviceHealthSummary(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceHealthSummary(siteId, customHeaders);
+    }
+    public async getDeviceOnlineStatus(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceOnlineStatus(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceLocation(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceLocation(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceLog(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceLog(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceNeighborList(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceNeighborList(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceUplinkHistory(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceUplinkHistory(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceCpuMemStats(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceCpuMemStats(deviceMac, siteId, customHeaders);
+    }
+    public async getDevicePortStats(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDevicePortStats(deviceMac, siteId, customHeaders);
+    }
+    public async getDevicePoePortStats(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDevicePoePortStats(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceStormControl(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceStormControl(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceVlanConfig(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceVlanConfig(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceStp(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceStp(deviceMac, siteId, customHeaders);
+    }
+
+    // devices-ap
+    public async getApPoEConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApPoEConfig(apMac, siteId, customHeaders);
+    }
+    public async getApLedConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApLedConfig(apMac, siteId, customHeaders);
+    }
+    public async getApPortMirror(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApPortMirror(apMac, siteId, customHeaders);
+    }
+    public async getApChannelConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApChannelConfig(apMac, siteId, customHeaders);
+    }
+    public async getApBandSteeringConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApBandSteeringConfig(apMac, siteId, customHeaders);
+    }
+    public async getApBeaconConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApBeaconConfig(apMac, siteId, customHeaders);
+    }
+    public async getApMeshConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApMeshConfig(apMac, siteId, customHeaders);
+    }
+    public async getApRoamingConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApRoamingConfig(apMac, siteId, customHeaders);
+    }
+    public async getApMacFilterConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApMacFilterConfig(apMac, siteId, customHeaders);
+    }
+    public async getApDot1xConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApDot1xConfig(apMac, siteId, customHeaders);
+    }
+    public async getApPpskConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApPpskConfig(apMac, siteId, customHeaders);
+    }
+    public async getApPortalConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApPortalConfig(apMac, siteId, customHeaders);
+    }
+    public async getApScheduleConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApScheduleConfig(apMac, siteId, customHeaders);
+    }
+    public async getApRateLimitConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApRateLimitConfig(apMac, siteId, customHeaders);
+    }
+    public async getApQosConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApQosConfig(apMac, siteId, customHeaders);
+    }
+    public async getApAclConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApAclConfig(apMac, siteId, customHeaders);
+    }
+    public async getApGroupConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApGroupConfig(apMac, siteId, customHeaders);
+    }
+    public async getApMdnsConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApMdnsConfig(apMac, siteId, customHeaders);
+    }
+    public async getApIpv6Config(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApIpv6Config(apMac, siteId, customHeaders);
+    }
+    public async getApStpConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApStpConfig(apMac, siteId, customHeaders);
+    }
+    public async getApMulticastConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApMulticastConfig(apMac, siteId, customHeaders);
+    }
+    public async getApWdsConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApWdsConfig(apMac, siteId, customHeaders);
+    }
+    public async getApUsageStats(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApUsageStats(apMac, siteId, customHeaders);
+    }
+    public async getApRoamHistory(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApRoamHistory(apMac, siteId, customHeaders);
+    }
+    public async getApAssocHistory(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApAssocHistory(apMac, siteId, customHeaders);
+    }
+    public async getApSignalHistory(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getApSignalHistory(apMac, siteId, customHeaders);
+    }
+
+    // devices-switch
+    public async getSwitchPoEConfig(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchPoEConfig(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchPoEPortConfig(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchPoEPortConfig(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchStormControl(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchStormControl(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchPortMirror(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchPortMirror(switchMac, siteId, customHeaders);
+    }
+    public async getLldpMedConfig(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getLldpMedConfig(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchSpanningTree(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchSpanningTree(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchMacTable(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchMacTable(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchArpTable(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchArpTable(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchVlanConfig(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchVlanConfig(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchIpv6Config(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchIpv6Config(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchQosPolicy(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchQosPolicy(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchAclConfig(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchAclConfig(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchRateLimitConfig(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchRateLimitConfig(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchDhcpSnooping(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchDhcpSnooping(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchIpSourceGuard(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchIpSourceGuard(switchMac, siteId, customHeaders);
+    }
+    public async getSwitchDynamicArpInspection(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchDynamicArpInspection(switchMac, siteId, customHeaders);
+    }
+
+    // devices-gateway
+    public async getGatewayPoEConfig(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGatewayPoEConfig(gatewayMac, siteId, customHeaders);
+    }
+    public async getGatewayPortConfig(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGatewayPortConfig(gatewayMac, siteId, customHeaders);
+    }
+    public async getGatewayWanPortDetail(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGatewayWanPortDetail(gatewayMac, siteId, customHeaders);
+    }
+    public async getGatewayUsageStats(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGatewayUsageStats(gatewayMac, siteId, customHeaders);
+    }
+    public async getGatewayArpTable(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGatewayArpTable(gatewayMac, siteId, customHeaders);
+    }
+    public async getGatewayMacTable(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGatewayMacTable(gatewayMac, siteId, customHeaders);
+    }
+    public async getGatewayIpv6Status(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGatewayIpv6Status(gatewayMac, siteId, customHeaders);
+    }
+    public async getGatewayHaStatus(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getGatewayHaStatus(gatewayMac, siteId, customHeaders);
+    }
+
     // Security operations (extended)
     public async getTopThreats(customHeaders?: CustomHeaders): Promise<unknown[]> {
         return await this.securityOps.getTopThreats(customHeaders);
