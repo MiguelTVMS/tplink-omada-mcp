@@ -234,82 +234,10 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getUplinkWiredDetail` | Get wired uplink detail for an access point: uplink switch, port number, link speed, and PoE status. |
 | `getDownlinkWiredDevices` | Gets wired downlink devices on an AP's LAN ports. Requires `apMac`.           |
 | `getFirmwareUpgradePlan` | Get the firmware upgrade plan list for devices managed by the controller. |
-| `getUpgradePlanList` | Get the list of scheduled firmware upgrade plans across all devices. |
 | `getUpgradeLogs` | Get firmware upgrade logs showing the history of upgrade operations performed on devices. |
-| `getGridBatchConfig` | Get the batch configuration list for bulk device configuration operations. |
-| `getDevicePortConfig` | Get port configuration for a specific device. |
-| `getDeviceLldpNeighbors` | Get LLDP neighbor information for a specific device. |
-| `getDevicePoEStatus` | Get PoE power status for a specific device. |
-| `getDevicePoEConfig` | Get PoE configuration for a specific device. |
-| `getDeviceLedConfig` | Get LED configuration for a specific device. |
-| `getDevicePortMirror` | Get port mirror configuration for a specific device. |
-| `getPortSchedule` | Get port schedule configuration for a specific device. |
-| `getDeviceStaticIp` | Get static IP configuration for a specific device. |
-| `getDeviceIsolation` | Get device isolation settings for a specific device. |
 | `getDeviceTagList` | Get the list of device tags defined in a site. |
-| `getDeviceCountByType` | Get the count of devices grouped by type (AP, switch, gateway) in a site. |
-| `getDeviceHealthSummary` | Get a health summary of all devices in a site including online/offline counts. |
-| `getDeviceOnlineStatus` | Get online/offline status for a specific device. |
-| `getDeviceLocation` | Get location information for a specific device. |
-| `getDeviceLog` | Get log entries for a specific device. |
-| `getDeviceNeighborList` | Get the neighbor device list for a specific device. |
-| `getDeviceUplinkHistory` | Get uplink connection history for a specific device. |
-| `getDeviceCpuMemStats` | Get CPU and memory statistics for a specific device. |
-| `getDevicePortStats` | Get port traffic statistics for a specific device. |
-| `getDevicePoePortStats` | Get PoE port statistics for a specific device. |
-| `getDeviceStormControl` | Get storm control configuration for a specific device. |
-| `getDeviceVlanConfig` | Get VLAN configuration for a specific device. |
-| `getDeviceStp` | Get Spanning Tree Protocol (STP) configuration for a specific device. |
-| `getApPoEConfig` | Get PoE configuration for a specific access point. |
-| `getApLedConfig` | Get LED configuration for a specific access point. |
-| `getApPortMirror` | Get port mirror configuration for a specific access point. |
-| `getApChannelConfig` | Get channel configuration for a specific access point. |
-| `getApBandSteeringConfig` | Get band steering configuration for a specific access point. |
-| `getApBeaconConfig` | Get beacon configuration for a specific access point. |
-| `getApMeshConfig` | Get mesh configuration for a specific access point. |
-| `getApRoamingConfig` | Get roaming configuration for a specific access point. |
-| `getApMacFilterConfig` | Get MAC filter configuration for a specific access point. |
-| `getApDot1xConfig` | Get 802.1X authentication configuration for a specific access point. |
-| `getApPpskConfig` | Get PPSK (Private Pre-Shared Key) configuration for a specific access point. |
-| `getApPortalConfig` | Get captive portal configuration for a specific access point. |
-| `getApScheduleConfig` | Get schedule configuration for a specific access point. |
-| `getApRateLimitConfig` | Get rate limit configuration for a specific access point. |
 | `getApQosConfig` | Get QoS configuration for a specific access point. |
-| `getApAclConfig` | Get ACL configuration for a specific access point. |
-| `getApGroupConfig` | Get AP group configuration for a specific access point. |
-| `getApMdnsConfig` | Get mDNS configuration for a specific access point. |
 | `getApIpv6Config` | Get IPv6 configuration for a specific access point. |
-| `getApStpConfig` | Get STP configuration for a specific access point. |
-| `getApMulticastConfig` | Get multicast configuration for a specific access point. |
-| `getApWdsConfig` | Get WDS (Wireless Distribution System) configuration for a specific access point. |
-| `getApUsageStats` | Get usage statistics for a specific access point. |
-| `getApRoamHistory` | Get client roaming history for a specific access point. |
-| `getApAssocHistory` | Get client association history for a specific access point. |
-| `getApSignalHistory` | Get signal strength history for a specific access point. |
-| `getSwitchPoEConfig` | Get PoE configuration for a specific switch. |
-| `getSwitchPoEPortConfig` | Get per-port PoE configuration for a specific switch. |
-| `getSwitchStormControl` | Get storm control configuration for a specific switch. |
-| `getSwitchPortMirror` | Get port mirror configuration for a specific switch. |
-| `getLldpMedConfig` | Get LLDP-MED configuration for a specific switch. |
-| `getSwitchSpanningTree` | Get Spanning Tree Protocol (STP) configuration for a specific switch. |
-| `getSwitchMacTable` | Get the MAC address table for a specific switch. |
-| `getSwitchArpTable` | Get the ARP table for a specific switch. |
-| `getSwitchVlanConfig` | Get VLAN configuration for a specific switch. |
-| `getSwitchIpv6Config` | Get IPv6 configuration for a specific switch. |
-| `getSwitchQosPolicy` | Get QoS policy configuration for a specific switch. |
-| `getSwitchAclConfig` | Get ACL configuration for a specific switch. |
-| `getSwitchRateLimitConfig` | Get rate limit configuration for a specific switch. |
-| `getSwitchDhcpSnooping` | Get DHCP snooping configuration for a specific switch. |
-| `getSwitchIpSourceGuard` | Get IP source guard configuration for a specific switch. |
-| `getSwitchDynamicArpInspection` | Get Dynamic ARP Inspection (DAI) configuration for a specific switch. |
-| `getGatewayPoEConfig` | Get PoE configuration for a specific gateway. |
-| `getGatewayPortConfig` | Get port configuration for a specific gateway. |
-| `getGatewayWanPortDetail` | Get detailed WAN port information for a specific gateway. |
-| `getGatewayUsageStats` | Get usage statistics for a specific gateway. |
-| `getGatewayArpTable` | Get the ARP table for a specific gateway. |
-| `getGatewayMacTable` | Get the MAC address table for a specific gateway. |
-| `getGatewayIpv6Status` | Get IPv6 status for a specific gateway. |
-| `getGatewayHaStatus` | Get High Availability (HA) status for a specific gateway. |
 
 ### Network
 
