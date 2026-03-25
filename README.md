@@ -437,8 +437,8 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getSitesSwitchesEsGeneralConfig` | Get ES switch general configuration. Requires `switchMac`. |
 | `listSitesCableTestSwitchesPorts` | List cable test port info for a switch. Requires `switchMac`. |
 | `listSitesCableTestSwitchesIncrementResults` | Get incremental cable test results for a switch. Requires `switchMac`. |
-| `getUpgradeOverviewCritical` | Get critical firmware upgrade overview across all devices. |
-| `getUpgradeOverviewTryBeta` | Get try-beta firmware upgrade overview across all devices. |
+| `getUpgradeOverviewCritical` | Get the number of critical models available for upgrade. |
+| `getUpgradeOverviewTryBeta` | Get the current status of the try-beta firmware upgrade switch. |
 | `listUpgradeFirmwares` | List available firmware packages for upgrade (paginated). |
 | `listUpgradeOverviewFirmwares` | List firmware overview for upgradeable devices (paginated). |
 | `listSitesStacks` | List switch stacks in a site (paginated). |
