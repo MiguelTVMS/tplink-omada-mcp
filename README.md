@@ -424,6 +424,29 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getDeviceTagList` | Get the list of device tags defined in a site. |
 | `getApQosConfig` | Get QoS configuration for a specific access point. |
 | `getApIpv6Config` | Get IPv6 configuration for a specific access point. |
+| `getSitesApsIpSetting` | Get IP settings for an AP. Requires `apMac`. |
+| `getSitesApsChannelLimit` | Get channel limit configuration for an AP. Requires `apMac`. |
+| `getSitesApsAvailableChannel` | Get list of available channels for an AP. Requires `apMac`. |
+| `getSitesApsLoadBalance` | Get load balance configuration for an AP. Requires `apMac`. |
+| `getSitesApsOfdma` | Get OFDMA configuration for an AP. Requires `apMac`. |
+| `getSitesApsPowerSaving` | Get power saving configuration for an AP. Requires `apMac`. |
+| `getSitesApsTrunkSetting` | Get trunk port setting for an AP. Requires `apMac`. |
+| `getSitesApsBridge` | Get bridge configuration for an AP. Requires `apMac`. |
+| `listSitesApsPorts` | List ports for an AP. Requires `apMac`. |
+| `getSitesSwitchesEs` | Get ES switch details. Requires `switchMac`. |
+| `getSitesSwitchesEsGeneralConfig` | Get ES switch general configuration. Requires `switchMac`. |
+| `listSitesCableTestSwitchesPorts` | List cable test port info for a switch. Requires `switchMac`. |
+| `listSitesCableTestSwitchesIncrementResults` | Get incremental cable test results for a switch. Requires `switchMac`. |
+| `getUpgradeOverviewCritical` | Get critical firmware upgrade overview across all devices. |
+| `getUpgradeOverviewTryBeta` | Get try-beta firmware upgrade overview across all devices. |
+| `listUpgradeFirmwares` | List available firmware packages for upgrade (paginated). |
+| `listUpgradeOverviewFirmwares` | List firmware overview for upgradeable devices (paginated). |
+| `listSitesStacks` | List switch stacks in a site (paginated). |
+| `getSitesDeviceWhiteList` | Get the device adoption whitelist for a site (paginated). |
+| `getSitesGatewaysGeneralConfig` | Get general configuration for a gateway. Requires `gatewayMac`. |
+| `getSitesGatewaysPin` | Get PIN information for a gateway. Requires `gatewayMac`. |
+| `getSitesGatewaysSimcardused` | Get SIM card usage info for a gateway. Requires `gatewayMac`. |
+| `getSitesHealthGatewaysWansDetails` | Get gateway WAN health details. Requires `gatewayMac`. |
 
 ### Network
 
