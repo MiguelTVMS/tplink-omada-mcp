@@ -160,7 +160,8 @@ export class DeviceOperations {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/gateways/${encodeURIComponent(gatewayMac)}/ports`);
         const response = await this.request.get<OmadaApiResponse<unknown[]>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response) ?? [];
+        const result = this.request.ensureSuccess(response);
+        return Array.isArray(result) ? result : [];
     }
 
     /**
@@ -188,7 +189,8 @@ export class DeviceOperations {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/aps/${encodeURIComponent(apMac)}/radios`);
         const response = await this.request.get<OmadaApiResponse<unknown[]>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response) ?? [];
+        const result = this.request.ensureSuccess(response);
+        return Array.isArray(result) ? result : [];
     }
 
     /**
@@ -620,7 +622,8 @@ export class DeviceOperations {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/aps/${encodeURIComponent(apMac)}/ports`);
         const response = await this.request.get<OmadaApiResponse<unknown[]>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response) ?? [];
+        const result = this.request.ensureSuccess(response);
+        return Array.isArray(result) ? result : [];
     }
 
     // --- devices-switch new ---
@@ -646,7 +649,8 @@ export class DeviceOperations {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/cable-test/switches/${encodeURIComponent(switchMac)}/ports`);
         const response = await this.request.get<OmadaApiResponse<unknown[]>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response) ?? [];
+        const result = this.request.ensureSuccess(response);
+        return Array.isArray(result) ? result : [];
     }
 
     public async listSitesCableTestSwitchesIncrementResults(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
