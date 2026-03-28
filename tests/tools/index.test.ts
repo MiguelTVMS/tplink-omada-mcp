@@ -144,7 +144,7 @@ describe('tools/index', () => {
             expect(mockServer.registerTool).toHaveBeenCalledWith('listSitesApsPorts', expect.any(Object), expect.any(Function));
             expect(mockServer.registerTool).toHaveBeenCalledWith('getSitesGatewaysGeneralConfig', expect.any(Object), expect.any(Function));
             expect(mockServer.registerTool).toHaveBeenCalledWith('getSitesGatewaysPin', expect.any(Object), expect.any(Function));
-            expect(mockServer.registerTool).toHaveBeenCalledWith('getSitesGatewaysSimcardused', expect.any(Object), expect.any(Function));
+            expect(mockServer.registerTool).toHaveBeenCalledWith('getSitesGatewaysSimCardUsed', expect.any(Object), expect.any(Function));
             expect(mockServer.registerTool).toHaveBeenCalledWith('getSitesHealthGatewaysWansDetails', expect.any(Object), expect.any(Function));
 
             // Verify total number of tools registered

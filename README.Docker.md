@@ -236,8 +236,8 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getFirmwareUpgradePlan` | Get the firmware upgrade plan list for devices managed by the controller. |
 | `getUpgradeLogs` | Get firmware upgrade logs showing the history of upgrade operations performed on devices. |
 | `getDeviceTagList` | Get the list of device tags defined in a site. |
-| `getApQosConfig` | Get QoS configuration for a specific access point. |
-| `getApIpv6Config` | Get IPv6 configuration for a specific access point. |
+| `getApQosConfig` | Get QoS configuration for a specific access point. Requires `apMac`. |
+| `getApIpv6Config` | Get IPv6 configuration for a specific access point. Requires `apMac`. |
 | `getSitesApsIpSetting` | Get IP settings for an AP. Requires `apMac`. |
 | `getSitesApsChannelLimit` | Get channel limit configuration for an AP. Requires `apMac`. |
 | `getSitesApsAvailableChannel` | Get list of available channels for an AP. Requires `apMac`. |
@@ -259,7 +259,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getSitesDeviceWhiteList` | Get the device adoption whitelist for a site (paginated). |
 | `getSitesGatewaysGeneralConfig` | Get general configuration for a gateway. Requires `gatewayMac`. |
 | `getSitesGatewaysPin` | Get PIN information for a gateway. Requires `gatewayMac`. |
-| `getSitesGatewaysSimcardused` | Get SIM card usage info for a gateway. Requires `gatewayMac`. |
+| `getSitesGatewaysSimCardUsed` | Get SIM card usage info for a gateway. Requires `gatewayMac`. |
 | `getSitesHealthGatewaysWansDetails` | Get gateway WAN health details. Requires `gatewayMac`. |
 
 ### Network

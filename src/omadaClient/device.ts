@@ -535,7 +535,7 @@ export class DeviceOperations {
         return this.request.ensureSuccess(response);
     }
 
-    public async getSitesGatewaysSimcardused(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getSitesGatewaysSimCardUsed(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         if (!gatewayMac) throw new Error('A gatewayMac must be provided.');
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/gateways/${encodeURIComponent(gatewayMac)}/simCardUsed`);

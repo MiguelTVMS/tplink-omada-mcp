@@ -394,8 +394,8 @@ export class OmadaClient {
         return await this.deviceOps.getSitesGatewaysPin(gatewayMac, siteId, customHeaders);
     }
 
-    public async getSitesGatewaysSimcardused(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.deviceOps.getSitesGatewaysSimcardused(gatewayMac, siteId, customHeaders);
+    public async getSitesGatewaysSimCardUsed(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSitesGatewaysSimCardUsed(gatewayMac, siteId, customHeaders);
     }
 
     public async getSitesHealthGatewaysWansDetails(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {

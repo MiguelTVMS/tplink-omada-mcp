@@ -9,15 +9,15 @@ const inputSchema = siteInputSchema
     })
     .required({ gatewayMac: true });
 
-export function registerGetSitesGatewaysPinTool(server: McpServer, client: OmadaClient): void {
+export function registerGetSitesGatewaysSimCardUsedTool(server: McpServer, client: OmadaClient): void {
     server.registerTool(
-        'getSitesGatewaysPin',
+        'getSitesGatewaysSimCardUsed',
         {
-            description: 'Get PIN setting for a gateway (LTE model).',
+            description: 'Get SIM card used by a gateway.',
             inputSchema: inputSchema.shape,
         },
-        wrapToolHandler('getSitesGatewaysPin', async ({ gatewayMac, siteId, customHeaders }) =>
-            toToolResult(await client.getSitesGatewaysPin(gatewayMac, siteId, customHeaders))
+        wrapToolHandler('getSitesGatewaysSimCardUsed', async ({ gatewayMac, siteId, customHeaders }) =>
+            toToolResult(await client.getSitesGatewaysSimCardUsed(gatewayMac, siteId, customHeaders))
         )
     );
 }

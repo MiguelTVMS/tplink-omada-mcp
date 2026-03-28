@@ -147,7 +147,7 @@ import { registerGetSitesApsTrunkSettingTool } from './getSitesApsTrunkSetting.j
 import { registerGetSitesDeviceWhiteListTool } from './getSitesDeviceWhiteList.js';
 import { registerGetSitesGatewaysGeneralConfigTool } from './getSitesGatewaysGeneralConfig.js';
 import { registerGetSitesGatewaysPinTool } from './getSitesGatewaysPin.js';
-import { registerGetSitesGatewaysSimcardusedTool } from './getSitesGatewaysSimcardused.js';
+import { registerGetSitesGatewaysSimCardUsedTool } from './getSitesGatewaysSimCardUsed.js';
 import { registerGetSitesHealthGatewaysWansDetailsTool } from './getSitesHealthGatewaysWansDetails.js';
 import { registerGetSitesSwitchesEsTool } from './getSitesSwitchesEs.js';
 import { registerGetSitesSwitchesEsGeneralConfigTool } from './getSitesSwitchesEsGeneralConfig.js';
@@ -312,7 +312,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetGatewayPortsTool, category: 'devices-gateway', permission: 'read' },
     { fn: registerGetSitesGatewaysGeneralConfigTool, category: 'devices-gateway', permission: 'read' },
     { fn: registerGetSitesGatewaysPinTool, category: 'devices-gateway', permission: 'read' },
-    { fn: registerGetSitesGatewaysSimcardusedTool, category: 'devices-gateway', permission: 'read' },
+    { fn: registerGetSitesGatewaysSimCardUsedTool, category: 'devices-gateway', permission: 'read' },
     { fn: registerGetSitesHealthGatewaysWansDetailsTool, category: 'devices-gateway', permission: 'read' },
 
     // --- Clients ---

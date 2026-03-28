@@ -1,10 +1,10 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { OmadaClient } from '../../src/omadaClient/index.js';
-import { registerGetSitesGatewaysSimcardusedTool } from '../../src/tools/getSitesGatewaysSimcardused.js';
+import { registerGetSitesGatewaysSimCardUsedTool } from '../../src/tools/getSitesGatewaysSimCardUsed.js';
 import * as loggerModule from '../../src/utils/logger.js';
 
-describe('tools/getSitesGatewaysSimcardused', () => {
+describe('tools/getSitesGatewaysSimCardUsed', () => {
     let mockServer: McpServer;
     let mockClient: OmadaClient;
     let toolHandler: (args: unknown, extra: { sessionId?: string }) => Promise<unknown>;
@@ -17,7 +17,7 @@ describe('tools/getSitesGatewaysSimcardused', () => {
         } as unknown as McpServer;
 
         mockClient = {
-            getSitesGatewaysSimcardused: vi.fn(),
+            getSitesGatewaysSimCardUsed: vi.fn(),
         } as unknown as OmadaClient;
 
         vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {
@@ -32,39 +32,39 @@ describe('tools/getSitesGatewaysSimcardused', () => {
         vi.restoreAllMocks();
     });
 
-    describe('registerGetSitesGatewaysSimcardusedTool', () => {
+    describe('registerGetSitesGatewaysSimCardUsedTool', () => {
         it('should register with correct name', () => {
-            registerGetSitesGatewaysSimcardusedTool(mockServer, mockClient);
+            registerGetSitesGatewaysSimCardUsedTool(mockServer, mockClient);
 
-            expect(mockServer.registerTool).toHaveBeenCalledWith('getSitesGatewaysSimcardused', expect.any(Object), expect.any(Function));
+            expect(mockServer.registerTool).toHaveBeenCalledWith('getSitesGatewaysSimCardUsed', expect.any(Object), expect.any(Function));
         });
 
         it('should return tool result on success', async () => {
             const mockData = { simCard: 'SIM1' };
-            (mockClient.getSitesGatewaysSimcardused as ReturnType<typeof vi.fn>).mockResolvedValue(mockData);
+            (mockClient.getSitesGatewaysSimCardUsed as ReturnType<typeof vi.fn>).mockResolvedValue(mockData);
 
-            registerGetSitesGatewaysSimcardusedTool(mockServer, mockClient);
+            registerGetSitesGatewaysSimCardUsedTool(mockServer, mockClient);
 
             const result = await toolHandler({ gatewayMac: 'AA-BB-CC-DD-EE-FF' }, { sessionId: 'test-session' });
 
-            expect(mockClient.getSitesGatewaysSimcardused).toHaveBeenCalledWith('AA-BB-CC-DD-EE-FF', undefined, undefined);
+            expect(mockClient.getSitesGatewaysSimCardUsed).toHaveBeenCalledWith('AA-BB-CC-DD-EE-FF', undefined, undefined);
             expect(result).toEqual({ content: [{ type: 'text', text: JSON.stringify(mockData, null, 2) }] });
         });
 
         it('should pass siteId when provided', async () => {
-            (mockClient.getSitesGatewaysSimcardused as ReturnType<typeof vi.fn>).mockResolvedValue({});
+            (mockClient.getSitesGatewaysSimCardUsed as ReturnType<typeof vi.fn>).mockResolvedValue({});
 
-            registerGetSitesGatewaysSimcardusedTool(mockServer, mockClient);
+            registerGetSitesGatewaysSimCardUsedTool(mockServer, mockClient);
 
             await toolHandler({ gatewayMac: 'AA-BB-CC-DD-EE-FF', siteId: 'site-1' }, {});
 
-            expect(mockClient.getSitesGatewaysSimcardused).toHaveBeenCalledWith('AA-BB-CC-DD-EE-FF', 'site-1', undefined);
+            expect(mockClient.getSitesGatewaysSimCardUsed).toHaveBeenCalledWith('AA-BB-CC-DD-EE-FF', 'site-1', undefined);
         });
 
         it('should return empty content on undefined response', async () => {
-            (mockClient.getSitesGatewaysSimcardused as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
+            (mockClient.getSitesGatewaysSimCardUsed as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
-            registerGetSitesGatewaysSimcardusedTool(mockServer, mockClient);
+            registerGetSitesGatewaysSimCardUsedTool(mockServer, mockClient);
 
             const result = await toolHandler({ gatewayMac: 'AA-BB-CC-DD-EE-FF' }, {});
 
@@ -73,9 +73,9 @@ describe('tools/getSitesGatewaysSimcardused', () => {
 
         it('should handle errors', async () => {
             const error = new Error('API error');
-            (mockClient.getSitesGatewaysSimcardused as ReturnType<typeof vi.fn>).mockRejectedValue(error);
+            (mockClient.getSitesGatewaysSimCardUsed as ReturnType<typeof vi.fn>).mockRejectedValue(error);
 
-            registerGetSitesGatewaysSimcardusedTool(mockServer, mockClient);
+            registerGetSitesGatewaysSimCardUsedTool(mockServer, mockClient);
 
             await expect(toolHandler({ gatewayMac: 'AA-BB-CC-DD-EE-FF' }, { sessionId: 'test' })).rejects.toThrow('API error');
         });

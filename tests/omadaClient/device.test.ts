@@ -320,6 +320,15 @@ describe('omadaClient/device', () => {
             expect(result).toEqual([]);
         });
 
+        it('should return empty array when ensureSuccess returns a non-array object', async () => {
+            const mockResponse: OmadaApiResponse<unknown[]> = { errorCode: 0, result: [] };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue({});
+
+            const result = await deviceOps.getGatewayPorts('AA:BB:CC:DD:EE:FF', 'site-1');
+            expect(result).toEqual([]);
+        });
+
         it('should throw when gatewayMac is empty', async () => {
             await expect(deviceOps.getGatewayPorts('')).rejects.toThrow('A gatewayMac must be provided.');
         });
@@ -360,6 +369,15 @@ describe('omadaClient/device', () => {
             const mockResponse: OmadaApiResponse<unknown[]> = { errorCode: 0, result: [] };
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(null);
+
+            const result = await deviceOps.getApRadios('AA:BB:CC:DD:EE:FF', 'site-1');
+            expect(result).toEqual([]);
+        });
+
+        it('should return empty array when ensureSuccess returns a non-array object', async () => {
+            const mockResponse: OmadaApiResponse<unknown[]> = { errorCode: 0, result: [] };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue({});
 
             const result = await deviceOps.getApRadios('AA:BB:CC:DD:EE:FF', 'site-1');
             expect(result).toEqual([]);
@@ -785,10 +803,10 @@ describe('omadaClient/device', () => {
         });
     });
 
-    describe('getSitesGatewaysSimcardused', () => {
+    describe('getSitesGatewaysSimCardUsed', () => {
         it('should return gateway SIM card usage', async () => {
             await testMacMethod(
-                'getSitesGatewaysSimcardused',
+                'getSitesGatewaysSimCardUsed',
                 'GW-01',
                 '/api/sites/site-1/gateways/GW-01/simCardUsed',
                 'A gatewayMac must be provided.'
