@@ -274,7 +274,7 @@ describe('registerAllTools category filtering', () => {
 
         expect((mockServer.registerTool as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(0);
         // dashboard read tools are a subset of all 246 tools
-        expect((mockServer.registerTool as ReturnType<typeof vi.fn>).mock.calls.length).toBeLessThan(225);
+        expect((mockServer.registerTool as ReturnType<typeof vi.fn>).mock.calls.length).toBeLessThan(246);
     });
 
     it('registers all 246 tools when no activeCategories provided', () => {

@@ -15,7 +15,7 @@ export function registerGetWanHealthDetailTool(server: McpServer, client: OmadaC
         'getWanHealthDetail',
         {
             description:
-                'Get detailed WAN health information for a specific gateway, including per-WAN status and connectivity metrics. Requires `gatewayMac`.',
+                'Deprecated alias of `getSitesHealthGatewaysWansDetails`. Get detailed WAN health information for a specific gateway, including per-WAN status and connectivity metrics. Requires `gatewayMac`.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getWanHealthDetail', async ({ gatewayMac, siteId, customHeaders }) =>

@@ -1248,11 +1248,8 @@ export class NetworkOperations {
      * Get detailed WAN port configuration (alias for getWanPortsConfig).
      * OperationId: getWanPortsConfig
      */
-    public async getWanPortDetail(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        const resolvedSiteId = this.site.resolveSiteId(siteId);
-        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/internet/ports-config`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response);
+    public getWanPortDetail(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return this.getWanPortsConfig(siteId, customHeaders);
     }
 
     /**

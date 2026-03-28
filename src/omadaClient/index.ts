@@ -651,7 +651,7 @@ export class OmadaClient {
     }
 
     public async getWanHealthDetail(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.networkOps.getWanHealthDetail(gatewayMac, siteId, customHeaders);
+        return await this.getSitesHealthGatewaysWansDetails(gatewayMac, siteId, customHeaders);
     }
 
     public async getWanUsageStats(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {

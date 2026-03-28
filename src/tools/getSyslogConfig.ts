@@ -10,7 +10,7 @@ export function registerGetSyslogConfigTool(server: McpServer, client: OmadaClie
         'getSyslogConfig',
         {
             description:
-                'Get global controller syslog/remote logging configuration. This is a controller-level setting and does not require a site ID.',
+                'DEPRECATED alias for `getRemoteLogging`. Get global controller syslog/remote logging configuration against the global syslog endpoint. This is a controller-level setting and does not require a site ID. Prefer using the `getRemoteLogging` tool.',
             inputSchema,
         },
         wrapToolHandler('getSyslogConfig', async ({ customHeaders }) => toToolResult(await client.getRemoteLogging(customHeaders)))
