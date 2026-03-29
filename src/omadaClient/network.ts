@@ -1223,7 +1223,7 @@ export class NetworkOperations {
     }
 
     /**
-     * Get list of NAT-disabled WAN entries.
+     * Get the disable-NAT grid for wired networks (entries where NAT is disabled on a WAN interface).
      * OperationId: getDisableNatGrid
      */
     public async getDisableNatList(page = 1, pageSize = 10, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {

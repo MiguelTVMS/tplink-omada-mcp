@@ -513,9 +513,9 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getOspfNeighbors` | Get OSPF neighbor devices for the site gateway. | `getOspfNeighbors` |
 | `getOspfProcess` | Get OSPF process configuration for the site gateway. | `getOspfProcess` |
 | `getSwitchVlanInterface` | Get VLAN interface configuration for a specific switch. Requires `switchMac`. | `getSwitchVlanInterface` |
-| `getSyslogConfig` | Deprecated alias of `getRemoteLoggingSetting`; use that tool instead. | `getSyslogConfig` |
+| `getSyslogConfig` | [DEPRECATED] Alias of `getRemoteLogging`; use that tool instead. | `getSyslogConfig` |
 | `getVrrpConfig` | Get VRRP configuration for OSW devices on the site. | `getVrrpConfig` |
-| `getWanHealthDetail` | Deprecated alias. Gets WAN health details for a specific gateway. Requires `gatewayMac`. | `getWanHealthDetail` |
+| `getWanHealthDetail` | [DEPRECATED] Deprecated alias. Gets WAN health details for a specific gateway. Requires `gatewayMac`. | `getWanHealthDetail` |
 | `getWanIspProfile` | Get ISP scan profile result for a WAN port. Requires `portUuid`. | `getWanIspProfile` |
 | `getWanNatConfig` | Get one-to-one NAT configuration (WAN NAT rules) for the site gateway (paginated). | `getWanNatConfig` |
 | `getWanPortDetail` | Get detailed WAN port configuration for all gateway WAN ports on the site. | `getWanPortDetail` |
