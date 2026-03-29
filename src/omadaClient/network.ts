@@ -1275,17 +1275,6 @@ export class NetworkOperations {
     }
 
     /**
-     * Get WAN health detail for a specific gateway.
-     * OperationId: getEnableWanDetail
-     */
-    public async getWanHealthDetail(gatewayMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        const resolvedSiteId = this.site.resolveSiteId(siteId);
-        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/health/gateways/${encodeURIComponent(gatewayMac)}/wans/details`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response);
-    }
-
-    /**
      * Get WAN traffic usage statistics.
      * OperationId: getTrafficActivities
      */

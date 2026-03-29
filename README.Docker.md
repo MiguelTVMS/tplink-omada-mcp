@@ -279,7 +279,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getWanPortDetail`            | Gets detailed WAN port configuration for all gateway WAN ports.             |
 | `getWanIspProfile`            | Gets ISP scan profile result for a WAN port. Requires `portUuid`.           |
 | `getWanQosConfig`             | Gets QoS configuration for gateway WAN ports.                               |
-| `getWanHealthDetail`          | Gets WAN health details for a specific gateway. Requires `gatewayMac`.      |
+| `getWanHealthDetail`          | Deprecated alias. Gets WAN health details for a specific gateway. Requires `gatewayMac`. |
 | `getWanUsageStats`            | Gets WAN traffic usage statistics for the site.                             |
 | `getWanNatConfig`             | Gets one-to-one NAT rules (paginated).                                      |
 | `getPortForwardingStatus`     | Gets port forwarding status and rules (User or UPnP types).                 |
@@ -331,7 +331,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getDnsCacheDataList`         | Gets the DNS cache data list (paginated).                                   |
 | `getIptvSetting`              | Gets IPTV service configuration for the site.                               |
 | `getNtpSetting`               | Gets NTP server configuration and synchronisation status.                   |
-| `getSyslogConfig`             | Gets global controller syslog configuration (controller-level).             |
+| `getSyslogConfig`             | Deprecated alias of `getRemoteLoggingSetting`; use that tool instead.       |
 | `listRadiusProfiles`          | Lists RADIUS authentication profiles.                                       |
 | `listGroupProfiles`           | Lists group profiles (IP, MAC, or port groups).                             |
 | `getApplicationControlStatus` | Gets application control status for a site.                                 |
@@ -513,9 +513,9 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getOspfNeighbors` | Get OSPF neighbor devices for the site gateway. | `getOspfNeighbors` |
 | `getOspfProcess` | Get OSPF process configuration for the site gateway. | `getOspfProcess` |
 | `getSwitchVlanInterface` | Get VLAN interface configuration for a specific switch. Requires `switchMac`. | `getSwitchVlanInterface` |
-| `getSyslogConfig` | Get global controller syslog/remote logging configuration (controller-level). | `getSyslogConfig` |
+| `getSyslogConfig` | Deprecated alias of `getRemoteLoggingSetting`; use that tool instead. | `getSyslogConfig` |
 | `getVrrpConfig` | Get VRRP configuration for OSW devices on the site. | `getVrrpConfig` |
-| `getWanHealthDetail` | Get detailed WAN health information for a specific gateway. Requires `gatewayMac`. | `getWanHealthDetail` |
+| `getWanHealthDetail` | Deprecated alias. Gets WAN health details for a specific gateway. Requires `gatewayMac`. | `getWanHealthDetail` |
 | `getWanIspProfile` | Get ISP scan profile result for a WAN port. Requires `portUuid`. | `getWanIspProfile` |
 | `getWanNatConfig` | Get one-to-one NAT configuration (WAN NAT rules) for the site gateway (paginated). | `getWanNatConfig` |
 | `getWanPortDetail` | Get detailed WAN port configuration for all gateway WAN ports on the site. | `getWanPortDetail` |

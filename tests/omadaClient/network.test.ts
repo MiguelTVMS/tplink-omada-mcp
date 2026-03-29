@@ -1471,19 +1471,6 @@ describe('NetworkOperations', () => {
         });
     });
 
-    describe('getWanHealthDetail', () => {
-        it('should fetch WAN health detail for a gateway', async () => {
-            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
-            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
-            await networkOps.getWanHealthDetail('AA-BB-CC-DD-EE-FF', 'site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith(
-                '/openapi/v1/test-omadac/sites/site-123/health/gateways/AA-BB-CC-DD-EE-FF/wans/details',
-                undefined,
-                undefined
-            );
-        });
-    });
-
     describe('getWanUsageStats', () => {
         it('should fetch WAN usage stats', async () => {
             const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
