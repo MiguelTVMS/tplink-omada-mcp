@@ -38,27 +38,20 @@ describe('tools/getBandwidthCtrlDetail', () => {
             expect(mockServer.registerTool).toHaveBeenCalledWith('getBandwidthCtrlDetail', expect.any(Object), expect.any(Function));
         });
 
-        it('should execute with pagination', async () => {
-            const mockData = [{ id: 'bw-1' }];
+        it('should execute and return result', async () => {
+            const mockData = { enabled: false };
             (mockClient.getBandwidthCtrlDetail as ReturnType<typeof vi.fn>).mockResolvedValue(mockData);
             registerGetBandwidthCtrlDetailTool(mockServer, mockClient);
-            const result = await toolHandler({ page: 1, pageSize: 10 }, { sessionId: 'test' });
-            expect(mockClient.getBandwidthCtrlDetail).toHaveBeenCalledWith(1, 10, undefined, undefined);
+            const result = await toolHandler({}, { sessionId: 'test' });
+            expect(mockClient.getBandwidthCtrlDetail).toHaveBeenCalledWith(undefined, undefined);
             expect(result).toEqual({ content: [{ type: 'text', text: JSON.stringify(mockData, null, 2) }] });
         });
 
-        it('should pass custom page and pageSize', async () => {
-            (mockClient.getBandwidthCtrlDetail as ReturnType<typeof vi.fn>).mockResolvedValue([]);
-            registerGetBandwidthCtrlDetailTool(mockServer, mockClient);
-            await toolHandler({ page: 2, pageSize: 25 }, { sessionId: 'test' });
-            expect(mockClient.getBandwidthCtrlDetail).toHaveBeenCalledWith(2, 25, undefined, undefined);
-        });
-
         it('should pass siteId', async () => {
-            (mockClient.getBandwidthCtrlDetail as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+            (mockClient.getBandwidthCtrlDetail as ReturnType<typeof vi.fn>).mockResolvedValue({});
             registerGetBandwidthCtrlDetailTool(mockServer, mockClient);
-            await toolHandler({ page: 1, pageSize: 10, siteId: 'site-1' }, { sessionId: 'test' });
-            expect(mockClient.getBandwidthCtrlDetail).toHaveBeenCalledWith(1, 10, 'site-1', undefined);
+            await toolHandler({ siteId: 'site-1' }, { sessionId: 'test' });
+            expect(mockClient.getBandwidthCtrlDetail).toHaveBeenCalledWith('site-1', undefined);
         });
 
         it('should handle errors', async () => {

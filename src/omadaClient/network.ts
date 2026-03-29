@@ -1455,13 +1455,13 @@ export class NetworkOperations {
     }
 
     /**
-     * Get gateway bandwidth control settings (paginated).
-     * OperationId: getBandwidthCtrlGrid
+     * Get gateway bandwidth control detail settings.
+     * OperationId: getBandwidthCtrlDetail
      */
-    public async getBandwidthCtrlDetail(page = 1, pageSize = 10, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getBandwidthCtrlDetail(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/qos/gateway/bwcs`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
     }
 
