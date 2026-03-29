@@ -6,9 +6,7 @@ import { siteInputSchema, toToolResult, wrapToolHandler } from '../server/common
 
 export function registerGetPpskNetworkProfileTool(server: McpServer, client: OmadaClient): void {
     const inputSchema = z.object({
-        type: z
-            .union([z.literal(0), z.literal(1), z.literal(2)])
-            .describe('PPSK profile type: 0 = PPSK Without RADIUS, 1 = PPSK With Built-In RADIUS, 2 = PPSK With External RADIUS.'),
+        type: z.union([z.literal(0), z.literal(1)]).describe('PPSK profile type: 0 = PPSK Without RADIUS, 1 = PPSK With Built-In RADIUS.'),
         ...siteInputSchema.shape,
     });
 

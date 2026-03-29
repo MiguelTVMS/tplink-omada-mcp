@@ -1435,7 +1435,7 @@ export class NetworkOperations {
 
     /**
      * Get global RADIUS proxy configuration.
-     * OperationId: getRadiusProxyConfig
+     * OperationId: getRadiusProxy
      */
     public async getRadiusProxyConfig(customHeaders?: CustomHeaders): Promise<unknown> {
         const path = this.buildPath('/global/controller/setting/network/radius-proxy');

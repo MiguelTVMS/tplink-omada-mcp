@@ -54,6 +54,13 @@ describe('tools/getGroupPolicyDetail', () => {
             expect(mockClient.getGroupProfilesByType).toHaveBeenCalledWith('1', 'site-1', undefined);
         });
 
+        it.each(['3', '4', '5', '7'])('should support extended groupType "%s"', async (groupType) => {
+            (mockClient.getGroupProfilesByType as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+            registerGetGroupPolicyDetailTool(mockServer, mockClient);
+            await toolHandler({ groupType }, { sessionId: 'test' });
+            expect(mockClient.getGroupProfilesByType).toHaveBeenCalledWith(groupType, undefined, undefined);
+        });
+
         it('should handle errors', async () => {
             (mockClient.getGroupProfilesByType as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('fail'));
             registerGetGroupPolicyDetailTool(mockServer, mockClient);
