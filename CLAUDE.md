@@ -335,3 +335,13 @@ npm test        # Full test suite
 ```
 
 If `npm run check` reports formatting issues, run `npx biome format --write <file>` on the affected files and re-check.
+
+## CLAUDE.md Edits — Always Diff Against develop First
+
+Before modifying `CLAUDE.md` on a feature branch:
+
+1. `git diff origin/develop..HEAD -- CLAUDE.md` — see what develop has that the feature branch doesn't
+2. Merge new content with any sections that exist on develop but not on the feature branch
+3. Never use blind append (`>>`) — always read the current file on the feature branch before writing
+
+Failing this causes content loss when the PR merges develop into the feature branch.
