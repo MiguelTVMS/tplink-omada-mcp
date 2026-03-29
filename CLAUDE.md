@@ -281,3 +281,32 @@ Before adding a new method to any `*Operations` class (`NetworkOperations`, `Dev
   - Devcontainer support
   - Local testing and debugging
 - `README.Docker.md` should include a "Contributing" section with the GitHub repository URL to invite contributions.
+
+## PR Review — Resolve Threads After Every Fix (MANDATORY)
+
+After addressing **any** review comment (Copilot, human, or bot) and pushing the fix commit:
+
+1. Fetch all open review threads via GraphQL:
+   ```bash
+   gh api graphql -f query='{ repository(owner:"MiguelTVMS",name:"tplink-omada-mcp") { pullRequest(number: <PR>) { reviewThreads(first:50) { nodes { id isResolved } } } } }'
+   ```
+2. For every thread that was addressed, resolve it:
+   ```bash
+   gh api graphql -f query='mutation { resolveReviewThread(input: { threadId: "<PRRT_xxx>" }) { thread { id isResolved } } }'
+   ```
+3. Verify `isResolved: true` — GitHub sometimes auto-resolves when a suggested change is applied, so check before calling the mutation.
+4. **Do this before reporting back** — never say "done" while threads are still open.
+
+This is non-negotiable. Open threads after a fix is pushed signal the PR is not ready to merge.
+
+## Pre-commit Checklist (MANDATORY — all must pass before every commit)
+
+Run these in order. If any fail, fix before committing — never commit on a broken state.
+
+```bash
+npm run check   # Biome lint + TypeScript type check (NOT just lint — this runs both)
+npm run build   # TypeScript compilation
+npm test        # Full test suite
+```
+
+If `npm run check` reports formatting issues, run `npx biome format --write <file>` on the affected files and re-check.
