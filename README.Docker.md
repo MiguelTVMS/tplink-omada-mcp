@@ -339,6 +339,39 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `listTimeRangeProfiles`       | Lists time range profiles.                                                  |
 | `getRateLimitProfiles`        | Gets the list of available rate limit profiles for bandwidth control.       |
 
+### Firewall & ACL
+
+| Tool                          | Description                                                                              |
+| ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `getDot1xConfig`              | Get 802.1X switch port authentication setting. Alias for `getSwitchDot1xSetting`.        |
+| `getRadiusProxyConfig`        | Get global RADIUS proxy configuration (controller-level, no siteId).                     |
+| `getApplicationAcl`           | [DEPRECATED] Get application control rules. Alias for `getAppControlRules`.              |
+
+### Firewall Traffic & QoS
+
+| Tool                          | Description                                                                              |
+| ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `getGatewayQosClassRules`     | Get gateway QoS class rules (paginated).                                                  |
+| `getBandwidthCtrlDetail`      | Get bandwidth control details for a site.                                                 |
+| `getAppControlRules`          | Get application control rules (paginated).                                                |
+| `getAppControlCategories`     | Get application control category list.                                                    |
+| `getUrlFilterRules`           | Get URL filter gateway rules. Alias for `getGridGatewayRule`.                             |
+| `getUrlFilterBlacklist`       | Get URL filter MAC deny list. Alias for `getGridDenyMacFiltering`.                        |
+| `getUrlFilterWhitelist`       | Get URL filter MAC allow list. Alias for `getGridAllowMacFiltering`.                      |
+| `getMacFilterDetail`          | Get MAC filter general setting. Alias for `getMacFilteringGeneralSetting`.                |
+| `getQosPolicy`                | Get QoS policy configuration for a site.                                                  |
+| `getTrafficPriority`          | Get traffic priority rules for a site.                                                    |
+| `getTrafficStats`             | Get WAN usage statistics. Alias for `getWanUsageStats`.                                   |
+| `getQosPolicyRule`            | [DEPRECATED] Alias for `getQosPolicy`.                                                    |
+| `getQosMarkingRule`           | [DEPRECATED] Alias for `getQosPolicy`.                                                    |
+| `getDscpConfig`               | [DEPRECATED] Alias for `getQosPolicy`.                                                    |
+
+### Firewall IDS / IPS
+
+| Tool                          | Description                                                                              |
+| ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `getGlobalSecuritySetting`    | Get global security/threat management list. Alias for `getThreatList`.                   |
+
 ### Security & Threat Management
 
 | Tool            | Description                                               |
@@ -376,6 +409,39 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getWids`                  | Gets WIDS (Wireless Intrusion Detection) information for a site.   |
 | `getRogueAps`              | Gets rogue access points detected in a site.                       |
 | `getVpnTunnelStats`        | Gets VPN tunnel statistics for a site.                             |
+
+### VPN
+
+| Tool                          | Description                                                                              |
+| ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `getIpsecTunnelList`          | List all site-to-site VPN (IPsec) tunnels. Alias for `listSiteToSiteVpns`.               |
+| `getIpsecTunnelDetail`        | Get detailed config for a specific IPsec tunnel by ID. Alias for `getSiteToSiteVpnInfo`. |
+| `getAdvancedVpnSetting`       | Get advanced VPN configuration settings for a site. Alias for `getVpnSettings`.          |
+| `getVpnUserList`              | Get VPN users for a site (paginated).                                                     |
+| `getVpnUserDetail`            | Get users for a specific client-to-site VPN server.                                       |
+| `getVpnClientStatus`          | Get status of client-to-site VPN clients. Alias for `listClientToSiteVpnClients`.         |
+| `getVpnRouteConfig`           | Get policy-based routing rules. Alias for `listPolicyRoutes`.                             |
+
+### Profiles
+
+| Tool                          | Description                                                                              |
+| ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `getGoogleLdapProfile`        | Get Google LDAP profile configuration for a site.                                         |
+| `getBuiltinRadiusUsers`       | Get built-in RADIUS server user list (paginated).                                         |
+| `getRadiusUserDetail`         | [DEPRECATED] Alias for `getBuiltinRadiusUsers`.                                           |
+| `getPpskNetworkProfile`       | List PPSK network profiles for a site by type.                                            |
+| `getPpskUserGroup`            | Get PPSK user group details for a specific profile.                                       |
+| `getPpskUserList`             | [DEPRECATED] Alias for `getPpskUserGroup`.                                                |
+| `getServiceProfile`           | Get service type profiles (paginated). Alias for `listServiceType`.                       |
+| `getQosProfile`               | Get rate limit profiles. Alias for `getRateLimitProfiles`.                                |
+| `getScheduleProfile`          | Get time range profiles. Alias for `listTimeRangeProfiles`.                               |
+| `getGroupPolicyDetail`        | Get group policy profiles filtered by group type.                                         |
+| `getIpGroupProfile`           | [DEPRECATED] Get IP group profiles. Alias for `getGroupPolicyDetail` with groupType="0".  |
+| `getUrlGroupProfile`          | [DEPRECATED] Get URL/port group profiles. Alias for `getGroupPolicyDetail` with groupType="1". |
+| `getAppGroupProfile`          | [DEPRECATED] Get MAC group profiles. Alias for `getGroupPolicyDetail` with groupType="2". |
+| `getVlanProfile`              | Get LAN/VLAN profiles. Alias for `getLanProfileList`.                                     |
+| `getUserRoleProfile`          | Get user role profiles from the controller (global, no siteId).                           |
+| `getPortalProfile`            | Get captive portal profiles for a site.                                                   |
 
 ### Logs
 
@@ -646,6 +712,19 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `listClientsPastConnections` | List past connection history for clients. | `listClientsPastConnections` |
 | `listSiteAuditLogs` | List site audit logs (paginated). | `listSiteAuditLogs` |
 | `listSiteThreatManagement` | List site-level threat management events (paginated). | `listSiteThreatManagement` |
+| `getGatewayQosClassRules` | Get gateway QoS class rules (paginated). | `getGatewayQosClassRules` |
+| `getBandwidthCtrlDetail` | Get bandwidth control details for a site. | `getBandwidthCtrlDetail` |
+| `getAppControlRules` | Get application control rules (paginated). | `getAppControlRules` |
+| `getAppControlCategories` | Get application control category list. | `getAppControlCategories` |
+| `getQosPolicy` | Get QoS policy configuration for a site. | `getQosPolicy` |
+| `getTrafficPriority` | Get traffic priority rules for a site. | `getTrafficPriority` |
+| `getVpnUserList` | Get VPN users for a site (paginated). | `getVpnUserList` |
+| `getVpnUserDetail` | Get users for a specific client-to-site VPN server by ID. | `getVpnUserDetail` |
+| `getGoogleLdapProfile` | Get Google LDAP profile configuration for a site. | `getGoogleLdapProfile` |
+| `getPpskUserGroup` | Get PPSK user group details for a specific profile ID. | `getPpskUserGroup` |
+| `getPortalProfile` | Get captive portal profiles for a site. | `getPortalProfile` |
+| `getUserRoleProfile` | Get user role profiles from the controller (global). | `getUserRoleProfile` |
+| `getRadiusProxyConfig` | Get global RADIUS proxy configuration (controller-level). | `getRadiusProxyConfig` |
 
 ## Contributing
 
