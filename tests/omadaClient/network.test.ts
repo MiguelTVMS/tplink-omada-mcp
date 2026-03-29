@@ -1659,12 +1659,16 @@ describe('NetworkOperations', () => {
     });
 
     describe('getBandwidthCtrlDetail', () => {
-        it('should fetch bandwidth control detail', async () => {
-            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { enabled: false } };
+        it('should fetch bandwidth control detail with pagination', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { data: [] } };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
-            const result = await networkOps.getBandwidthCtrlDetail('site-123');
-            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/qos/gateway/bwcs', undefined, undefined);
-            expect(result).toEqual({ enabled: false });
+            const result = await networkOps.getBandwidthCtrlDetail(1, 10, 'site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/openapi/v1/test-omadac/sites/site-123/qos/gateway/bwcs',
+                { page: 1, pageSize: 10 },
+                undefined
+            );
+            expect(result).toEqual({ data: [] });
         });
     });
 

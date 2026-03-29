@@ -1198,8 +1198,8 @@ export class OmadaClient {
         return await this.networkOps.getGatewayQosClassRules(page, pageSize, siteId, customHeaders);
     }
 
-    public async getBandwidthCtrlDetail(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.networkOps.getBandwidthCtrlDetail(siteId, customHeaders);
+    public async getBandwidthCtrlDetail(page = 1, pageSize = 10, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.getBandwidthCtrlDetail(page, pageSize, siteId, customHeaders);
     }
 
     public async getAppControlRules(page = 1, pageSize = 10, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
