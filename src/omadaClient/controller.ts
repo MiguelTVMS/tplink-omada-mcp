@@ -4,7 +4,7 @@ import type { RequestHandler } from './request.js';
 
 /**
  * Controller-level operations for the Omada API.
- * Covers global system settings, retention, ports, certificates, and cloud config.
+ * Covers global system settings, retention, ports, certificates, and related controller settings.
  */
 export class ControllerOperations {
     constructor(
