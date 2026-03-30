@@ -715,9 +715,9 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetPortSchedulePortsTool, category: 'schedules', permission: 'read' },
 
     // --- Site templates ---
-    { fn: registerGetSiteTemplateListTool, category: 'site-templates', permission: 'read' },
-    { fn: registerGetSiteTemplateDetailTool, category: 'site-templates', permission: 'read' },
-    { fn: registerGetSiteTemplateConfigTool, category: 'site-templates', permission: 'read' },
+    { fn: registerGetSiteTemplateListTool, category: 'sites', permission: 'read' },
+    { fn: registerGetSiteTemplateDetailTool, category: 'sites', permission: 'read' },
+    { fn: registerGetSiteTemplateConfigTool, category: 'sites', permission: 'read' },
 
     // --- Dashboard ---
     { fn: registerGetDashboardWifiSummaryTool, category: 'dashboard', permission: 'read' },

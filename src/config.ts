@@ -58,7 +58,6 @@ export const ALL_CATEGORIES = [
     'hotspot-vouchers',
     'hotspot-users',
     // Niche
-    'site-templates',
     'voip',
     'olt',
     'msp',
