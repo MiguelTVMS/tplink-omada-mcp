@@ -206,7 +206,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | Tool                   | Description                                                                       |
 | ---------------------- | --------------------------------------------------------------------------------- |
 | `listDevices` | Lists provisioned devices for a given site. |
-| `getDevice` | [DEPRECATED] Use `listDevices` instead. Fetches details for a specific Omada device. |
+| `getDevice` | [DEPRECATED] Use `listDevices` instead and filter the result in your client. This tool filters the site device list in-process; there is no dedicated device-detail endpoint. |
 | `searchDevices` | Searches for devices globally across all sites the user has access to. |
 | `listDevicesStats` | Queries statistics for global adopted devices with pagination and filtering. |
 | `getSwitchStackDetail` | Retrieves detailed configuration and status for a switch stack.                   |
@@ -578,7 +578,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getDashboardTrafficActivities` | Get traffic activity time-series data for a site, showing upload an.... | `getDashboardTrafficActivities` |
 | `getDashboardWifiSummary` | Get WiFi summary for a site dashboard: total APs, connected AP coun.... | `getDashboardWifiSummary` |
 | `getDdnsGrid` | Get DDNS (Dynamic DNS) entries for the site gateway. | `getDdnsGrid` |
-| `getDevice` | [DEPRECATED] Use `listDevices` instead. Fetch detailed information for a specific Omada device. | `getDevice` |
+| `getDevice` | [DEPRECATED] Convenience alias that filters `listDevices` for a specific Omada device. Prefer using `listDevices` directly. | `getDevice` |
 | `getDhcpReservationGrid` | Get DHCP reservations for the site. | `getDhcpReservationGrid` |
 | `getDnsCacheSetting` | Get DNS cache setting for the site gateway. | `getDnsCacheSetting` |
 | `getDnsProxy` | Get DNS proxy configuration for the site gateway. | `getDnsProxy` |
