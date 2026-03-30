@@ -8,7 +8,7 @@ export function registerGetClientTool(server: McpServer, client: OmadaClient): v
         'getClient',
         {
             description:
-                '[DEPRECATED] Prefer getClientDetail when you have a client MAC, or listClients to resolve clients by id/mac. This tool filters the site client list in-process to emulate a per-client lookup. Fetch details for a specific Omada client.',
+                '[DEPRECATED] Use listClients instead. When you have a client MAC, getClientDetail is also available. This tool filters the site client list in-process to emulate a per-client lookup. Fetch details for a specific Omada client.',
             inputSchema: clientIdSchema.shape,
         },
         wrapToolHandler('getClient', async ({ clientId, siteId, customHeaders }) =>

@@ -379,7 +379,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getSiteTemplateDetail` | Get detailed information about a site template. Requires `siteTemplateId`. |
 | `getSiteTemplateList` | List all site templates configured on the controller. |
 | `listClients` | Lists active client devices for a site. |
-| `getClient` | [DEPRECATED] Prefer `getClientDetail` (with client MAC) or `listClients`. This tool filters the site client list in-process. |
+| `getClient` | [DEPRECATED] Use `listClients` instead. When you have a client MAC, `getClientDetail` is also available. This tool filters the site client list in-process. |
 | `listMostActiveClients` | Gets the most active clients sorted by traffic usage. |
 | `listClientsActivity` | Gets client activity statistics over time. |
 | `listClientsPastConnections`| Gets past connection history for clients.                                    |
@@ -753,7 +753,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getBandwidthControl` | Get the global bandwidth control configuration for the site. | `getBandwidthControl` |
 | `getCableTestLogs` | Get cable test logs for a switch. | `getCableTestLogs` |
 | `getChannels` | Get channel distribution and utilization across all APs. | `getChannels` |
-| `getClient` | [DEPRECATED] Prefer `getClientDetail` (with client MAC) or `listClients`. This tool filters the site client list in-process. | `getClient` |
+| `getClient` | [DEPRECATED] Use `listClients` instead. When you have a client MAC, `getClientDetail` is also available. This tool filters the site client list in-process. | `getClient` |
 | `getDashboardPoEUsage` | Get PoE (Power over Ethernet) usage statistics for a site, showing .... | `getDashboardPoEUsage` |
 | `getDashboardSwitchSummary` | Get switch summary for a site dashboard: total switch count, total .... | `getDashboardSwitchSummary` |
 | `getDashboardTopCpuUsage` | Get the top devices by CPU usage for a site, useful for identifying.... | `getDashboardTopCpuUsage` |
