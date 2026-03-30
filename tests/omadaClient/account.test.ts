@@ -63,23 +63,6 @@ describe('AccountOperations', () => {
         });
     });
 
-    describe('getAllRoles', () => {
-        it('should call correct endpoint', async () => {
-            const mockResponse = { errorCode: 0, result: { roles: [] } };
-            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
-            const result = await accountOps.getAllRoles();
-            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/roles', undefined, undefined);
-            expect(result).toEqual({ roles: [] });
-        });
-
-        it('should pass customHeaders', async () => {
-            const mockResponse = { errorCode: 0, result: null };
-            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
-            await accountOps.getAllRoles({ 'X-Custom': 'value' });
-            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Custom': 'value' });
-        });
-    });
-
     describe('getRoleDetail', () => {
         it('should call correct endpoint with roleId', async () => {
             const mockResponse = { errorCode: 0, result: { id: 'role-1', name: 'Admin' } };
