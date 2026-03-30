@@ -506,7 +506,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | Operation ID                        | Description                                               | Tool                          |
 | ----------------------------------- | --------------------------------------------------------- | ----------------------------- |
 | `getSiteList` | List controller sites.                                    | `listSites` |
-| `getDeviceList` | List devices assigned to a site.                          | `listDevices`, `getDevice` |
+| `getDeviceList` | List devices assigned to a site.                          | `listDevices`, ~~`getDevice`~~ [DEPRECATED] |
 | `searchGlobalDevice` | Search for devices across all accessible sites.           | `searchDevices` |
 | `getGridAdoptedDevicesStatByGlobal` | Query statistics for global adopted devices.              | `listDevicesStats`            |
 | `getOswStackDetail` | Retrieve details for a switch stack.                      | `getSwitchStackDetail` |
@@ -519,7 +519,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getApRadios` | Get radio info for a specific access point.               | `getApRadios` |
 | `getStackPorts` | Get port info for a switch stack.                         | `getStackPorts` |
 | `getGridPendingDevices` | List devices pending adoption in a site.                  | `listPendingDevices` |
-| `getGridActiveClients` | List active clients connected to a site.                  | `listClients`, `getClient` |
+| `getGridActiveClients` | List active clients connected to a site.                  | `listClients`, ~~`getClient`~~ [DEPRECATED] |
 | `getMostActiveClients` | Get most active clients sorted by traffic.                | `listMostActiveClients` |
 | `getClientActivity` | Get client activity statistics over time.                 | `listClientsActivity` |
 | `getGridPastConnections` | Get client past connection history.                       | `listClientsPastConnections` |
@@ -537,10 +537,10 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getFirewallSetting` | Get firewall configuration for a site.                    | `getFirewallSetting` |
 | `getVpn` | Get VPN settings for a site.                              | `getVpnSettings` |
 | `getSiteToSiteVpnList` | List site-to-site VPN configurations.                     | `listSiteToSiteVpns` |
-| `getPortForwardingList` | List NAT port forwarding rules.                           | `listPortForwardingRules` |
+| `getPortForwardingList` | List NAT port forwarding rules.                           | `getPortForwardingList` (prefer); ~~`listPortForwardingRules`~~ [DEPRECATED] |
 | `getOsgAclList` | List gateway ACL rules.                                   | `listOsgAcls` |
 | `getEapAclList` | List access point ACL rules.                              | `listEapAcls` |
-| `getStaticRoutingList` | List static routing rules.                                | `listStaticRoutes` |
+| `getStaticRoutingList` | List static routing rules.                                | `getGridStaticRouting` (prefer); ~~`listStaticRoutes`~~ [DEPRECATED] |
 | `getRadiusProfileList` | List RADIUS authentication profiles.                      | `listRadiusProfiles` |
 | `getGroupProfileList` | List group profiles (IP, MAC, port groups).               | `listGroupProfiles` |
 | `getApplicationControlStatus` | Get application control status for a site.                | `getApplicationControlStatus` |
