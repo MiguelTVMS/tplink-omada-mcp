@@ -1262,13 +1262,13 @@ export class OmadaClient {
         return await this.networkOps.getMulticastRateLimit(siteId, customHeaders);
     }
 
-    // Device — new AP tools (delegate to existing validated implementations)
+    // Device — new AP tools (route through DeviceOperations wrappers for naming consistency)
     public async getApLoadBalance(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.deviceOps.getSitesApsLoadBalance(apMac, siteId, customHeaders);
+        return await this.deviceOps.getApLoadBalance(apMac, siteId, customHeaders);
     }
 
     public async getApOfdmaConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.deviceOps.getSitesApsOfdma(apMac, siteId, customHeaders);
+        return await this.deviceOps.getApOfdmaConfig(apMac, siteId, customHeaders);
     }
 
     // Site detail and template operations
@@ -1372,8 +1372,8 @@ export class OmadaClient {
     }
 
     public async getAllRoles(customHeaders?: CustomHeaders): Promise<unknown> {
-        // Delegates to NetworkOperations.getUserRoleProfile — same /roles endpoint, single source of truth
-        return await this.networkOps.getUserRoleProfile(customHeaders);
+        // Delegate to AccountOperations — single source of truth for /roles endpoint
+        return await this.accountOps.getAllRoles(customHeaders);
     }
 
     public async getRoleDetail(roleId: string, customHeaders?: CustomHeaders): Promise<unknown> {

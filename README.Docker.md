@@ -190,6 +190,9 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getSiteRememberSetting` | Get the remember device setting for a site. |
 | `getSiteSpecification` | Get site specification including device limits and feature capabilities. |
 | `getSiteUrl` | Get the URL associated with a site for OpenAPI access. |
+| `getSiteTemplateConfig` | Get configuration settings for a site template. Requires `siteTemplateId`. |
+| `getSiteTemplateDetail` | Get detailed information about a site template. Requires `siteTemplateId`. |
+| `getSiteTemplateList` | List all site templates configured on the controller. |
 | `listClients` | Lists active client devices for a site. |
 | `getClient` | Fetches details for a specific client device. |
 | `listMostActiveClients` | Gets the most active clients sorted by traffic usage. |
@@ -198,13 +201,6 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `setClientRateLimit` | Sets custom bandwidth limits for a specific client. |
 | `setClientRateLimitProfile` | Applies a predefined rate limit profile to a specific client. |
 | `disableClientRateLimit` | Disables bandwidth rate limiting for a specific client. |
-### Site Templates
-
-| Tool | Description |
-| ---- | ----------- |
-| `getSiteTemplateConfig` | Get configuration settings for a site template. Requires `siteTemplateId`. |
-| `getSiteTemplateDetail` | Get detailed information about a site template. Requires `siteTemplateId`. |
-| `getSiteTemplateList` | List all site templates configured on the controller. |
 ### Device
 
 | Tool                   | Description                                                                       |
