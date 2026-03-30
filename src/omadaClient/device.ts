@@ -702,4 +702,26 @@ export class DeviceOperations {
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page: page ?? 1, pageSize: pageSize ?? 10 }, customHeaders);
         return this.request.ensureSuccess(response);
     }
+
+    /**
+     * Get load balance configuration for a specific AP.
+     * OperationId: getApLoadBalanceConfig
+     */
+    public async getApLoadBalance(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/aps/${encodeURIComponent(apMac)}/load-balance`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get OFDMA configuration for a specific AP.
+     * OperationId: getApOfdmaConfig
+     */
+    public async getApOfdmaConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/aps/${encodeURIComponent(apMac)}/ofdma`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
 }
