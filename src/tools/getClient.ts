@@ -7,7 +7,8 @@ export function registerGetClientTool(server: McpServer, client: OmadaClient): v
     server.registerTool(
         'getClient',
         {
-            description: 'Fetch details for a specific Omada client.',
+            description:
+                '[DEPRECATED] Use listClients instead. Filters the site client list in-process. No dedicated per-client detail endpoint exists in the spec. Fetch details for a specific Omada client.',
             inputSchema: clientIdSchema.shape,
         },
         wrapToolHandler('getClient', async ({ clientId, siteId, customHeaders }) =>

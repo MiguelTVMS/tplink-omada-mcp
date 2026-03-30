@@ -12,7 +12,7 @@ export function registerListPolicyRoutesTool(server: McpServer, client: OmadaCli
         'listPolicyRoutes',
         {
             description:
-                'List policy routing rules for the site gateway. Policy routes direct traffic based on source IP, destination, or protocol — useful for multi-WAN environments.',
+                '[DEPRECATED] Use getGridPolicyRouting instead. Same endpoint. List policy routing rules for the site gateway. Policy routes direct traffic based on source IP, destination, or protocol — useful for multi-WAN environments.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('listPolicyRoutes', async ({ siteId, customHeaders }) => toToolResult(await client.listPolicyRoutes(siteId, customHeaders)))

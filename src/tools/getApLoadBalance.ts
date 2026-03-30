@@ -11,7 +11,8 @@ export function registerGetApLoadBalanceTool(server: McpServer, client: OmadaCli
     server.registerTool(
         'getApLoadBalance',
         {
-            description: 'Get load balance configuration for a specific access point, including maximum client count settings.',
+            description:
+                '[DEPRECATED] Use getSitesApsLoadBalance instead. Same endpoint. Canonical enforces non-empty apMac validation. Get load balance configuration for a specific access point, including maximum client count settings.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getApLoadBalance', async ({ apMac, siteId, customHeaders }) =>
