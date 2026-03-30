@@ -12,7 +12,7 @@ export function registerGetApOfdmaConfigTool(server: McpServer, client: OmadaCli
         'getApOfdmaConfig',
         {
             description:
-                '[DEPRECATED] Use getSitesApsOfdma instead. Same endpoint. Canonical enforces non-empty apMac validation. Get OFDMA (Orthogonal Frequency Division Multiple Access) configuration for a specific access point.',
+                '[DEPRECATED] Use getSitesApsOfdma instead. Same endpoint, retained for backward compatibility. getSitesApsOfdma is the canonical tool name and should be preferred for consistency. Get OFDMA (Orthogonal Frequency Division Multiple Access) configuration for a specific access point.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getApOfdmaConfig', async ({ apMac, siteId, customHeaders }) =>
