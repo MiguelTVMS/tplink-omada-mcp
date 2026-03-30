@@ -706,22 +706,18 @@ export class DeviceOperations {
     /**
      * Get load balance configuration for a specific AP.
      * OperationId: getApLoadBalanceConfig
+     * Delegates to getSitesApsLoadBalance to avoid duplication and ensure consistent apMac validation.
      */
-    public async getApLoadBalance(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        const resolvedSiteId = this.site.resolveSiteId(siteId);
-        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/aps/${encodeURIComponent(apMac)}/load-balance`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response);
+    public getApLoadBalance(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return this.getSitesApsLoadBalance(apMac, siteId, customHeaders);
     }
 
     /**
      * Get OFDMA configuration for a specific AP.
      * OperationId: getApOfdmaConfig
+     * Delegates to getSitesApsOfdma to avoid duplication and ensure consistent apMac validation.
      */
-    public async getApOfdmaConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        const resolvedSiteId = this.site.resolveSiteId(siteId);
-        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/aps/${encodeURIComponent(apMac)}/ofdma`);
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response);
+    public getApOfdmaConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return this.getSitesApsOfdma(apMac, siteId, customHeaders);
     }
 }
