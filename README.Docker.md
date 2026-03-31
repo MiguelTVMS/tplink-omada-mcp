@@ -288,7 +288,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getWanHealthDetail` | Deprecated alias. Gets WAN health details for a specific gateway. Requires `gatewayMac`. |
 | `getWanUsageStats` | [DEPRECATED] Use `getDashboardTrafficActivities` instead. Gets WAN traffic usage statistics for the site. |
 | `getWanNatConfig` | Gets one-to-one NAT rules (paginated). |
-| `getPortForwardingStatus` | Gets port forwarding status and rules. Required: `type` (`user` or `upnp`), `page`, `pageSize`. |
+| `getPortForwardingStatus` | Gets port forwarding status and rules. Required: `type` (`user` or `upnp`). Optional: `page` (default 1), `pageSize` (default 50). |
 | `getLanNetworkList` | [DEPRECATED] Use `getLanNetworkListV2` instead. This tool aggregates all pages; getLanNetworkListV2 is explicitly paginated. |
 | `getLanNetworkListV2` | Get the LAN network list using the v2 API, with richer VLAN and DHCP data (paginated). |
 | `getInterfaceLanNetwork` | Gets interface-level LAN network bindings. Optional type filter. |
@@ -402,7 +402,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getIspLoad` | Gets per-WAN ISP link load over a time range. Requires `start` and `end` timestamps (seconds). |
 | `getChannels` | Gets channel distribution and utilization across all APs. |
 | `getInterference` | Gets top RF interference sources detected by APs. |
-| `getGridDashboardTunnelStats` | Gets VPN tunnel statistics. Required: `type` (`ipsec`, `openvpn`, or `wireguard`). |
+| `getGridDashboardTunnelStats` | Gets VPN tunnel statistics. Required: `type` (integer: `0` = Server, `1` = Client). |
 | `getGridDashboardIpsecTunnelStats` | Gets IPsec tunnel statistics.                                 |
 | `getGridDashboardOpenVpnTunnelStats` | Gets OpenVPN tunnel statistics by type. Requires `type` parameter. |
 
