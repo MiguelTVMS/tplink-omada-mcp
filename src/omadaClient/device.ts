@@ -747,9 +747,10 @@ export class DeviceOperations {
      * List devices detected but not yet adopted.
      * OperationId: getGlobalUnknownDeviceList
      */
-    public async listUnknownDevices(customHeaders?: CustomHeaders): Promise<unknown[]> {
+    public async listUnknownDevices(page = 1, pageSize = 50, customHeaders?: CustomHeaders): Promise<unknown> {
         const path = this.buildPath('/devices/unknown-devices');
-        return await this.request.fetchPaginated<unknown>(path, {}, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
+        return this.request.ensureSuccess(response);
     }
 
     /**

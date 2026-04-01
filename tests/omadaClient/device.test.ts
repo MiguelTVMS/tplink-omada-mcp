@@ -1072,10 +1072,11 @@ describe('omadaClient/device', () => {
     });
 
     describe('listUnknownDevices', () => {
-        it('should call fetchPaginated', async () => {
-            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue([]);
-            await deviceOps.listUnknownDevices();
-            expect(mockRequest.fetchPaginated).toHaveBeenCalledWith('/api/devices/unknown-devices', {}, undefined);
+        it('should call correct endpoint with pagination', async () => {
+            const resp = { errorCode: 0, result: { data: [] } };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.listUnknownDevices(1, 50);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/unknown-devices', { page: 1, pageSize: 50 }, undefined);
         });
     });
 

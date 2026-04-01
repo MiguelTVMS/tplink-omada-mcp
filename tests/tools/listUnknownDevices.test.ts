@@ -44,7 +44,7 @@ describe('tools/listUnknownDevices', () => {
         registerListUnknownDevicesTool(mockServer, mockClient);
         const result = await toolHandler({}, { sessionId: 'test' });
 
-        expect(mockClient.listUnknownDevices).toHaveBeenCalledWith(undefined);
+        expect(mockClient.listUnknownDevices).toHaveBeenCalledWith(1, 50, undefined);
         expect(result).toEqual({ content: [{ type: 'text', text: JSON.stringify(mockResult, null, 2) }] });
     });
 

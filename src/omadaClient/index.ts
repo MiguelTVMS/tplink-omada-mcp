@@ -1434,8 +1434,8 @@ export class OmadaClient {
     public async listKnownDevices(page = 1, pageSize = 50, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.deviceOps.listKnownDevices(page, pageSize, customHeaders);
     }
-    public async listUnknownDevices(customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.deviceOps.listUnknownDevices(customHeaders);
+    public async listUnknownDevices(page = 1, pageSize = 50, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.listUnknownDevices(page, pageSize, customHeaders);
     }
     public async getDeviceAdoptResult(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.deviceOps.getDeviceAdoptResult(deviceMac, siteId, customHeaders);
