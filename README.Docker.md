@@ -469,7 +469,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `listSiteAuditLogs` | Lists site audit logs.                                       |
 | `listGlobalEvents` | Lists global event logs across all sites. |
 | `listGlobalAlerts` | Lists global alert logs across all sites. |
-| `listUpgradeFailedDevices` | List devices that failed the firmware upgrade process. |
+| `listUpgradeFailedDevices` | List devices that failed the firmware upgrade process. Requires `upgradeLogId`. |
 | `getUpgradeFailedFirmware` | Get firmware details for a failed upgrade attempt. Requires `upgradeLogId`. |
 ### Controller
 

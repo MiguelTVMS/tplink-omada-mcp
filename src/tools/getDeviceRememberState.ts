@@ -13,7 +13,7 @@ export function registerGetDeviceRememberStateTool(server: McpServer, client: Om
     server.registerTool(
         'getDeviceRememberState',
         {
-            description: 'Get the remember state for a specific device. Requires siteId and deviceMac.',
+            description: 'Get the remember state for a specific device. Requires deviceMac; siteId is optional (may be defaulted).',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getDeviceRememberState', async ({ deviceMac, siteId, customHeaders }) =>

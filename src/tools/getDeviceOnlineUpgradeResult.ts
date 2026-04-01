@@ -13,7 +13,7 @@ export function registerGetDeviceOnlineUpgradeResultTool(server: McpServer, clie
     server.registerTool(
         'getDeviceOnlineUpgradeResult',
         {
-            description: 'Get the result of an online firmware upgrade for a device. Requires siteId and deviceMac.',
+            description: 'Get the result of an online firmware upgrade for a device. Requires deviceMac; siteId is optional and may default.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getDeviceOnlineUpgradeResult', async ({ deviceMac, siteId, customHeaders }) =>

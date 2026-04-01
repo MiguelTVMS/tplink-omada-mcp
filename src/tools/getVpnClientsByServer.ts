@@ -17,7 +17,8 @@ export function registerGetVpnClientsByServerTool(server: McpServer, client: Oma
     server.registerTool(
         'getVpnClientsByServer',
         {
-            description: 'List VPN clients connected to a specific client-to-site VPN server. Requires siteId and vpnId.',
+            description:
+                'List VPN clients connected to a specific client-to-site VPN server. Requires vpnId; siteId is optional and defaults to OMADA_SITE_ID.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getVpnClientsByServer', async ({ vpnId, siteId, customHeaders }) =>

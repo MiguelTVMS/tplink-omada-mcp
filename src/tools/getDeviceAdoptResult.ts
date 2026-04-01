@@ -13,7 +13,7 @@ export function registerGetDeviceAdoptResultTool(server: McpServer, client: Omad
     server.registerTool(
         'getDeviceAdoptResult',
         {
-            description: 'Get the result of a device adoption operation. Requires siteId and deviceMac.',
+            description: 'Get the result of a device adoption operation for a deviceMac at an optional/defaulted siteId.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getDeviceAdoptResult', async ({ deviceMac, siteId, customHeaders }) =>

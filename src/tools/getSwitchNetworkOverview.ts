@@ -13,7 +13,7 @@ export function registerGetSwitchNetworkOverviewTool(server: McpServer, client: 
     server.registerTool(
         'getSwitchNetworkOverview',
         {
-            description: 'Get the network overview for a managed switch. Requires siteId and switchMac.',
+            description: 'Get the network overview for a managed switch. Requires switchMac; siteId is optional and may be defaulted.',
             inputSchema: inputSchema.shape,
         },
         wrapToolHandler('getSwitchNetworkOverview', async ({ switchMac, siteId, customHeaders }) =>
