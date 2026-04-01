@@ -1049,11 +1049,25 @@ describe('omadaClient/device', () => {
     });
 
     describe('listKnownDevices', () => {
-        it('should call correct endpoint with pagination', async () => {
+        it('should call correct endpoint with default pagination', async () => {
             const resp = mockSimpleResponse([]);
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
             await deviceOps.listKnownDevices();
             expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/known-devices', { page: 1, pageSize: 50 }, undefined);
+        });
+
+        it('should use provided page and pageSize', async () => {
+            const resp = mockSimpleResponse([]);
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.listKnownDevices(2, 25);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/known-devices', { page: 2, pageSize: 25 }, undefined);
+        });
+
+        it('should pass customHeaders', async () => {
+            const resp = mockSimpleResponse([]);
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.listKnownDevices(1, 50, { 'X-Test': 'value' });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/known-devices', { page: 1, pageSize: 50 }, { 'X-Test': 'value' });
         });
     });
 

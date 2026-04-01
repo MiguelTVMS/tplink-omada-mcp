@@ -737,9 +737,9 @@ export class DeviceOperations {
      * List all known (previously seen) devices on the controller.
      * OperationId: getGlobalKnownDeviceList
      */
-    public async listKnownDevices(customHeaders?: CustomHeaders): Promise<unknown> {
+    public async listKnownDevices(page = 1, pageSize = 50, customHeaders?: CustomHeaders): Promise<unknown> {
         const path = this.buildPath('/devices/known-devices');
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page: 1, pageSize: 50 }, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
         return this.request.ensureSuccess(response);
     }
 

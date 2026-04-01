@@ -504,7 +504,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getAvailableRoles` | List roles available for user assignment. |
 | `getRoleDetail` | Get detailed information about a specific role. Requires `roleId`. |
 | `listControllerUsers` | List all users configured on the controller. |
-| `getControllerUser` | Get details for a specific controller user. Requires `userID`. |
+| `getControllerUser` | Get details for a specific controller user. Requires `userId`. |
 ### Account Cloud
 
 | Tool                          | Description                                                                              |
