@@ -147,4 +147,21 @@ describe('ControllerOperations', () => {
             expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Custom': 'value' });
         });
     });
+
+    describe('getControllerDstInfo', () => {
+        it('should call correct endpoint', async () => {
+            const mockResponse = { errorCode: 0, result: { timezone: 'UTC', dst: false } };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await controllerOps.getControllerDstInfo();
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/dst-info', undefined, undefined);
+            expect(result).toEqual({ timezone: 'UTC', dst: false });
+        });
+
+        it('should pass customHeaders', async () => {
+            const mockResponse = { errorCode: 0, result: null };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await controllerOps.getControllerDstInfo({ 'X-Custom': 'value' });
+            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Custom': 'value' });
+        });
+    });
 });

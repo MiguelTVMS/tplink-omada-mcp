@@ -181,4 +181,42 @@ describe('AccountOperations', () => {
             expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Custom': 'value' });
         });
     });
+
+    describe('listControllerUsers', () => {
+        it('should call correct endpoint', async () => {
+            const mockResponse = { errorCode: 0, result: [{ id: 'u1' }] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await accountOps.listControllerUsers();
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/users', undefined, undefined);
+            expect(result).toEqual([{ id: 'u1' }]);
+        });
+
+        it('should pass customHeaders', async () => {
+            const mockResponse = { errorCode: 0, result: [] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await accountOps.listControllerUsers({ 'X-Test': 'val' });
+            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Test': 'val' });
+        });
+    });
+
+    describe('getControllerUser', () => {
+        it('should call correct endpoint with userID', async () => {
+            const mockResponse = { errorCode: 0, result: { id: 'u1', username: 'admin' } };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await accountOps.getControllerUser('u1');
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/users/u1', undefined, undefined);
+            expect(result).toEqual({ id: 'u1', username: 'admin' });
+        });
+
+        it('should throw if userID is empty', async () => {
+            await expect(accountOps.getControllerUser('')).rejects.toThrow('A userID must be provided.');
+        });
+
+        it('should pass customHeaders', async () => {
+            const mockResponse = { errorCode: 0, result: null };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await accountOps.getControllerUser('u1', { 'X-Test': 'val' });
+            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Test': 'val' });
+        });
+    });
 });

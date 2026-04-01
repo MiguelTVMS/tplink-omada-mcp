@@ -720,4 +720,106 @@ export class DeviceOperations {
     public getApOfdmaConfig(apMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return this.getSitesApsOfdma(apMac, siteId, customHeaders);
     }
+
+    // --- Priority 1 read tools (issue #88) ---
+
+    /**
+     * Get batch info for all adopted devices across the controller.
+     * OperationId: getAdoptAbleDevicesForGlobalBatchAdopt
+     */
+    public async getDevicesInfo(customHeaders?: CustomHeaders): Promise<unknown> {
+        const path = this.buildPath('/devices/batch/info');
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * List all known (previously seen) devices on the controller.
+     * OperationId: getGlobalKnownDeviceList
+     */
+    public async listKnownDevices(customHeaders?: CustomHeaders): Promise<unknown> {
+        const path = this.buildPath('/devices/known-devices');
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * List devices detected but not yet adopted.
+     * OperationId: getGlobalUnknownDeviceList
+     */
+    public async listUnknownDevices(customHeaders?: CustomHeaders): Promise<unknown> {
+        const path = this.buildPath('/devices/unknown-devices');
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get the result of a device adoption operation.
+     * OperationId: getDeviceAdoptResult
+     */
+    public async getDeviceAdoptResult(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!deviceMac) throw new Error('A deviceMac must be provided.');
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/devices/${encodeURIComponent(deviceMac)}/adopt-result`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get the result of an online firmware upgrade for a device.
+     * OperationId: getOnlineUpgradeRes
+     */
+    public async getDeviceOnlineUpgradeResult(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!deviceMac) throw new Error('A deviceMac must be provided.');
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/devices/${encodeURIComponent(deviceMac)}/online-upgrade-result`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get the remember state for a specific device.
+     * OperationId: getDeviceRememberMe
+     */
+    public async getDeviceRememberState(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!deviceMac) throw new Error('A deviceMac must be provided.');
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/devices/${encodeURIComponent(deviceMac)}/remember`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get the network overview for a managed switch.
+     * OperationId: getESNetworkOverview
+     */
+    public async getSwitchNetworkOverview(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!switchMac) throw new Error('A switchMac must be provided.');
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/switches/es/${encodeURIComponent(switchMac)}/network-overview`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * List devices that failed during a firmware upgrade task.
+     * OperationId: getUpgradeFailedDeviceInfos
+     */
+    public async listUpgradeFailedDevices(upgradeLogId: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!upgradeLogId) throw new Error('An upgradeLogId must be provided.');
+        const path = this.buildPath(`/logs/${encodeURIComponent(upgradeLogId)}/upgrade/overview/failed-devices`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get failed firmware info for a firmware upgrade log entry.
+     * OperationId: getUpgradeFailedDeviceFirmwareInfo
+     */
+    public async getUpgradeFailedFirmware(upgradeLogId: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!upgradeLogId) throw new Error('An upgradeLogId must be provided.');
+        const path = this.buildPath(`/logs/${encodeURIComponent(upgradeLogId)}/upgrade/overview/failed-model-firmware`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
 }

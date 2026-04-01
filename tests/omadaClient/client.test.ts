@@ -749,4 +749,27 @@ describe('omadaClient/client', () => {
             expect(result).toEqual(mockData);
         });
     });
+
+    describe('getClientCorrectionList', () => {
+        it('should call correct endpoint', async () => {
+            const mockData = [{ mac: 'aa:bb:cc:dd:ee:ff', corrected: true }];
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue({ errorCode: 0, result: mockData });
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockData);
+
+            const result = await clientOps.getClientCorrectionList();
+
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/correction-list', undefined, undefined);
+            expect(result).toEqual(mockData);
+        });
+
+        it('should pass customHeaders', async () => {
+            const headers = { 'X-Test': 'val' };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue({ errorCode: 0, result: [] });
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue([]);
+
+            await clientOps.getClientCorrectionList(headers);
+
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/correction-list', undefined, headers);
+        });
+    });
 });
