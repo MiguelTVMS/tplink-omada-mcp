@@ -1584,4 +1584,71 @@ export class NetworkOperations {
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
     }
+
+    /**
+     * Get ISP and location information for the site WAN.
+     * OperationId: getLocationAndIspInfo
+     */
+    public async getSiteInternetLocationIsp(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/internet/location-isp`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * List available WAN internet connection models for the site.
+     * OperationId: getSupportInfo
+     */
+    public async listSiteInternetModels(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/internet/models`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get default firewall session timeout values for the site.
+     * OperationId: getDefaultFirewallConfig
+     */
+    public async getFirewallTimeoutDefaults(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/firewall/timeout/default`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get default attack defense settings for the site.
+     * OperationId: getDefaultAttackDefense
+     */
+    public async getAttackDefenseDefaults(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/attack-defense/default`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * List available URL filter categories for the site.
+     * OperationId: getCategory
+     */
+    public async getUrlFilterCategories(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/url-filters/category`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * List VPN clients connected to a specific client-to-site VPN server.
+     * OperationId: getVpnClientToSiteClientInfo
+     */
+    public async getVpnClientsByServer(vpnId: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!vpnId) throw new Error('A vpnId must be provided.');
+        const resolvedSiteId = this.site.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/vpn/client-to-site-vpn-clients/${encodeURIComponent(vpnId)}`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
 }

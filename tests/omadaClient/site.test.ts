@@ -230,5 +230,53 @@ describe('omadaClient/site', () => {
                 expect(result).toEqual(mockResult);
             });
         });
+
+        describe('listSiteTags', () => {
+            it('should call correct endpoint and return plain array', async () => {
+                const mockResult = [{ tagId: '1', name: 'prod' }];
+                (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResult);
+
+                const siteOps = new SiteOperations(mockRequest, buildPath);
+                const result = await siteOps.listSiteTags();
+
+                expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/tags', undefined, undefined);
+                expect(result).toEqual(mockResult);
+            });
+
+            it('should pass customHeaders', async () => {
+                const mockResult: unknown[] = [];
+                (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResult);
+
+                const siteOps = new SiteOperations(mockRequest, buildPath);
+                await siteOps.listSiteTags({ 'X-Test': 'val' });
+
+                expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/tags', undefined, { 'X-Test': 'val' });
+            });
+        });
+
+        describe('getSiteDstInfo', () => {
+            it('should call correct endpoint with siteId', async () => {
+                const mockResult = { timezone: 'UTC', dst: false };
+                (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue({ result: mockResult });
+                (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockResult);
+
+                const siteOps = new SiteOperations(mockRequest, buildPath, 'default-site');
+                const result = await siteOps.getSiteDstInfo('site-1');
+
+                expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/dst-info', undefined, undefined);
+                expect(result).toEqual(mockResult);
+            });
+
+            it('should use default siteId', async () => {
+                const mockResult = { timezone: 'UTC' };
+                (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue({ result: mockResult });
+                (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockResult);
+
+                const siteOps = new SiteOperations(mockRequest, buildPath, 'default-site');
+                await siteOps.getSiteDstInfo();
+
+                expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/default-site/dst-info', undefined, undefined);
+            });
+        });
     });
 });

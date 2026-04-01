@@ -29,6 +29,7 @@ import { registerGetApRadiosTool } from './getApRadios.js';
 import { registerGetApSnmpConfigTool } from './getApSnmpConfig.js';
 import { registerGetApUplinkConfigTool } from './getApUplinkConfig.js';
 import { registerGetApVlanConfigTool } from './getApVlanConfig.js';
+import { registerGetAttackDefenseDefaultsTool } from './getAttackDefenseDefaults.js';
 import { registerGetAttackDefenseSettingTool } from './getAttackDefenseSetting.js';
 import { registerGetAuditLogSettingForGlobalTool } from './getAuditLogSettingForGlobal.js';
 import { registerGetAuditLogSettingForSiteTool } from './getAuditLogSettingForSite.js';
@@ -49,14 +50,17 @@ import { registerGetChannelLimitSettingTool } from './getChannelLimitSetting.js'
 import { registerGetChannelsTool } from './getChannels.js';
 import { registerGetClientTool } from './getClient.js';
 import { registerGetClientActiveTimeoutTool } from './getClientActiveTimeout.js';
+import { registerGetClientCorrectionListTool } from './getClientCorrectionList.js';
 import { registerGetClientDetailTool } from './getClientDetail.js';
 import { registerGetClientHistoryDataEnableTool } from './getClientHistoryDataEnable.js';
 import { registerGetClientsDistributionTool } from './getClientsDistribution.js';
 import { registerGetClientToSiteVpnServerInfoTool } from './getClientToSiteVpnServerInfo.js';
 import { registerGetCloudAccessStatusTool } from './getCloudAccessStatus.js';
 import { registerGetCloudUserInfoTool } from './getCloudUserInfo.js';
+import { registerGetControllerDstInfoTool } from './getControllerDstInfo.js';
 import { registerGetControllerPortTool } from './getControllerPort.js';
 import { registerGetControllerStatusTool } from './getControllerStatus.js';
+import { registerGetControllerUserTool } from './getControllerUser.js';
 import { registerGetDashboardMostActiveEapsTool } from './getDashboardMostActiveEaps.js';
 import { registerGetDashboardMostActiveSwitchesTool } from './getDashboardMostActiveSwitches.js';
 import { registerGetDashboardOverviewTool } from './getDashboardOverview.js';
@@ -70,6 +74,10 @@ import { registerGetDataRetentionTool } from './getDataRetention.js';
 import { registerGetDdnsGridTool } from './getDdnsGrid.js';
 import { registerGetDeviceTool } from './getDevice.js';
 import { registerGetDeviceAccessManagementTool } from './getDeviceAccessManagement.js';
+import { registerGetDeviceAdoptResultTool } from './getDeviceAdoptResult.js';
+import { registerGetDeviceOnlineUpgradeResultTool } from './getDeviceOnlineUpgradeResult.js';
+import { registerGetDeviceRememberStateTool } from './getDeviceRememberState.js';
+import { registerGetDevicesInfoTool } from './getDevicesInfo.js';
 import { registerGetDeviceTagListTool } from './getDeviceTagList.js';
 import { registerGetDhcpReservationGridTool } from './getDhcpReservationGrid.js';
 import { registerGetDisableNatListTool } from './getDisableNatList.js';
@@ -82,6 +90,7 @@ import { registerGetDscpConfigTool } from './getDscpConfig.js';
 import { registerGetEapDot1xSettingTool } from './getEapDot1xSetting.js';
 import { registerGetExperienceImprovementTool } from './getExperienceImprovement.js';
 import { registerGetFirewallSettingTool } from './getFirewallSetting.js';
+import { registerGetFirewallTimeoutDefaultsTool } from './getFirewallTimeoutDefaults.js';
 import { registerGetFirmwareInfoTool } from './getFirmwareInfo.js';
 import { registerGetFirmwareUpgradePlanTool } from './getFirmwareUpgradePlan.js';
 import { registerGetGatewayDetailTool } from './getGatewayDetail.js';
@@ -209,6 +218,8 @@ import { registerGetSiteBackupResultTool } from './getSiteBackupResult.js';
 import { registerGetSiteCapacityTool } from './getSiteCapacity.js';
 import { registerGetSiteDetailTool } from './getSiteDetail.js';
 import { registerGetSiteDeviceAccountTool } from './getSiteDeviceAccount.js';
+import { registerGetSiteDstInfoTool } from './getSiteDstInfo.js';
+import { registerGetSiteInternetLocationIspTool } from './getSiteInternetLocationIsp.js';
 import { registerGetSiteNtpStatusTool } from './getSiteNtpStatus.js';
 import { registerGetSiteRememberSettingTool } from './getSiteRememberSetting.js';
 import { registerGetSiteSpecificationTool } from './getSiteSpecification.js';
@@ -245,6 +256,7 @@ import { registerGetStaticRoutingInterfaceListTool } from './getStaticRoutingInt
 import { registerGetSwitchDetailTool } from './getSwitchDetail.js';
 import { registerGetSwitchDot1xSettingTool } from './getSwitchDot1xSetting.js';
 import { registerGetSwitchGeneralConfigTool } from './getSwitchGeneralConfig.js';
+import { registerGetSwitchNetworkOverviewTool } from './getSwitchNetworkOverview.js';
 import { registerGetSwitchStackDetailTool } from './getSwitchStackDetail.js';
 import { registerGetSwitchVlanInterfaceTool } from './getSwitchVlanInterface.js';
 import { registerGetSyslogConfigTool } from './getSyslogConfig.js';
@@ -256,6 +268,7 @@ import { registerGetTrafficDistributionTool } from './getTrafficDistribution.js'
 import { registerGetTrafficPriorityTool } from './getTrafficPriority.js';
 import { registerGetTrafficStatsTool } from './getTrafficStats.js';
 import { registerGetUiInterfaceTool } from './getUiInterface.js';
+import { registerGetUpgradeFailedFirmwareTool } from './getUpgradeFailedFirmware.js';
 import { registerGetUpgradeLogsTool } from './getUpgradeLogs.js';
 import { registerGetUpgradeOverviewCriticalTool } from './getUpgradeOverviewCritical.js';
 import { registerGetUpgradeOverviewTryBetaTool } from './getUpgradeOverviewTryBeta.js';
@@ -263,6 +276,7 @@ import { registerGetUpgradeScheduleListTool } from './getUpgradeScheduleList.js'
 import { registerGetUplinkWiredDetailTool } from './getUplinkWiredDetail.js';
 import { registerGetUpnpSettingTool } from './getUpnpSetting.js';
 import { registerGetUrlFilterBlacklistTool } from './getUrlFilterBlacklist.js';
+import { registerGetUrlFilterCategoriesTool } from './getUrlFilterCategories.js';
 import { registerGetUrlFilterGeneralTool } from './getUrlFilterGeneral.js';
 import { registerGetUrlFilterRulesTool } from './getUrlFilterRules.js';
 import { registerGetUrlFilterWhitelistTool } from './getUrlFilterWhitelist.js';
@@ -270,6 +284,7 @@ import { registerGetUrlGroupProfileTool } from './getUrlGroupProfile.js';
 import { registerGetUserRoleProfileTool } from './getUserRoleProfile.js';
 import { registerGetVlanProfileTool } from './getVlanProfile.js';
 import { registerGetVpnClientStatusTool } from './getVpnClientStatus.js';
+import { registerGetVpnClientsByServerTool } from './getVpnClientsByServer.js';
 import { registerGetVpnRouteConfigTool } from './getVpnRouteConfig.js';
 import { registerGetVpnSettingsTool } from './getVpnSettings.js';
 import { registerGetVpnTunnelStatsTool } from './getVpnTunnelStats.js';
@@ -296,12 +311,14 @@ import { registerListClientsActivityTool } from './listClientsActivity.js';
 import { registerListClientsPastConnectionsTool } from './listClientsPastConnections.js';
 import { registerListClientToSiteVpnClientsTool } from './listClientToSiteVpnClients.js';
 import { registerListClientToSiteVpnServersTool } from './listClientToSiteVpnServers.js';
+import { registerListControllerUsersTool } from './listControllerUsers.js';
 import { registerListDevicesTool } from './listDevices.js';
 import { registerListDevicesStatsTool } from './listDevicesStats.js';
 import { registerListEapAclsTool } from './listEapAcls.js';
 import { registerListGlobalAlertsTool } from './listGlobalAlerts.js';
 import { registerListGlobalEventsTool } from './listGlobalEvents.js';
 import { registerListGroupProfilesTool } from './listGroupProfiles.js';
+import { registerListKnownDevicesTool } from './listKnownDevices.js';
 import { registerListMdnsProfileTool } from './listMdnsProfile.js';
 import { registerListMostActiveClientsTool } from './listMostActiveClients.js';
 import { registerListOsgAclsTool } from './listOsgAcls.js';
@@ -313,16 +330,20 @@ import { registerListServiceTypeTool } from './listServiceType.js';
 import { registerListSiteAlertsTool } from './listSiteAlerts.js';
 import { registerListSiteAuditLogsTool } from './listSiteAuditLogs.js';
 import { registerListSiteEventsTool } from './listSiteEvents.js';
+import { registerListSiteInternetModelsTool } from './listSiteInternetModels.js';
 import { registerListSitesTool } from './listSites.js';
 import { registerListSitesApsPortsTool } from './listSitesApsPorts.js';
 import { registerListSitesCableTestSwitchesIncrementResultsTool } from './listSitesCableTestSwitchesIncrementResults.js';
 import { registerListSitesCableTestSwitchesPortsTool } from './listSitesCableTestSwitchesPorts.js';
 import { registerListSitesStacksTool } from './listSitesStacks.js';
+import { registerListSiteTagsTool } from './listSiteTags.js';
 import { registerListSiteThreatManagementTool } from './listSiteThreatManagement.js';
 import { registerListSiteToSiteVpnsTool } from './listSiteToSiteVpns.js';
 import { registerListStaticRoutesTool } from './listStaticRoutes.js';
 import { registerListSwitchNetworksTool } from './listSwitchNetworks.js';
 import { registerListTimeRangeProfilesTool } from './listTimeRangeProfiles.js';
+import { registerListUnknownDevicesTool } from './listUnknownDevices.js';
+import { registerListUpgradeFailedDevicesTool } from './listUpgradeFailedDevices.js';
 import { registerListUpgradeFirmwaresTool } from './listUpgradeFirmwares.js';
 import { registerListUpgradeOverviewFirmwaresTool } from './listUpgradeOverviewFirmwares.js';
 import { registerListWireguardTool } from './listWireguard.js';
@@ -352,6 +373,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetSiteRememberSettingTool, category: 'sites', permission: 'read' },
     { fn: registerGetSiteDeviceAccountTool, category: 'sites', permission: 'read' },
     { fn: registerGetSiteCapacityTool, category: 'sites', permission: 'read' },
+    { fn: registerListSiteTagsTool, category: 'sites', permission: 'read' },
 
     // --- Devices (general) ---
     { fn: registerListDevicesTool, category: 'devices-general', permission: 'read' },
@@ -374,6 +396,12 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerListUpgradeOverviewFirmwaresTool, category: 'devices-general', permission: 'read' },
     { fn: registerListSitesStacksTool, category: 'devices-general', permission: 'read' },
     { fn: registerGetSitesDeviceWhiteListTool, category: 'devices-general', permission: 'read' },
+    { fn: registerGetDevicesInfoTool, category: 'devices-general', permission: 'read' },
+    { fn: registerListKnownDevicesTool, category: 'devices-general', permission: 'read' },
+    { fn: registerListUnknownDevicesTool, category: 'devices-general', permission: 'read' },
+    { fn: registerGetDeviceAdoptResultTool, category: 'devices-general', permission: 'read' },
+    { fn: registerGetDeviceOnlineUpgradeResultTool, category: 'devices-general', permission: 'read' },
+    { fn: registerGetDeviceRememberStateTool, category: 'devices-general', permission: 'read' },
 
     // --- Devices (switch) ---
     { fn: registerGetSwitchStackDetailTool, category: 'devices-switch', permission: 'read' },
@@ -390,6 +418,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetSitesSwitchesEsGeneralConfigTool, category: 'devices-switch', permission: 'read' },
     { fn: registerListSitesCableTestSwitchesPortsTool, category: 'devices-switch', permission: 'read' },
     { fn: registerListSitesCableTestSwitchesIncrementResultsTool, category: 'devices-switch', permission: 'read' },
+    { fn: registerGetSwitchNetworkOverviewTool, category: 'devices-switch', permission: 'read' },
 
     // --- Devices (AP) ---
     { fn: registerGetApDetailTool, category: 'devices-ap', permission: 'read' },
@@ -433,6 +462,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerSetClientRateLimitTool, category: 'clients', permission: 'write' },
     { fn: registerSetClientRateLimitProfileTool, category: 'clients', permission: 'write' },
     { fn: registerDisableClientRateLimitTool, category: 'clients', permission: 'write' },
+    { fn: registerGetClientCorrectionListTool, category: 'clients', permission: 'read' },
 
     // --- Client insights ---
     { fn: registerListMostActiveClientsTool, category: 'client-insights', permission: 'read' },
@@ -470,6 +500,8 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetWanHealthDetailTool, category: 'network-wan', permission: 'read' },
     { fn: registerGetWanUsageStatsTool, category: 'network-wan', permission: 'read' },
     { fn: registerGetWanNatConfigTool, category: 'network-wan', permission: 'read' },
+    { fn: registerGetSiteInternetLocationIspTool, category: 'network-wan', permission: 'read' },
+    { fn: registerListSiteInternetModelsTool, category: 'network-wan', permission: 'read' },
 
     // --- Network LAN ---
     { fn: registerGetLanNetworkListTool, category: 'network-lan', permission: 'read' },
@@ -570,6 +602,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetDot1xConfigTool, category: 'firewall-acl', permission: 'read' },
     { fn: registerGetRadiusProxyConfigTool, category: 'firewall-acl', permission: 'read' },
     { fn: registerGetApplicationAclTool, category: 'firewall-acl', permission: 'read' },
+    { fn: registerGetFirewallTimeoutDefaultsTool, category: 'firewall-acl', permission: 'read' },
 
     // --- Firewall traffic ---
     { fn: registerGetUrlFilterGeneralTool, category: 'firewall-traffic', permission: 'read' },
@@ -589,6 +622,8 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetQosPolicyRuleTool, category: 'firewall-traffic', permission: 'read' },
     { fn: registerGetQosMarkingRuleTool, category: 'firewall-traffic', permission: 'read' },
     { fn: registerGetDscpConfigTool, category: 'firewall-traffic', permission: 'read' },
+    { fn: registerGetAttackDefenseDefaultsTool, category: 'firewall-traffic', permission: 'read' },
+    { fn: registerGetUrlFilterCategoriesTool, category: 'firewall-traffic', permission: 'read' },
 
     // --- Firewall IDS ---
     { fn: registerGetIpsConfigTool, category: 'firewall-ids', permission: 'read' },
@@ -619,6 +654,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetVpnUserDetailTool, category: 'vpn', permission: 'read' },
     { fn: registerGetVpnClientStatusTool, category: 'vpn', permission: 'read' },
     { fn: registerGetVpnRouteConfigTool, category: 'vpn', permission: 'read' },
+    { fn: registerGetVpnClientsByServerTool, category: 'vpn', permission: 'read' },
 
     // --- Profiles ---
     { fn: registerListServiceTypeTool, category: 'profiles', permission: 'read' },
@@ -665,6 +701,8 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetLogSettingForGlobalV2Tool, category: 'logs', permission: 'read' },
     { fn: registerGetAuditLogSettingForGlobalTool, category: 'logs', permission: 'read' },
     { fn: registerGetAuditLogsForGlobalTool, category: 'logs', permission: 'read' },
+    { fn: registerListUpgradeFailedDevicesTool, category: 'logs', permission: 'read' },
+    { fn: registerGetUpgradeFailedFirmwareTool, category: 'logs', permission: 'read' },
 
     // --- Controller ---
     { fn: registerGetDataRetentionTool, category: 'controller', permission: 'read' },
@@ -685,6 +723,8 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetWebhookForGlobalTool, category: 'controller', permission: 'read' },
     { fn: registerGetWebhookLogsForGlobalTool, category: 'controller', permission: 'read' },
     { fn: registerGetMailServerStatusTool, category: 'controller', permission: 'read' },
+    { fn: registerGetControllerDstInfoTool, category: 'controller', permission: 'read' },
+    { fn: registerGetSiteDstInfoTool, category: 'controller', permission: 'read' },
 
     // --- Maintenance ---
     { fn: registerGetBackupFileListTool, category: 'maintenance', permission: 'read' },
@@ -700,6 +740,8 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetRoleDetailTool, category: 'account-users', permission: 'read' },
     { fn: registerGetAvailableRolesTool, category: 'account-users', permission: 'read' },
     { fn: registerGetAllUsersAppTool, category: 'account-users', permission: 'read' },
+    { fn: registerListControllerUsersTool, category: 'account-users', permission: 'read' },
+    { fn: registerGetControllerUserTool, category: 'account-users', permission: 'read' },
 
     // --- Account cloud ---
     { fn: registerGetCloudAccessStatusTool, category: 'account-cloud', permission: 'read' },

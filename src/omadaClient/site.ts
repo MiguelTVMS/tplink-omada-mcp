@@ -141,4 +141,25 @@ export class SiteOperations {
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
     }
+
+    /**
+     * List all site tags configured on the controller.
+     * OperationId: getTags
+     */
+    public async listSiteTags(customHeaders?: CustomHeaders): Promise<unknown[]> {
+        const path = this.buildPath('/sites/tags');
+        const response = await this.request.get<unknown[]>(path, undefined, customHeaders);
+        return response;
+    }
+
+    /**
+     * Get DST and timezone information for a specific site.
+     * OperationId: getOmadacDstInfo (site variant)
+     */
+    public async getSiteDstInfo(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        const resolvedSiteId = this.resolveSiteId(siteId);
+        const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/dst-info`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
 }

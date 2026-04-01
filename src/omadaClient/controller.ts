@@ -81,4 +81,14 @@ export class ControllerOperations {
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
     }
+
+    /**
+     * Get DST (Daylight Saving Time) and timezone information for the controller.
+     * OperationId: getOmadacDstInfo
+     */
+    public async getControllerDstInfo(customHeaders?: CustomHeaders): Promise<unknown> {
+        const path = this.buildPath('/dst-info');
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
 }

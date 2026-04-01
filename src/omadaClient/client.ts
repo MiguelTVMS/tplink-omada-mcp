@@ -326,4 +326,14 @@ export class ClientOperations {
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, { start, end }, customHeaders);
         return this.request.ensureSuccess(response);
     }
+
+    /**
+     * Get the client correction list for the controller.
+     * OperationId: getClientCorrectionList
+     */
+    public async getClientCorrectionList(customHeaders?: CustomHeaders): Promise<unknown> {
+        const path = this.buildPath('/correction-list');
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
 }

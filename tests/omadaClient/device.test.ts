@@ -1031,4 +1031,131 @@ describe('omadaClient/device', () => {
             expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/device-white-list', { page: 3, pageSize: 15 }, undefined);
         });
     });
+
+    describe('getDevicesInfo', () => {
+        it('should call correct endpoint with default pagination', async () => {
+            const resp = mockSimpleResponse({ devices: [] });
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.getDevicesInfo();
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/batch/info', { page: 1, pageSize: 100 }, undefined);
+        });
+
+        it('should use provided page and pageSize', async () => {
+            const resp = mockSimpleResponse({ devices: [] });
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.getDevicesInfo(2, 50);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/batch/info', { page: 2, pageSize: 50 }, undefined);
+        });
+    });
+
+    describe('listKnownDevices', () => {
+        it('should call correct endpoint with default pagination', async () => {
+            const resp = mockSimpleResponse([]);
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.listKnownDevices();
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/known-devices', { page: 1, pageSize: 50 }, undefined);
+        });
+
+        it('should use provided page and pageSize', async () => {
+            const resp = mockSimpleResponse([]);
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.listKnownDevices(2, 25);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/known-devices', { page: 2, pageSize: 25 }, undefined);
+        });
+
+        it('should pass customHeaders', async () => {
+            const resp = mockSimpleResponse([]);
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.listKnownDevices(1, 50, { 'X-Test': 'value' });
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/known-devices', { page: 1, pageSize: 50 }, { 'X-Test': 'value' });
+        });
+    });
+
+    describe('listUnknownDevices', () => {
+        it('should call correct endpoint with pagination', async () => {
+            const resp = { errorCode: 0, result: { data: [] } };
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.listUnknownDevices(1, 50);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/unknown-devices', { page: 1, pageSize: 50 }, undefined);
+        });
+    });
+
+    describe('getDeviceAdoptResult', () => {
+        it('should call correct endpoint', async () => {
+            const resp = mockSimpleResponse({ status: 'success' });
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.getDeviceAdoptResult('AA-BB-CC-DD-EE-FF', 'site-1');
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith('site-1');
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/devices/AA-BB-CC-DD-EE-FF/adopt-result', undefined, undefined);
+        });
+
+        it('should throw if deviceMac is empty', async () => {
+            await expect(deviceOps.getDeviceAdoptResult('')).rejects.toThrow('A deviceMac must be provided.');
+        });
+    });
+
+    describe('getDeviceOnlineUpgradeResult', () => {
+        it('should call correct endpoint', async () => {
+            const resp = mockSimpleResponse({ upgradeStatus: 'done' });
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.getDeviceOnlineUpgradeResult('AA-BB-CC-DD-EE-FF', 'site-1');
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/devices/AA-BB-CC-DD-EE-FF/online-upgrade-result', undefined, undefined);
+        });
+
+        it('should throw if deviceMac is empty', async () => {
+            await expect(deviceOps.getDeviceOnlineUpgradeResult('')).rejects.toThrow('A deviceMac must be provided.');
+        });
+    });
+
+    describe('getDeviceRememberState', () => {
+        it('should call correct endpoint', async () => {
+            const resp = mockSimpleResponse({ remember: true });
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.getDeviceRememberState('AA-BB-CC-DD-EE-FF', 'site-1');
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/devices/AA-BB-CC-DD-EE-FF/remember', undefined, undefined);
+        });
+
+        it('should throw if deviceMac is empty', async () => {
+            await expect(deviceOps.getDeviceRememberState('')).rejects.toThrow('A deviceMac must be provided.');
+        });
+    });
+
+    describe('getSwitchNetworkOverview', () => {
+        it('should call correct endpoint', async () => {
+            const resp = mockSimpleResponse({ networkCount: 5 });
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.getSwitchNetworkOverview('AA-BB-CC-DD-EE-FF', 'site-1');
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/sites/site-1/switches/es/AA-BB-CC-DD-EE-FF/network-overview', undefined, undefined);
+        });
+
+        it('should throw if switchMac is empty', async () => {
+            await expect(deviceOps.getSwitchNetworkOverview('')).rejects.toThrow('A switchMac must be provided.');
+        });
+    });
+
+    describe('listUpgradeFailedDevices', () => {
+        it('should call correct endpoint', async () => {
+            const resp = mockSimpleResponse([]);
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.listUpgradeFailedDevices('log-123');
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/logs/log-123/upgrade/overview/failed-devices', undefined, undefined);
+        });
+
+        it('should throw if upgradeLogId is empty', async () => {
+            await expect(deviceOps.listUpgradeFailedDevices('')).rejects.toThrow('An upgradeLogId must be provided.');
+        });
+    });
+
+    describe('getUpgradeFailedFirmware', () => {
+        it('should call correct endpoint', async () => {
+            const resp = mockSimpleResponse({ model: 'EAP670' });
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.getUpgradeFailedFirmware('log-123');
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/logs/log-123/upgrade/overview/failed-model-firmware', undefined, undefined);
+        });
+
+        it('should throw if upgradeLogId is empty', async () => {
+            await expect(deviceOps.getUpgradeFailedFirmware('')).rejects.toThrow('An upgradeLogId must be provided.');
+        });
+    });
 });

@@ -111,4 +111,25 @@ export class AccountOperations {
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
     }
+
+    /**
+     * List all users configured on the controller.
+     * OperationId: getGridUsers
+     */
+    public async listControllerUsers(customHeaders?: CustomHeaders): Promise<unknown> {
+        const path = this.buildPath('/users');
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
+
+    /**
+     * Get details for a specific controller user.
+     * OperationId: getUser
+     */
+    public async getControllerUser(userId: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!userId) throw new Error('A userId must be provided.');
+        const path = this.buildPath(`/users/${encodeURIComponent(userId)}`);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        return this.request.ensureSuccess(response);
+    }
 }

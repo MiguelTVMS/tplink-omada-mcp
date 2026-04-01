@@ -1806,4 +1806,151 @@ describe('NetworkOperations', () => {
             expect(result).toEqual([]);
         });
     });
+
+    describe('getSiteInternetLocationIsp', () => {
+        it('should call correct endpoint with siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { country: 'US', isp: 'ISP-1' } };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await networkOps.getSiteInternetLocationIsp('site-123');
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith('site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/internet/location-isp', undefined, undefined);
+            expect(result).toEqual({ country: 'US', isp: 'ISP-1' });
+        });
+
+        it('should use default siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getSiteInternetLocationIsp();
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+        });
+
+        it('should pass customHeaders', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getSiteInternetLocationIsp('site-123', { 'X-Test': 'val' });
+            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Test': 'val' });
+        });
+    });
+
+    describe('listSiteInternetModels', () => {
+        it('should call correct endpoint with siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: ['static', 'dhcp', 'pppoe'] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await networkOps.listSiteInternetModels('site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/internet/models', undefined, undefined);
+            expect(result).toEqual(['static', 'dhcp', 'pppoe']);
+        });
+
+        it('should use default siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.listSiteInternetModels();
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+        });
+    });
+
+    describe('getFirewallTimeoutDefaults', () => {
+        it('should call correct endpoint with siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { tcpTimeout: 3600, udpTimeout: 300 } };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await networkOps.getFirewallTimeoutDefaults('site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/firewall/timeout/default', undefined, undefined);
+            expect(result).toEqual({ tcpTimeout: 3600, udpTimeout: 300 });
+        });
+
+        it('should use default siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getFirewallTimeoutDefaults();
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+        });
+
+        it('should pass customHeaders', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getFirewallTimeoutDefaults('site-123', { 'X-Test': 'val' });
+            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Test': 'val' });
+        });
+    });
+
+    describe('getAttackDefenseDefaults', () => {
+        it('should call correct endpoint with siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: { floodProtection: true } };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await networkOps.getAttackDefenseDefaults('site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/attack-defense/default', undefined, undefined);
+            expect(result).toEqual({ floodProtection: true });
+        });
+
+        it('should use default siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getAttackDefenseDefaults();
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+        });
+
+        it('should pass customHeaders', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: {} };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getAttackDefenseDefaults('site-123', { 'X-Test': 'val' });
+            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Test': 'val' });
+        });
+    });
+
+    describe('getUrlFilterCategories', () => {
+        it('should call correct endpoint with siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [{ id: 1, name: 'Social' }] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await networkOps.getUrlFilterCategories('site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/sites/site-123/url-filters/category', undefined, undefined);
+            expect(result).toEqual([{ id: 1, name: 'Social' }]);
+        });
+
+        it('should use default siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getUrlFilterCategories();
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+        });
+
+        it('should pass customHeaders', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getUrlFilterCategories('site-123', { 'X-Test': 'val' });
+            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Test': 'val' });
+        });
+    });
+
+    describe('getVpnClientsByServer', () => {
+        it('should call correct endpoint with vpnId and siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [{ clientIp: '10.0.0.1' }] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            const result = await networkOps.getVpnClientsByServer('vpn-123', 'site-123');
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith('site-123');
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                '/openapi/v1/test-omadac/sites/site-123/vpn/client-to-site-vpn-clients/vpn-123',
+                undefined,
+                undefined
+            );
+            expect(result).toEqual([{ clientIp: '10.0.0.1' }]);
+        });
+
+        it('should use default siteId', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getVpnClientsByServer('vpn-123');
+            expect(mockSite.resolveSiteId).toHaveBeenCalledWith(undefined);
+        });
+
+        it('should throw if vpnId is empty', async () => {
+            await expect(networkOps.getVpnClientsByServer('')).rejects.toThrow('A vpnId must be provided.');
+        });
+
+        it('should pass customHeaders', async () => {
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: [] };
+            vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
+            await networkOps.getVpnClientsByServer('vpn-123', 'site-123', { 'X-Test': 'val' });
+            expect(mockRequest.get).toHaveBeenCalledWith(expect.any(String), undefined, { 'X-Test': 'val' });
+        });
+    });
 });

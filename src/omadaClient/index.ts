@@ -1425,6 +1425,93 @@ export class OmadaClient {
         return await this.scheduleOps.getPortSchedulePorts(siteId, customHeaders);
     }
 
+    // Priority 1 read tools (issue #88)
+
+    // devices-general
+    public async getDevicesInfo(page = 1, pageSize = 100, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDevicesInfo(page, pageSize, customHeaders);
+    }
+    public async listKnownDevices(page = 1, pageSize = 50, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.listKnownDevices(page, pageSize, customHeaders);
+    }
+    public async listUnknownDevices(page = 1, pageSize = 50, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.listUnknownDevices(page, pageSize, customHeaders);
+    }
+    public async getDeviceAdoptResult(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceAdoptResult(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceOnlineUpgradeResult(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceOnlineUpgradeResult(deviceMac, siteId, customHeaders);
+    }
+    public async getDeviceRememberState(deviceMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDeviceRememberState(deviceMac, siteId, customHeaders);
+    }
+
+    // devices-switch
+    public async getSwitchNetworkOverview(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getSwitchNetworkOverview(switchMac, siteId, customHeaders);
+    }
+
+    // logs (device upgrade)
+    public async listUpgradeFailedDevices(upgradeLogId: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.listUpgradeFailedDevices(upgradeLogId, customHeaders);
+    }
+    public async getUpgradeFailedFirmware(upgradeLogId: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getUpgradeFailedFirmware(upgradeLogId, customHeaders);
+    }
+
+    // sites
+    public async listSiteTags(customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.siteOps.listSiteTags(customHeaders);
+    }
+    public async getSiteDstInfo(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.siteOps.getSiteDstInfo(siteId, customHeaders);
+    }
+
+    // network-wan
+    public async getSiteInternetLocationIsp(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.getSiteInternetLocationIsp(siteId, customHeaders);
+    }
+    public async listSiteInternetModels(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.listSiteInternetModels(siteId, customHeaders);
+    }
+
+    // firewall-acl
+    public async getFirewallTimeoutDefaults(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.getFirewallTimeoutDefaults(siteId, customHeaders);
+    }
+
+    // firewall-traffic
+    public async getAttackDefenseDefaults(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.getAttackDefenseDefaults(siteId, customHeaders);
+    }
+    public async getUrlFilterCategories(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.getUrlFilterCategories(siteId, customHeaders);
+    }
+
+    // vpn
+    public async getVpnClientsByServer(vpnId: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.networkOps.getVpnClientsByServer(vpnId, siteId, customHeaders);
+    }
+
+    // clients
+    public async getClientCorrectionList(customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.clientOps.getClientCorrectionList(customHeaders);
+    }
+
+    // controller
+    public async getControllerDstInfo(customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.controllerOps.getControllerDstInfo(customHeaders);
+    }
+
+    // account-users
+    public async listControllerUsers(customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.accountOps.listControllerUsers(customHeaders);
+    }
+    public async getControllerUser(userId: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.accountOps.getControllerUser(userId, customHeaders);
+    }
+
     // Generic API call
     public async callApi<T = unknown>(config: AxiosRequestConfig, customHeaders?: CustomHeaders): Promise<T> {
         return await this.request.request<T>(config, true, customHeaders);

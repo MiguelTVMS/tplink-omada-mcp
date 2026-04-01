@@ -183,6 +183,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | Tool                         | Description                                                                  |
 | ---------------------------- | ---------------------------------------------------------------------------- |
 | `listSites` | Lists all sites configured on the controller. |
+| `listSiteTags` | List all site tags defined on the controller. |
 | `getSiteCapacity` | Get site capacity settings including maximum device and client counts. |
 | `getSiteDetail` | Get detailed information about a site, including name, region, timezone, and configuration. |
 | `getSiteDeviceAccount` | Get device account settings for a site. |
@@ -201,6 +202,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `setClientRateLimit` | Sets custom bandwidth limits for a specific client. |
 | `setClientRateLimitProfile` | Applies a predefined rate limit profile to a specific client. |
 | `disableClientRateLimit` | Disables bandwidth rate limiting for a specific client. |
+| `getClientCorrectionList` | Get the client correction list for the controller. |
 ### Device
 
 | Tool                   | Description                                                                       |
@@ -261,6 +263,13 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getUpgradeOverviewTryBeta` | Get the current status of the try-beta firmware upgrade switch. |
 | `listUpgradeFirmwares` | List available firmware packages for upgrade (paginated). |
 | `listUpgradeOverviewFirmwares` | List firmware overview for upgradeable devices (paginated). |
+| `getDevicesInfo` | Get summary information for all devices managed by the controller. |
+| `listKnownDevices` | List known devices (previously seen or adopted) across all sites. |
+| `listUnknownDevices` | List unknown (unadopted) devices across all sites. |
+| `getDeviceAdoptResult` | Get the adoption result for a specific device. Requires `deviceMac`. |
+| `getDeviceOnlineUpgradeResult` | Get the online upgrade result for a specific device. Requires `deviceMac`. |
+| `getDeviceRememberState` | Get the remember state for a specific device. Requires `deviceMac`. |
+| `getSwitchNetworkOverview` | Get network overview statistics for a switch. Requires `switchMac`. |
 | `listSitesStacks` | List switch stacks in a site (paginated). |
 | `getSitesDeviceWhiteList` | Get the device adoption whitelist for a site (paginated). |
 | `getSitesGatewaysGeneralConfig` | Get general configuration for a gateway. Requires `gatewayMac`. |
@@ -297,6 +306,8 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getApLoadBalance` | [DEPRECATED] Use `getSitesApsLoadBalance` instead. Same endpoint, retained for backward compatibility. getSitesApsLoadBalance is the canonical tool name. |
 | `getApOfdmaConfig` | [DEPRECATED] Use `getSitesApsOfdma` instead. Same endpoint, retained for backward compatibility. getSitesApsOfdma is the canonical tool name. |
 | `getMulticastRateLimit` | Get multicast rate limit settings for a site. |
+| `getSiteInternetLocationIsp` | Get ISP and location information for the site WAN. |
+| `listSiteInternetModels` | List available WAN internet connection models for the site. |
 | `getWlanGroupList` | Gets the list of WLAN groups configured in a site. |
 | `getSsidList` | Gets the list of SSIDs in a WLAN group. |
 | `getSsidDetail` | Gets detailed information for a specific SSID. Required: `wlanId` and `ssidId`. |
@@ -354,6 +365,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getDot1xConfig` | Get 802.1X switch port authentication setting. Alias for `getSwitchDot1xSetting`. |
 | `getRadiusProxyConfig` | Get global RADIUS proxy configuration (controller-level, no siteId). |
 | `getApplicationAcl` | [DEPRECATED] Get application control rules. Alias for `getAppControlRules`. |
+| `getFirewallTimeoutDefaults` | Get default firewall session timeout values for the site. |
 ### Firewall Traffic & QoS
 
 | Tool                          | Description                                                                              |
@@ -372,6 +384,8 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getQosPolicyRule` | [DEPRECATED] Alias for `getQosPolicy`. |
 | `getQosMarkingRule` | [DEPRECATED] Alias for `getQosPolicy`. |
 | `getDscpConfig` | [DEPRECATED] Alias for `getQosPolicy`. |
+| `getAttackDefenseDefaults` | Get default attack defense settings for the site. |
+| `getUrlFilterCategories` | List available URL filter categories for the site. |
 ### Firewall IDS / IPS
 
 | Tool                          | Description                                                                              |
@@ -424,6 +438,7 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getVpnUserList` | Get VPN users for a site (paginated). |
 | `getVpnUserDetail` | Get users for a specific client-to-site VPN server. |
 | `getVpnClientStatus` | Get status of client-to-site VPN clients. Alias for `listClientToSiteVpnClients`. |
+| `getVpnClientsByServer` | List VPN clients connected to a specific client-to-site VPN server. Requires `vpnId`. |
 | `getVpnRouteConfig` | [DEPRECATED] Use `getGridPolicyRouting` instead. This tool aggregates all pages; getGridPolicyRouting is paginated. |
 ### Profiles
 
@@ -454,6 +469,8 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `listSiteAuditLogs` | Lists site audit logs.                                       |
 | `listGlobalEvents` | Lists global event logs across all sites. |
 | `listGlobalAlerts` | Lists global alert logs across all sites. |
+| `listUpgradeFailedDevices` | List devices that failed the firmware upgrade process. Requires `upgradeLogId`. |
+| `getUpgradeFailedFirmware` | Get firmware details for a failed upgrade attempt. Requires `upgradeLogId`. |
 ### Controller
 
 | Tool                          | Description                                                                              |
@@ -465,6 +482,8 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getExperienceImprovement` | Get the experience improvement program setting (telemetry). |
 | `getGlobalDashboardOverview` | Get global controller dashboard overview without client data. |
 | `getPortalPort` | Get portal port configuration for the controller web interface. |
+| `getControllerDstInfo` | Get DST and timezone information for the controller. |
+| `getSiteDstInfo` | Get DST and timezone information for a specific site. |
 ### Maintenance
 
 | Tool                          | Description                                                                              |
@@ -484,6 +503,8 @@ In client-credentials mode the server already treats `Mcp-Session-Id` as optiona
 | `getAllUsersApp` | List all users (cloud and local) in grid view. |
 | `getAvailableRoles` | List roles available for user assignment. |
 | `getRoleDetail` | Get detailed information about a specific role. Requires `roleId`. |
+| `listControllerUsers` | List all users configured on the controller. |
+| `getControllerUser` | Get details for a specific controller user. Requires `userId`. |
 ### Account Cloud
 
 | Tool                          | Description                                                                              |
