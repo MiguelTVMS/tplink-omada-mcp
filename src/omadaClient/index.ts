@@ -1428,8 +1428,8 @@ export class OmadaClient {
     // Priority 1 read tools (issue #88)
 
     // devices-general
-    public async getDevicesInfo(customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.deviceOps.getDevicesInfo(customHeaders);
+    public async getDevicesInfo(page = 1, pageSize = 100, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.deviceOps.getDevicesInfo(page, pageSize, customHeaders);
     }
     public async listKnownDevices(customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.deviceOps.listKnownDevices(customHeaders);
@@ -1508,8 +1508,8 @@ export class OmadaClient {
     public async listControllerUsers(customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.accountOps.listControllerUsers(customHeaders);
     }
-    public async getControllerUser(userID: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        return await this.accountOps.getControllerUser(userID, customHeaders);
+    public async getControllerUser(userId: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        return await this.accountOps.getControllerUser(userId, customHeaders);
     }
 
     // Generic API call

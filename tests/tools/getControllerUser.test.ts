@@ -37,12 +37,12 @@ describe('tools/getControllerUser', () => {
         expect(mockServer.registerTool).toHaveBeenCalledWith('getControllerUser', expect.any(Object), expect.any(Function));
     });
 
-    it('should call client with userID', async () => {
+    it('should call client with userId', async () => {
         const mockResult = { id: 'u1', username: 'admin', role: 'Administrator' };
         (mockClient.getControllerUser as ReturnType<typeof vi.fn>).mockResolvedValue(mockResult);
 
         registerGetControllerUserTool(mockServer, mockClient);
-        const result = await toolHandler({ userID: 'u1' }, { sessionId: 'test' });
+        const result = await toolHandler({ userId: 'u1' }, { sessionId: 'test' });
 
         expect(mockClient.getControllerUser).toHaveBeenCalledWith('u1', undefined);
         expect(result).toEqual({ content: [{ type: 'text', text: JSON.stringify(mockResult, null, 2) }] });
@@ -51,6 +51,6 @@ describe('tools/getControllerUser', () => {
     it('should handle errors', async () => {
         (mockClient.getControllerUser as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('fail'));
         registerGetControllerUserTool(mockServer, mockClient);
-        await expect(toolHandler({ userID: 'u1' }, { sessionId: 'test' })).rejects.toThrow('fail');
+        await expect(toolHandler({ userId: 'u1' }, { sessionId: 'test' })).rejects.toThrow('fail');
     });
 });

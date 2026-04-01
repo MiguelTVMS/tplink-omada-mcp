@@ -727,9 +727,9 @@ export class DeviceOperations {
      * Get batch info for all adopted devices across the controller.
      * OperationId: getAdoptAbleDevicesForGlobalBatchAdopt
      */
-    public async getDevicesInfo(customHeaders?: CustomHeaders): Promise<unknown> {
+    public async getDevicesInfo(page = 1, pageSize = 100, customHeaders?: CustomHeaders): Promise<unknown> {
         const path = this.buildPath('/devices/batch/info');
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page, pageSize }, customHeaders);
         return this.request.ensureSuccess(response);
     }
 
@@ -739,7 +739,7 @@ export class DeviceOperations {
      */
     public async listKnownDevices(customHeaders?: CustomHeaders): Promise<unknown> {
         const path = this.buildPath('/devices/known-devices');
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
+        const response = await this.request.get<OmadaApiResponse<unknown>>(path, { page: 1, pageSize: 50 }, customHeaders);
         return this.request.ensureSuccess(response);
     }
 
@@ -747,10 +747,9 @@ export class DeviceOperations {
      * List devices detected but not yet adopted.
      * OperationId: getGlobalUnknownDeviceList
      */
-    public async listUnknownDevices(customHeaders?: CustomHeaders): Promise<unknown> {
+    public async listUnknownDevices(customHeaders?: CustomHeaders): Promise<unknown[]> {
         const path = this.buildPath('/devices/unknown-devices');
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response);
+        return await this.request.fetchPaginated<unknown>(path, {}, customHeaders);
     }
 
     /**

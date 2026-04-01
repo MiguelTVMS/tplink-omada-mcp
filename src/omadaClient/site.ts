@@ -146,10 +146,10 @@ export class SiteOperations {
      * List all site tags configured on the controller.
      * OperationId: getTags
      */
-    public async listSiteTags(customHeaders?: CustomHeaders): Promise<unknown> {
+    public async listSiteTags(customHeaders?: CustomHeaders): Promise<unknown[]> {
         const path = this.buildPath('/sites/tags');
-        const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
-        return this.request.ensureSuccess(response);
+        const response = await this.request.get<unknown[]>(path, undefined, customHeaders);
+        return response;
     }
 
     /**

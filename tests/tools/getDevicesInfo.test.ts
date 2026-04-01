@@ -37,14 +37,25 @@ describe('tools/getDevicesInfo', () => {
         expect(mockServer.registerTool).toHaveBeenCalledWith('getDevicesInfo', expect.any(Object), expect.any(Function));
     });
 
-    it('should return device info', async () => {
+    it('should return device info with pagination', async () => {
         const mockResult = { data: [] };
         (mockClient.getDevicesInfo as ReturnType<typeof vi.fn>).mockResolvedValue(mockResult);
 
         registerGetDevicesInfoTool(mockServer, mockClient);
-        const result = await toolHandler({}, { sessionId: 'test' });
+        const result = await toolHandler({ page: 1, pageSize: 100 }, { sessionId: 'test' });
 
-        expect(mockClient.getDevicesInfo).toHaveBeenCalledWith(undefined);
+        expect(mockClient.getDevicesInfo).toHaveBeenCalledWith(1, 100, undefined);
+        expect(result).toEqual({ content: [{ type: 'text', text: JSON.stringify(mockResult, null, 2) }] });
+    });
+
+    it('should pass custom page and pageSize', async () => {
+        const mockResult = { data: [] };
+        (mockClient.getDevicesInfo as ReturnType<typeof vi.fn>).mockResolvedValue(mockResult);
+
+        registerGetDevicesInfoTool(mockServer, mockClient);
+        const result = await toolHandler({ page: 2, pageSize: 50 }, { sessionId: 'test' });
+
+        expect(mockClient.getDevicesInfo).toHaveBeenCalledWith(2, 50, undefined);
         expect(result).toEqual({ content: [{ type: 'text', text: JSON.stringify(mockResult, null, 2) }] });
     });
 
@@ -53,6 +64,6 @@ describe('tools/getDevicesInfo', () => {
         (mockClient.getDevicesInfo as ReturnType<typeof vi.fn>).mockRejectedValue(error);
 
         registerGetDevicesInfoTool(mockServer, mockClient);
-        await expect(toolHandler({}, { sessionId: 'test' })).rejects.toThrow('API error');
+        await expect(toolHandler({ page: 1, pageSize: 100 }, { sessionId: 'test' })).rejects.toThrow('API error');
     });
 });

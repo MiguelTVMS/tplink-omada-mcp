@@ -126,9 +126,9 @@ export class AccountOperations {
      * Get details for a specific controller user.
      * OperationId: getUser
      */
-    public async getControllerUser(userID: string, customHeaders?: CustomHeaders): Promise<unknown> {
-        if (!userID) throw new Error('A userID must be provided.');
-        const path = this.buildPath(`/users/${encodeURIComponent(userID)}`);
+    public async getControllerUser(userId: string, customHeaders?: CustomHeaders): Promise<unknown> {
+        if (!userId) throw new Error('A userId must be provided.');
+        const path = this.buildPath(`/users/${encodeURIComponent(userId)}`);
         const response = await this.request.get<OmadaApiResponse<unknown>>(path, undefined, customHeaders);
         return this.request.ensureSuccess(response);
     }

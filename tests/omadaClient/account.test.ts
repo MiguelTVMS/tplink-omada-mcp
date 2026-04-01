@@ -200,7 +200,7 @@ describe('AccountOperations', () => {
     });
 
     describe('getControllerUser', () => {
-        it('should call correct endpoint with userID', async () => {
+        it('should call correct endpoint with userId', async () => {
             const mockResponse = { errorCode: 0, result: { id: 'u1', username: 'admin' } };
             vi.mocked(mockRequest.get).mockResolvedValue(mockResponse);
             const result = await accountOps.getControllerUser('u1');
@@ -208,8 +208,8 @@ describe('AccountOperations', () => {
             expect(result).toEqual({ id: 'u1', username: 'admin' });
         });
 
-        it('should throw if userID is empty', async () => {
-            await expect(accountOps.getControllerUser('')).rejects.toThrow('A userID must be provided.');
+        it('should throw if userId is empty', async () => {
+            await expect(accountOps.getControllerUser('')).rejects.toThrow('A userId must be provided.');
         });
 
         it('should pass customHeaders', async () => {

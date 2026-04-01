@@ -232,10 +232,9 @@ describe('omadaClient/site', () => {
         });
 
         describe('listSiteTags', () => {
-            it('should call correct endpoint', async () => {
+            it('should call correct endpoint and return plain array', async () => {
                 const mockResult = [{ tagId: '1', name: 'prod' }];
-                (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue({ result: mockResult });
-                (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockResult);
+                (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResult);
 
                 const siteOps = new SiteOperations(mockRequest, buildPath);
                 const result = await siteOps.listSiteTags();
@@ -245,9 +244,8 @@ describe('omadaClient/site', () => {
             });
 
             it('should pass customHeaders', async () => {
-                const mockResult = [];
-                (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue({ result: mockResult });
-                (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockResult);
+                const mockResult: unknown[] = [];
+                (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResult);
 
                 const siteOps = new SiteOperations(mockRequest, buildPath);
                 await siteOps.listSiteTags({ 'X-Test': 'val' });

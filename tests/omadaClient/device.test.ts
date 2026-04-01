@@ -1033,29 +1033,35 @@ describe('omadaClient/device', () => {
     });
 
     describe('getDevicesInfo', () => {
-        it('should call correct endpoint', async () => {
+        it('should call correct endpoint with default pagination', async () => {
             const resp = mockSimpleResponse({ devices: [] });
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
             await deviceOps.getDevicesInfo();
-            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/batch/info', undefined, undefined);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/batch/info', { page: 1, pageSize: 100 }, undefined);
+        });
+
+        it('should use provided page and pageSize', async () => {
+            const resp = mockSimpleResponse({ devices: [] });
+            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+            await deviceOps.getDevicesInfo(2, 50);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/batch/info', { page: 2, pageSize: 50 }, undefined);
         });
     });
 
     describe('listKnownDevices', () => {
-        it('should call correct endpoint', async () => {
+        it('should call correct endpoint with pagination', async () => {
             const resp = mockSimpleResponse([]);
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
             await deviceOps.listKnownDevices();
-            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/known-devices', undefined, undefined);
+            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/known-devices', { page: 1, pageSize: 50 }, undefined);
         });
     });
 
     describe('listUnknownDevices', () => {
-        it('should call correct endpoint', async () => {
-            const resp = mockSimpleResponse([]);
-            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(resp);
+        it('should call fetchPaginated', async () => {
+            (mockRequest.fetchPaginated as ReturnType<typeof vi.fn>).mockResolvedValue([]);
             await deviceOps.listUnknownDevices();
-            expect(mockRequest.get).toHaveBeenCalledWith('/api/devices/unknown-devices', undefined, undefined);
+            expect(mockRequest.fetchPaginated).toHaveBeenCalledWith('/api/devices/unknown-devices', {}, undefined);
         });
     });
 
