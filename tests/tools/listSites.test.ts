@@ -41,7 +41,8 @@ describe('tools/listSites', () => {
             expect(mockServer.registerTool).toHaveBeenCalledWith(
                 'listSites',
                 expect.objectContaining({
-                    description: 'List all sites configured on the Omada controller.',
+                    description:
+                        "List all sites on the Omada controller. Returns each site's siteId and name. Call this first — the siteId value is required by most other tools. Without it, site-scoped tools will fail unless OMADA_SITE_ID is set in the environment.",
                 }),
                 expect.any(Function)
             );
