@@ -31,6 +31,7 @@ describe('config', () => {
             expect(config.baseUrl).toBe('https://omada.example.com');
             expect(config.clientId).toBe('test-client-id');
             expect(config.clientSecret).toBe('test-client-secret');
+            expect(config.authMode).toBe('oauth');
             expect(config.omadacId).toBe('test-omadac-id');
             expect(config.siteId).toBeUndefined();
             expect(config.strictSsl).toBe(true); // Default
@@ -72,6 +73,31 @@ describe('config', () => {
 
         it('should throw error if OMADA_OMADAC_ID is missing in stdio mode', () => {
             delete mockEnv.OMADA_OMADAC_ID;
+
+            expect(() => loadConfigFromEnv(mockEnv)).toThrow('Invalid environment configuration');
+        });
+
+        it('should load web auth configuration in stdio mode', () => {
+            mockEnv.OMADA_AUTH_MODE = 'web';
+            delete mockEnv.OMADA_CLIENT_ID;
+            delete mockEnv.OMADA_CLIENT_SECRET;
+            mockEnv.OMADA_WEB_USERNAME = 'web-user';
+            mockEnv.OMADA_WEB_PASSWORD = 'web-pass';
+
+            const config = loadConfigFromEnv(mockEnv);
+
+            expect(config.authMode).toBe('web');
+            expect(config.webUsername).toBe('web-user');
+            expect(config.webPassword).toBe('web-pass');
+            expect(config.clientId).toBeUndefined();
+            expect(config.clientSecret).toBeUndefined();
+        });
+
+        it('should throw if web auth username is missing in stdio mode', () => {
+            mockEnv.OMADA_AUTH_MODE = 'web';
+            delete mockEnv.OMADA_CLIENT_ID;
+            delete mockEnv.OMADA_CLIENT_SECRET;
+            mockEnv.OMADA_WEB_PASSWORD = 'web-pass';
 
             expect(() => loadConfigFromEnv(mockEnv)).toThrow('Invalid environment configuration');
         });

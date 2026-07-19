@@ -22,13 +22,18 @@ import type {
     RateLimitProfile,
     ThreatInfo,
 } from '../types/index.js';
+import { logger } from '../utils/logger.js';
 
 import { AccountOperations } from './account.js';
-import { AuthManager } from './auth.js';
+import { ActionOperations } from './action.js';
+import { AuthManager, type RequestAuthManager, WebAuthManager } from './auth.js';
 import { ClientOperations } from './client.js';
 import { ControllerOperations } from './controller.js';
 import { DeviceOperations } from './device.js';
+import { GenericOperations } from './generic.js';
 import { InsightOperations, type SiteThreatListOptions } from './insight.js';
+import { InternalAuthManager } from './internalAuth.js';
+import { InternalRequestHandler } from './internalRequest.js';
 import { LogOperations, type LogQueryOptions } from './log.js';
 import { MaintenanceOperations } from './maintenance.js';
 import { MonitorOperations } from './monitor.js';
@@ -37,6 +42,7 @@ import { RequestHandler } from './request.js';
 import { ScheduleOperations } from './schedules.js';
 import { SecurityOperations } from './security.js';
 import { SiteOperations } from './site.js';
+import { SwitchOperations } from './switch.js';
 
 export type { LogQueryOptions, SiteThreatListOptions };
 
@@ -49,7 +55,7 @@ export type OmadaClientOptions = OmadaConnectionConfig;
 export class OmadaClient {
     private readonly http: AxiosInstance;
 
-    private readonly auth: AuthManager;
+    private readonly auth: RequestAuthManager;
 
     private readonly request: RequestHandler;
 
@@ -77,6 +83,12 @@ export class OmadaClient {
 
     private readonly scheduleOps: ScheduleOperations;
 
+    private readonly actionOps: ActionOperations;
+
+    private readonly genericOps: GenericOperations;
+
+    private readonly switchOps: SwitchOperations;
+
     private readonly omadacId: string;
 
     constructor(options: OmadaClientOptions) {
@@ -98,7 +110,10 @@ export class OmadaClient {
         this.http = axios.create(axiosOptions);
 
         // Initialize operation modules
-        this.auth = new AuthManager(this.http, options.clientId, options.clientSecret, options.omadacId);
+        this.auth =
+            options.authMode === 'web'
+                ? new WebAuthManager(this.http, options.webUsername ?? '', options.webPassword ?? '', options.omadacId)
+                : new AuthManager(this.http, options.clientId ?? '', options.clientSecret ?? '', options.omadacId);
         this.request = new RequestHandler(this.http, this.auth);
         this.siteOps = new SiteOperations(this.request, this.buildOmadaPath.bind(this), options.siteId);
         this.deviceOps = new DeviceOperations(this.request, this.siteOps, this.buildOmadaPath.bind(this));
@@ -112,6 +127,16 @@ export class OmadaClient {
         this.maintenanceOps = new MaintenanceOperations(this.request, this.siteOps, this.buildOmadaPath.bind(this));
         this.accountOps = new AccountOperations(this.request, this.buildOmadaPath.bind(this));
         this.scheduleOps = new ScheduleOperations(this.request, this.siteOps, this.buildOmadaPath.bind(this));
+        this.actionOps = new ActionOperations(this.request, this.siteOps, this.buildOmadaPath.bind(this));
+        this.genericOps = new GenericOperations(this.request, this.buildOmadaPath.bind(this));
+        this.switchOps = new SwitchOperations(this.request, this.siteOps, this.buildOmadaPath.bind(this));
+
+        if (options.webUsername && options.webPassword) {
+            const internalAuth = new InternalAuthManager(this.http, options.webUsername, options.webPassword, options.omadacId);
+            const internalReq = new InternalRequestHandler(this.http, internalAuth, options.omadacId);
+            this.networkOps.setInternalRequest(internalReq);
+            logger.info('Internal web UI API enabled for ACL and IP group management');
+        }
     }
 
     // Site operations
@@ -267,6 +292,66 @@ export class OmadaClient {
 
     public async getFirewallSetting(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.networkOps.getFirewallSetting(siteId, customHeaders);
+    }
+
+    public async createLanNetwork(data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.networkOps.createLanNetwork(data, siteId);
+    }
+
+    public async updateLanNetwork(networkId: string, data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.networkOps.updateLanNetwork(networkId, data, siteId);
+    }
+
+    public async deleteLanNetwork(networkId: string, siteId?: string): Promise<unknown> {
+        return await this.networkOps.deleteLanNetwork(networkId, siteId);
+    }
+
+    public async createLanProfile(data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.networkOps.createLanProfile(data, siteId);
+    }
+
+    public async updateLanProfile(profileId: string, data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.networkOps.updateLanProfile(profileId, data, siteId);
+    }
+
+    public async updateFirewallSetting(data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.networkOps.updateFirewallSetting(data, siteId);
+    }
+
+    public async listEvents(siteId?: string, page?: number, pageSize?: number): Promise<PaginatedResult<unknown>> {
+        return await this.networkOps.listEvents(siteId, page, pageSize);
+    }
+
+    public async listLogs(siteId?: string, page?: number, pageSize?: number): Promise<PaginatedResult<unknown>> {
+        return await this.networkOps.listLogs(siteId, page, pageSize);
+    }
+
+    public async getSwitchPorts(switchMac: string, siteId?: string): Promise<unknown[]> {
+        return await this.networkOps.getSwitchPorts(switchMac, siteId);
+    }
+
+    public async updateSwitchPort(switchMac: string, portId: string, data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.networkOps.updateSwitchPort(switchMac, portId, data, siteId);
+    }
+
+    public async listFirewallAcls(siteId?: string): Promise<unknown> {
+        return await this.networkOps.listFirewallAcls(siteId);
+    }
+
+    public async listIpGroups(siteId?: string): Promise<unknown> {
+        return await this.networkOps.listIpGroups(siteId);
+    }
+
+    public async createFirewallAcl(data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.networkOps.createFirewallAcl(data, siteId);
+    }
+
+    public async deleteFirewallAcl(aclId: string, siteId?: string): Promise<unknown> {
+        return await this.networkOps.deleteFirewallAcl(aclId, siteId);
+    }
+
+    public async listRoutes(siteId?: string): Promise<unknown[]> {
+        return await this.networkOps.listRoutes(siteId);
     }
 
     public async getSwitchDetail(switchMac: string, siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
@@ -1423,6 +1508,115 @@ export class OmadaClient {
 
     public async getPortSchedulePorts(siteId?: string, customHeaders?: CustomHeaders): Promise<unknown> {
         return await this.scheduleOps.getPortSchedulePorts(siteId, customHeaders);
+    }
+
+    // Device and client action/write operations
+    public async rebootDevice(deviceMac: string, siteId?: string): Promise<unknown> {
+        return await this.actionOps.rebootDevice(deviceMac, siteId);
+    }
+
+    public async adoptDevice(deviceMac: string, siteId?: string): Promise<unknown> {
+        return await this.actionOps.adoptDevice(deviceMac, siteId);
+    }
+
+    public async blockClient(clientMac: string, siteId?: string): Promise<unknown> {
+        return await this.actionOps.blockClient(clientMac, siteId);
+    }
+
+    public async unblockClient(clientMac: string, siteId?: string): Promise<unknown> {
+        return await this.actionOps.unblockClient(clientMac, siteId);
+    }
+
+    public async reconnectClient(clientMac: string, siteId?: string): Promise<unknown> {
+        return await this.actionOps.reconnectClient(clientMac, siteId);
+    }
+
+    public async updateClient(clientMac: string, data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.actionOps.updateClient(clientMac, data, siteId);
+    }
+
+    public async setDeviceLed(deviceMac: string, ledSetting: number, siteId?: string): Promise<unknown> {
+        return await this.actionOps.setDeviceLed(deviceMac, ledSetting, siteId);
+    }
+
+    public async getFirmwareDetails(deviceMac: string, siteId?: string): Promise<unknown> {
+        return await this.actionOps.getFirmwareDetails(deviceMac, siteId);
+    }
+
+    public async startFirmwareUpgrade(deviceMac: string, siteId?: string): Promise<unknown> {
+        return await this.actionOps.startFirmwareUpgrade(deviceMac, siteId);
+    }
+
+    public async setGatewayWanConnect(gatewayMac: string, portId: string, action: 'connect' | 'disconnect', siteId?: string): Promise<unknown> {
+        return await this.actionOps.setGatewayWanConnect(gatewayMac, portId, action, siteId);
+    }
+
+    // Switch compatibility operations from the realtydev fork
+    public async getSwitch(switchMac: string, siteId?: string): Promise<unknown> {
+        return await this.switchOps.getSwitch(switchMac, siteId);
+    }
+
+    public async setSwitchPortProfile(switchMac: string, port: number, profileId: string, siteId?: string): Promise<unknown> {
+        return await this.switchOps.setSwitchPortProfile(switchMac, port, profileId, siteId);
+    }
+
+    public async setSwitchPortPoe(switchMac: string, port: number, poeMode: number, siteId?: string): Promise<unknown> {
+        return await this.switchOps.setSwitchPortPoe(switchMac, port, poeMode, siteId);
+    }
+
+    public async setSwitchPortName(switchMac: string, port: number, name: string, siteId?: string): Promise<unknown> {
+        return await this.switchOps.setSwitchPortName(switchMac, port, name, siteId);
+    }
+
+    public async setSwitchPortStatus(switchMac: string, port: number, status: number, siteId?: string): Promise<unknown> {
+        return await this.switchOps.setSwitchPortStatus(switchMac, port, status, siteId);
+    }
+
+    public async setSwitchPortProfileOverride(switchMac: string, port: number, profileOverrideEnable: boolean, siteId?: string): Promise<unknown> {
+        return await this.switchOps.setSwitchPortProfileOverride(switchMac, port, profileOverrideEnable, siteId);
+    }
+
+    public async batchSetSwitchPortProfile(switchMac: string, portList: number[], profileOverrideEnable: boolean, siteId?: string): Promise<unknown> {
+        return await this.switchOps.batchSetSwitchPortProfile(switchMac, portList, profileOverrideEnable, siteId);
+    }
+
+    public async batchSetSwitchPortPoe(switchMac: string, portList: number[], poeMode: number, siteId?: string): Promise<unknown> {
+        return await this.switchOps.batchSetSwitchPortPoe(switchMac, portList, poeMode, siteId);
+    }
+
+    public async batchSetSwitchPortStatus(switchMac: string, portList: number[], status: number, siteId?: string): Promise<unknown> {
+        return await this.switchOps.batchSetSwitchPortStatus(switchMac, portList, status, siteId);
+    }
+
+    public async batchSetSwitchPortName(switchMac: string, portNameList: Array<{ port: number; name: string }>, siteId?: string): Promise<unknown> {
+        return await this.switchOps.batchSetSwitchPortName(switchMac, portNameList, siteId);
+    }
+
+    public async startCableTest(switchMac: string, siteId?: string): Promise<unknown> {
+        return await this.switchOps.startCableTest(switchMac, siteId);
+    }
+
+    public async getCableTestResults(switchMac: string, siteId?: string): Promise<unknown> {
+        return await this.switchOps.getCableTestResults(switchMac, siteId);
+    }
+
+    public async getSwitchNetworks(switchMac: string, siteId?: string): Promise<unknown> {
+        return await this.switchOps.getSwitchNetworks(switchMac, siteId);
+    }
+
+    public async setSwitchNetworks(switchMac: string, data: Record<string, unknown>, siteId?: string): Promise<unknown> {
+        return await this.switchOps.setSwitchNetworks(switchMac, data, siteId);
+    }
+
+    // Generic API compatibility wrapper
+    public async genericApiCall(
+        method: string,
+        path: string,
+        version?: string,
+        body?: unknown,
+        queryParams?: Record<string, unknown>
+    ): Promise<unknown> {
+        return await this.genericOps.genericApiCall(method, path, version, body, queryParams);
     }
 
     // Generic API call
