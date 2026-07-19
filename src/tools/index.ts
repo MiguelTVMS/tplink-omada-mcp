@@ -1,9 +1,21 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
-import type { ToolCategory, ToolPermission } from '../config.js';
+import type { ToolCategory, ToolFilter, ToolPermission } from '../config.js';
 import type { OmadaClient } from '../omadaClient/index.js';
 import { logger } from '../utils/logger.js';
+import { registerAdoptDeviceTool } from './adoptDevice.js';
+import { registerBatchSetSwitchPortNameTool } from './batchSetSwitchPortName.js';
+import { registerBatchSetSwitchPortPoeTool } from './batchSetSwitchPortPoe.js';
+import { registerBatchSetSwitchPortProfileTool } from './batchSetSwitchPortProfile.js';
+import { registerBatchSetSwitchPortStatusTool } from './batchSetSwitchPortStatus.js';
+import { registerBlockClientTool } from './blockClient.js';
+import { registerCreateFirewallAclTool } from './createFirewallAcl.js';
+import { registerCreateLanNetworkTool } from './createLanNetwork.js';
+import { registerCreateLanProfileTool } from './createLanProfile.js';
+import { registerDeleteFirewallAclTool } from './deleteFirewallAcl.js';
+import { registerDeleteLanNetworkTool } from './deleteLanNetwork.js';
 import { registerDisableClientRateLimitTool } from './disableClientRateLimit.js';
+import { registerGenericApiCallTool } from './genericApiCall.js';
 import { registerGetAccessControlTool } from './getAccessControl.js';
 import { registerGetAclConfigTypeSettingTool } from './getAclConfigTypeSetting.js';
 import { registerGetAdvancedVpnSettingTool } from './getAdvancedVpnSetting.js';
@@ -44,6 +56,7 @@ import { registerGetBeaconControlSettingTool } from './getBeaconControlSetting.j
 import { registerGetBuiltinRadiusUsersTool } from './getBuiltinRadiusUsers.js';
 import { registerGetCableTestFullResultsTool } from './getCableTestFullResults.js';
 import { registerGetCableTestLogsTool } from './getCableTestLogs.js';
+import { registerGetCableTestResultsTool } from './getCableTestResults.js';
 import { registerGetCertificateTool } from './getCertificate.js';
 import { registerGetChannelLimitSettingTool } from './getChannelLimitSetting.js';
 import { registerGetChannelsTool } from './getChannels.js';
@@ -82,6 +95,7 @@ import { registerGetDscpConfigTool } from './getDscpConfig.js';
 import { registerGetEapDot1xSettingTool } from './getEapDot1xSetting.js';
 import { registerGetExperienceImprovementTool } from './getExperienceImprovement.js';
 import { registerGetFirewallSettingTool } from './getFirewallSetting.js';
+import { registerGetFirmwareDetailsTool } from './getFirmwareDetails.js';
 import { registerGetFirmwareInfoTool } from './getFirmwareInfo.js';
 import { registerGetFirmwareUpgradePlanTool } from './getFirmwareUpgradePlan.js';
 import { registerGetGatewayDetailTool } from './getGatewayDetail.js';
@@ -242,9 +256,12 @@ import { registerGetSslVpnServerSettingTool } from './getSslVpnServerSetting.js'
 import { registerGetStackNetworkListTool } from './getStackNetworkList.js';
 import { registerGetStackPortsTool } from './getStackPorts.js';
 import { registerGetStaticRoutingInterfaceListTool } from './getStaticRoutingInterfaceList.js';
+import { registerGetSwitchTool } from './getSwitch.js';
 import { registerGetSwitchDetailTool } from './getSwitchDetail.js';
 import { registerGetSwitchDot1xSettingTool } from './getSwitchDot1xSetting.js';
 import { registerGetSwitchGeneralConfigTool } from './getSwitchGeneralConfig.js';
+import { registerGetSwitchNetworksTool } from './getSwitchNetworks.js';
+import { registerGetSwitchPortsTool } from './getSwitchPorts.js';
 import { registerGetSwitchStackDetailTool } from './getSwitchStackDetail.js';
 import { registerGetSwitchVlanInterfaceTool } from './getSwitchVlanInterface.js';
 import { registerGetSyslogConfigTool } from './getSyslogConfig.js';
@@ -299,9 +316,13 @@ import { registerListClientToSiteVpnServersTool } from './listClientToSiteVpnSer
 import { registerListDevicesTool } from './listDevices.js';
 import { registerListDevicesStatsTool } from './listDevicesStats.js';
 import { registerListEapAclsTool } from './listEapAcls.js';
+import { registerListEventsTool } from './listEvents.js';
+import { registerListFirewallAclsTool } from './listFirewallAcls.js';
 import { registerListGlobalAlertsTool } from './listGlobalAlerts.js';
 import { registerListGlobalEventsTool } from './listGlobalEvents.js';
 import { registerListGroupProfilesTool } from './listGroupProfiles.js';
+import { registerListIpGroupsTool } from './listIpGroups.js';
+import { registerListLogsTool } from './listLogs.js';
 import { registerListMdnsProfileTool } from './listMdnsProfile.js';
 import { registerListMostActiveClientsTool } from './listMostActiveClients.js';
 import { registerListOsgAclsTool } from './listOsgAcls.js';
@@ -309,6 +330,7 @@ import { registerListPendingDevicesTool } from './listPendingDevices.js';
 import { registerListPolicyRoutesTool } from './listPolicyRoutes.js';
 import { registerListPortForwardingRulesTool } from './listPortForwardingRules.js';
 import { registerListRadiusProfilesTool } from './listRadiusProfiles.js';
+import { registerListRoutesTool } from './listRoutes.js';
 import { registerListServiceTypeTool } from './listServiceType.js';
 import { registerListSiteAlertsTool } from './listSiteAlerts.js';
 import { registerListSiteAuditLogsTool } from './listSiteAuditLogs.js';
@@ -327,9 +349,27 @@ import { registerListUpgradeFirmwaresTool } from './listUpgradeFirmwares.js';
 import { registerListUpgradeOverviewFirmwaresTool } from './listUpgradeOverviewFirmwares.js';
 import { registerListWireguardTool } from './listWireguard.js';
 import { registerListWireguardPeersTool } from './listWireguardPeers.js';
+import { registerRebootDeviceTool } from './rebootDevice.js';
+import { registerReconnectClientTool } from './reconnectClient.js';
 import { registerSearchDevicesTool } from './searchDevices.js';
 import { registerSetClientRateLimitTool } from './setClientRateLimit.js';
 import { registerSetClientRateLimitProfileTool } from './setClientRateLimitProfile.js';
+import { registerSetDeviceLedTool } from './setDeviceLed.js';
+import { registerSetGatewayWanConnectTool } from './setGatewayWanConnect.js';
+import { registerSetSwitchNetworksTool } from './setSwitchNetworks.js';
+import { registerSetSwitchPortNameTool } from './setSwitchPortName.js';
+import { registerSetSwitchPortPoeTool } from './setSwitchPortPoe.js';
+import { registerSetSwitchPortProfileTool } from './setSwitchPortProfile.js';
+import { registerSetSwitchPortProfileOverrideTool } from './setSwitchPortProfileOverride.js';
+import { registerSetSwitchPortStatusTool } from './setSwitchPortStatus.js';
+import { registerStartCableTestTool } from './startCableTest.js';
+import { registerStartFirmwareUpgradeTool } from './startFirmwareUpgrade.js';
+import { registerUnblockClientTool } from './unblockClient.js';
+import { registerUpdateClientTool } from './updateClient.js';
+import { registerUpdateFirewallSettingTool } from './updateFirewallSetting.js';
+import { registerUpdateLanNetworkTool } from './updateLanNetwork.js';
+import { registerUpdateLanProfileTool } from './updateLanProfile.js';
+import { registerUpdateSwitchPortTool } from './updateSwitchPort.js';
 
 // ---------------------------------------------------------------------------
 // Tool registry: each entry maps a register-function to its category and
@@ -341,6 +381,69 @@ interface ToolEntry {
     category: ToolCategory;
     permission: ToolPermission;
 }
+
+const DEFAULT_TOOL_FNS = new Set<(server: McpServer, client: OmadaClient) => void>([
+    registerAdoptDeviceTool,
+    registerBatchSetSwitchPortNameTool,
+    registerBatchSetSwitchPortPoeTool,
+    registerBatchSetSwitchPortProfileTool,
+    registerBatchSetSwitchPortStatusTool,
+    registerBlockClientTool,
+    registerCreateFirewallAclTool,
+    registerCreateLanNetworkTool,
+    registerCreateLanProfileTool,
+    registerDeleteFirewallAclTool,
+    registerDeleteLanNetworkTool,
+    registerGenericApiCallTool,
+    registerGetCableTestResultsTool,
+    registerGetClientTool,
+    registerGetDeviceTool,
+    registerGetFirewallSettingTool,
+    registerGetFirmwareDetailsTool,
+    registerGetInternetInfoTool,
+    registerGetLanNetworkListTool,
+    registerGetLanProfileListTool,
+    registerGetPortForwardingStatusTool,
+    registerGetSsidDetailTool,
+    registerGetSsidListTool,
+    registerGetSwitchTool,
+    registerGetSwitchNetworksTool,
+    registerGetSwitchPortsTool,
+    registerGetSwitchStackDetailTool,
+    registerGetThreatListTool,
+    registerGetWlanGroupListTool,
+    registerListClientsTool,
+    registerListClientsActivityTool,
+    registerListClientsPastConnectionsTool,
+    registerListDevicesTool,
+    registerListDevicesStatsTool,
+    registerListEventsTool,
+    registerListFirewallAclsTool,
+    registerListIpGroupsTool,
+    registerListLogsTool,
+    registerListMostActiveClientsTool,
+    registerListRoutesTool,
+    registerListSitesTool,
+    registerRebootDeviceTool,
+    registerReconnectClientTool,
+    registerSearchDevicesTool,
+    registerSetDeviceLedTool,
+    registerSetGatewayWanConnectTool,
+    registerSetSwitchNetworksTool,
+    registerSetSwitchPortNameTool,
+    registerSetSwitchPortPoeTool,
+    registerSetSwitchPortProfileTool,
+    registerSetSwitchPortProfileOverrideTool,
+    registerSetSwitchPortStatusTool,
+    registerStartCableTestTool,
+    registerStartFirmwareUpgradeTool,
+    registerUnblockClientTool,
+    registerUpdateClientTool,
+    registerUpdateFirewallSettingTool,
+    registerUpdateLanNetworkTool,
+    registerUpdateLanProfileTool,
+    registerUpdateSwitchPortTool,
+]);
 
 const TOOL_REGISTRY: ToolEntry[] = [
     // --- Sites ---
@@ -374,6 +477,11 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerListUpgradeOverviewFirmwaresTool, category: 'devices-general', permission: 'read' },
     { fn: registerListSitesStacksTool, category: 'devices-general', permission: 'read' },
     { fn: registerGetSitesDeviceWhiteListTool, category: 'devices-general', permission: 'read' },
+    { fn: registerGetFirmwareDetailsTool, category: 'devices-general', permission: 'read' },
+    { fn: registerRebootDeviceTool, category: 'devices-general', permission: 'write' },
+    { fn: registerAdoptDeviceTool, category: 'devices-general', permission: 'write' },
+    { fn: registerSetDeviceLedTool, category: 'devices-general', permission: 'write' },
+    { fn: registerStartFirmwareUpgradeTool, category: 'devices-general', permission: 'write' },
 
     // --- Devices (switch) ---
     { fn: registerGetSwitchStackDetailTool, category: 'devices-switch', permission: 'read' },
@@ -390,6 +498,22 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetSitesSwitchesEsGeneralConfigTool, category: 'devices-switch', permission: 'read' },
     { fn: registerListSitesCableTestSwitchesPortsTool, category: 'devices-switch', permission: 'read' },
     { fn: registerListSitesCableTestSwitchesIncrementResultsTool, category: 'devices-switch', permission: 'read' },
+    { fn: registerGetSwitchTool, category: 'devices-switch', permission: 'read' },
+    { fn: registerGetSwitchPortsTool, category: 'devices-switch', permission: 'read' },
+    { fn: registerGetCableTestResultsTool, category: 'devices-switch', permission: 'read' },
+    { fn: registerGetSwitchNetworksTool, category: 'devices-switch', permission: 'read' },
+    { fn: registerUpdateSwitchPortTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerSetSwitchPortProfileTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerSetSwitchPortPoeTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerSetSwitchPortNameTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerSetSwitchPortStatusTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerSetSwitchPortProfileOverrideTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerBatchSetSwitchPortProfileTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerBatchSetSwitchPortPoeTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerBatchSetSwitchPortStatusTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerBatchSetSwitchPortNameTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerStartCableTestTool, category: 'devices-switch', permission: 'write' },
+    { fn: registerSetSwitchNetworksTool, category: 'devices-switch', permission: 'write' },
 
     // --- Devices (AP) ---
     { fn: registerGetApDetailTool, category: 'devices-ap', permission: 'read' },
@@ -433,6 +557,10 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerSetClientRateLimitTool, category: 'clients', permission: 'write' },
     { fn: registerSetClientRateLimitProfileTool, category: 'clients', permission: 'write' },
     { fn: registerDisableClientRateLimitTool, category: 'clients', permission: 'write' },
+    { fn: registerBlockClientTool, category: 'clients', permission: 'write' },
+    { fn: registerUnblockClientTool, category: 'clients', permission: 'write' },
+    { fn: registerReconnectClientTool, category: 'clients', permission: 'write' },
+    { fn: registerUpdateClientTool, category: 'clients', permission: 'write' },
 
     // --- Client insights ---
     { fn: registerListMostActiveClientsTool, category: 'client-insights', permission: 'read' },
@@ -470,6 +598,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetWanHealthDetailTool, category: 'network-wan', permission: 'read' },
     { fn: registerGetWanUsageStatsTool, category: 'network-wan', permission: 'read' },
     { fn: registerGetWanNatConfigTool, category: 'network-wan', permission: 'read' },
+    { fn: registerSetGatewayWanConnectTool, category: 'network-wan', permission: 'write' },
 
     // --- Network LAN ---
     { fn: registerGetLanNetworkListTool, category: 'network-lan', permission: 'read' },
@@ -487,6 +616,11 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetLanDnsRulesTool, category: 'network-lan', permission: 'read' },
     { fn: registerGetLanProfileEsUsageTool, category: 'network-lan', permission: 'read' },
     { fn: registerGetLanClientCountTool, category: 'network-lan', permission: 'read' },
+    { fn: registerCreateLanNetworkTool, category: 'network-lan', permission: 'write' },
+    { fn: registerUpdateLanNetworkTool, category: 'network-lan', permission: 'write' },
+    { fn: registerDeleteLanNetworkTool, category: 'network-lan', permission: 'write' },
+    { fn: registerCreateLanProfileTool, category: 'network-lan', permission: 'write' },
+    { fn: registerUpdateLanProfileTool, category: 'network-lan', permission: 'write' },
 
     // --- Network NAT ---
     { fn: registerGetPortForwardingStatusTool, category: 'network-nat', permission: 'read' },
@@ -501,6 +635,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerListPolicyRoutesTool, category: 'network-routing', permission: 'read' },
     { fn: registerGetGridPolicyRoutingTool, category: 'network-routing', permission: 'read' },
     { fn: registerGetRoutingTableTool, category: 'network-routing', permission: 'read' },
+    { fn: registerListRoutesTool, category: 'network-routing', permission: 'read' },
     { fn: registerGetOspfProcessTool, category: 'network-routing', permission: 'read' },
     { fn: registerGetOspfInterfaceTool, category: 'network-routing', permission: 'read' },
     { fn: registerGetVrrpConfigTool, category: 'network-routing', permission: 'read' },
@@ -570,6 +705,11 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetDot1xConfigTool, category: 'firewall-acl', permission: 'read' },
     { fn: registerGetRadiusProxyConfigTool, category: 'firewall-acl', permission: 'read' },
     { fn: registerGetApplicationAclTool, category: 'firewall-acl', permission: 'read' },
+    { fn: registerListFirewallAclsTool, category: 'firewall-acl', permission: 'read' },
+    { fn: registerListIpGroupsTool, category: 'firewall-acl', permission: 'read' },
+    { fn: registerCreateFirewallAclTool, category: 'firewall-acl', permission: 'write' },
+    { fn: registerDeleteFirewallAclTool, category: 'firewall-acl', permission: 'write' },
+    { fn: registerUpdateFirewallSettingTool, category: 'firewall-acl', permission: 'write' },
 
     // --- Firewall traffic ---
     { fn: registerGetUrlFilterGeneralTool, category: 'firewall-traffic', permission: 'read' },
@@ -658,6 +798,8 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerListSiteAuditLogsTool, category: 'logs', permission: 'read' },
     { fn: registerListGlobalEventsTool, category: 'logs', permission: 'read' },
     { fn: registerListGlobalAlertsTool, category: 'logs', permission: 'read' },
+    { fn: registerListEventsTool, category: 'logs', permission: 'read' },
+    { fn: registerListLogsTool, category: 'logs', permission: 'read' },
     { fn: registerGetLogSettingForSiteTool, category: 'logs', permission: 'read' },
     { fn: registerGetLogSettingForSiteV2Tool, category: 'logs', permission: 'read' },
     { fn: registerGetAuditLogSettingForSiteTool, category: 'logs', permission: 'read' },
@@ -685,6 +827,7 @@ const TOOL_REGISTRY: ToolEntry[] = [
     { fn: registerGetWebhookForGlobalTool, category: 'controller', permission: 'read' },
     { fn: registerGetWebhookLogsForGlobalTool, category: 'controller', permission: 'read' },
     { fn: registerGetMailServerStatusTool, category: 'controller', permission: 'read' },
+    { fn: registerGenericApiCallTool, category: 'controller', permission: 'write' },
 
     // --- Maintenance ---
     { fn: registerGetBackupFileListTool, category: 'maintenance', permission: 'read' },
@@ -738,19 +881,33 @@ const TOOL_REGISTRY: ToolEntry[] = [
 // registers matching tools with the MCP server.
 // ---------------------------------------------------------------------------
 
-export function registerAllTools(server: McpServer, client: OmadaClient, activeCategories?: Map<ToolCategory, Set<ToolPermission>>): void {
+export function registerAllTools(server: McpServer, client: OmadaClient, filter?: ToolFilter | Map<ToolCategory, Set<ToolPermission>>): void {
     // If no filter map provided, register everything (backward-compat / tests)
-    if (!activeCategories) {
+    if (!filter) {
         for (const entry of TOOL_REGISTRY) {
             entry.fn(server, client);
         }
         return;
     }
 
+    const activeCategories = filter instanceof Map ? filter : filter.categories;
+    const activeProfiles = filter instanceof Map ? new Set() : filter.profiles;
+
     // Deduplicate: some tools appear in multiple categories; track which fns we've already called.
     const registered = new Set<(server: McpServer, client: OmadaClient) => void>();
 
     let toolCount = 0;
+    if (activeProfiles.has('default')) {
+        for (const entry of TOOL_REGISTRY) {
+            if (!DEFAULT_TOOL_FNS.has(entry.fn)) continue;
+            if (registered.has(entry.fn)) continue;
+
+            registered.add(entry.fn);
+            entry.fn(server, client);
+            toolCount++;
+        }
+    }
+
     for (const entry of TOOL_REGISTRY) {
         const allowed = activeCategories.get(entry.category);
         if (!allowed) continue;
@@ -769,8 +926,10 @@ export function registerAllTools(server: McpServer, client: OmadaClient, activeC
             return `${cat}:${p}`;
         })
         .join(', ');
+    const profileList = [...activeProfiles].join(', ');
 
     logger.info('Tool categories loaded', {
+        profiles: profileList || undefined,
         categories: categoryList,
         toolCount,
     });

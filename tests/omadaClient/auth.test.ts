@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthManager } from '../../src/omadaClient/auth.js';
+import { AuthManager, WebAuthManager } from '../../src/omadaClient/auth.js';
 import type { OmadaApiResponse, TokenResult } from '../../src/types/index.js';
 import * as loggerModule from '../../src/utils/logger.js';
 
@@ -278,6 +278,45 @@ describe('AuthManager', () => {
             // Next call should re-authenticate
             await authManager.getAccessToken();
             expect(mockHttp.post).toHaveBeenCalledTimes(2);
+        });
+    });
+});
+
+describe('WebAuthManager', () => {
+    let mockHttp: AxiosInstance;
+
+    beforeEach(() => {
+        mockHttp = {
+            defaults: { baseURL: 'https://test.example.com' },
+            post: vi.fn(),
+        } as unknown as AxiosInstance;
+
+        vi.spyOn(loggerModule.logger, 'error').mockImplementation(() => {
+            // Mock implementation
+        });
+        vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {
+            // Mock implementation
+        });
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it('should login and return CSRF/cookie headers', async () => {
+        (mockHttp.post as ReturnType<typeof vi.fn>).mockResolvedValue({
+            data: { errorCode: 0, msg: 'Success', result: { token: 'csrf-token' } },
+            headers: { 'set-cookie': ['SESSION=abc; Path=/', 'TOKEN=def; Path=/'] },
+        });
+
+        const authManager = new WebAuthManager(mockHttp, 'user', 'pass', 'omadac-id');
+        const headers = await authManager.getAuthHeaders();
+
+        expect(mockHttp.post).toHaveBeenCalledWith('/omadac-id/api/v2/login', { username: 'user', password: 'pass' }, { withCredentials: true });
+        expect(headers).toEqual({
+            'Csrf-Token': 'csrf-token',
+            'Omada-Request-Source': 'web-local',
+            Cookie: 'SESSION=abc; TOKEN=def',
         });
     });
 });

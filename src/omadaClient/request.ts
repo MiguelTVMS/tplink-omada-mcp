@@ -3,7 +3,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosRequestHe
 import type { CustomHeaders, OmadaApiResponse, PaginatedResult } from '../types/index.js';
 import { logger } from '../utils/logger.js';
 
-import type { AuthManager } from './auth.js';
+import type { RequestAuthManager } from './auth.js';
 
 const DEFAULT_PAGE_SIZE = 200;
 
@@ -13,7 +13,7 @@ const DEFAULT_PAGE_SIZE = 200;
 export class RequestHandler {
     constructor(
         private readonly http: AxiosInstance,
-        private readonly auth: AuthManager
+        private readonly auth: RequestAuthManager
     ) {}
 
     /**
@@ -31,17 +31,38 @@ export class RequestHandler {
     }
 
     /**
+     * Make a POST request to the Omada API.
+     */
+    public async post<T>(path: string, data: unknown, params?: Record<string, unknown>): Promise<T> {
+        return await this.request<T>({ method: 'POST', url: path, data, params });
+    }
+
+    /**
+     * Make a PUT request to the Omada API.
+     */
+    public async put<T>(path: string, data: unknown, params?: Record<string, unknown>): Promise<T> {
+        return await this.request<T>({ method: 'PUT', url: path, data, params });
+    }
+
+    /**
+     * Make a DELETE request to the Omada API.
+     */
+    public async delete<T>(path: string, params?: Record<string, unknown>): Promise<T> {
+        return await this.request<T>({ method: 'DELETE', url: path, params });
+    }
+
+    /**
      * Make an arbitrary HTTP request to the Omada API.
      */
     public async request<T>(config: AxiosRequestConfig, retry = true, customHeaders?: CustomHeaders): Promise<T> {
-        const accessToken = await this.auth.getAccessToken();
+        const authHeaders = await this.auth.getAuthHeaders();
 
         const requestConfig: AxiosRequestConfig = {
             ...config,
             headers: {
                 ...(config.headers ?? {}),
                 ...(customHeaders ?? {}),
-                Authorization: `AccessToken=${accessToken}`,
+                ...authHeaders,
             },
         };
 
@@ -249,6 +270,8 @@ export class RequestHandler {
         const normalized = key.toLowerCase();
         return (
             normalized.includes('authorization') ||
+            normalized.includes('cookie') ||
+            normalized.includes('csrf') ||
             normalized.includes('token') ||
             normalized.includes('secret') ||
             normalized.includes('password') ||

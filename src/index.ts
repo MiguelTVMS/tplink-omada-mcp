@@ -34,6 +34,7 @@ async function main(): Promise<void> {
 
     logger.info('Loaded Omada configuration', {
         baseUrl: config.baseUrl,
+        authMode: config.authMode,
         omadacId: config.omadacId ?? '(from headers)',
         siteId: config.siteId ?? null,
         strictSsl: config.strictSsl,
@@ -46,8 +47,11 @@ async function main(): Promise<void> {
         // In stdio mode, the three credential fields are validated as required by loadConfigFromEnv
         const omadaConfig: OmadaConnectionConfig = {
             baseUrl: config.baseUrl,
-            clientId: config.clientId as string,
-            clientSecret: config.clientSecret as string,
+            authMode: config.authMode,
+            clientId: config.clientId,
+            clientSecret: config.clientSecret,
+            webUsername: config.webUsername,
+            webPassword: config.webPassword,
             omadacId: config.omadacId as string,
             siteId: config.siteId,
             strictSsl: config.strictSsl,

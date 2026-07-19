@@ -89,8 +89,11 @@ The MCP server reads its configuration from environment variables.
 | Variable              | Required | Default | Description                                                                 |
 | --------------------- | -------- | ------- | --------------------------------------------------------------------------- |
 | `OMADA_BASE_URL` | Yes      | -       | Base URL of the Omada controller (e.g., `https://omada-controller.local`) |
-| `OMADA_CLIENT_ID` | Yes      | -       | OAuth client ID generated under Omada Platform Integration |
-| `OMADA_CLIENT_SECRET` | Yes      | -       | OAuth client secret associated with the client ID                           |
+| `OMADA_AUTH_MODE` | No       | `oauth` | Authentication mode: `oauth` or `web` |
+| `OMADA_CLIENT_ID` | OAuth   | -       | OAuth client ID generated under Omada Platform Integration |
+| `OMADA_CLIENT_SECRET` | OAuth   | -       | OAuth client secret associated with the client ID                           |
+| `OMADA_WEB_USERNAME` | Web     | -       | Omada web UI username for Fusion/local web-session auth |
+| `OMADA_WEB_PASSWORD` | Web     | -       | Omada web UI password for Fusion/local web-session auth |
 | `OMADA_OMADAC_ID` | Yes      | -       | Omada controller ID (omadacId) to target |
 | `OMADA_SITE_ID` | No       | -       | Optional default site ID; if omitted, each MCP call must pass a siteId |
 | `OMADA_STRICT_SSL` | No       | `true`  | Enforce strict SSL certificate validation (set to `false` for self-signed) |
@@ -102,7 +105,7 @@ The MCP server reads its configuration from environment variables.
 | `MCP_SERVER_LOG_LEVEL` | No       | `info`  | Logging verbosity (`debug`, `info`, `warn`, `error`, `silent`) |
 | `MCP_SERVER_LOG_FORMAT` | No       | `plain` | Log output format (`plain`, `json`, or `gcp-json`) |
 | `MCP_SERVER_USE_HTTP` | No       | `false` | Start HTTP server instead of stdio |
-> **Session IDs and authentication:** When `OMADA_CLIENT_ID`, `OMADA_CLIENT_SECRET`, and `OMADA_OMADAC_ID` are provided (the default client-credentials mode), the server runs statelessly and treats the `Mcp-Session-Id` header as optional. A future OAuth-based user authentication mode will require this header again.
+> **Session IDs and authentication:** In default `oauth` mode, provide `OMADA_CLIENT_ID`, `OMADA_CLIENT_SECRET`, and `OMADA_OMADAC_ID`. For Fusion gateways or controllers where OpenAPI OAuth is unavailable, set `OMADA_AUTH_MODE=web` and provide `OMADA_WEB_USERNAME`, `OMADA_WEB_PASSWORD`, and `OMADA_OMADAC_ID`. The HTTP transport also accepts matching `x-omada-auth-mode`, `x-omada-client-id`, `x-omada-client-secret`, `x-omada-web-username`, `x-omada-web-password`, and `x-omada-omadac-id` headers.
 
 ### MCP Server HTTP Configuration
 

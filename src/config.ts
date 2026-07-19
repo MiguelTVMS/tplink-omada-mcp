@@ -93,8 +93,16 @@ export interface ActiveCategoryEntry {
     permissions: Set<ToolPermission>;
 }
 
+export type ToolProfile = 'default';
+
+export interface ToolFilter {
+    categories: Map<ToolCategory, Set<ToolPermission>>;
+    profiles: Set<ToolProfile>;
+}
+
 export interface ParseToolCategoriesResult {
     categories: Map<ToolCategory, Set<ToolPermission>>;
+    profiles: Set<ToolProfile>;
     warnings: string[];
 }
 
@@ -108,6 +116,7 @@ export interface ParseToolCategoriesResult {
  *   - no suffix    → read and write (`:rw`)
  *
  * Group aliases (e.g. `all`, `devices-all`) are expanded before the suffix is applied.
+ * The `default` profile registers the curated practical tool set from the original server.
  * Unknown category names produce a warning and are skipped.
  * Future (unimplemented) categories produce a warning and are skipped.
  *
@@ -115,6 +124,7 @@ export interface ParseToolCategoriesResult {
  */
 export function parseToolCategories(raw: string): ParseToolCategoriesResult {
     const categories = new Map<ToolCategory, Set<ToolPermission>>();
+    const profiles = new Set<ToolProfile>();
     const warnings: string[] = [];
 
     const tokens = raw
@@ -153,6 +163,11 @@ export function parseToolCategories(raw: string): ParseToolCategoriesResult {
             permissions.add('write');
         }
 
+        if (name === 'default') {
+            profiles.add('default');
+            continue;
+        }
+
         // Expand group aliases
         if (name in CATEGORY_GROUP_ALIASES) {
             for (const cat of CATEGORY_GROUP_ALIASES[name]) {
@@ -182,7 +197,7 @@ export function parseToolCategories(raw: string): ParseToolCategoriesResult {
         mergePermissions(categories, name as ToolCategory, permissions);
     }
 
-    return { categories, warnings };
+    return { categories, profiles, warnings };
 }
 
 function mergePermissions(map: Map<ToolCategory, Set<ToolPermission>>, cat: ToolCategory, perms: Set<ToolPermission>): void {
@@ -195,7 +210,7 @@ function mergePermissions(map: Map<ToolCategory, Set<ToolPermission>>, cat: Tool
 }
 
 /** Default value for OMADA_TOOL_CATEGORIES */
-export const DEFAULT_TOOL_CATEGORIES = 'dashboard:r,client-insights:r,clients:r,devices-all:r';
+export const DEFAULT_TOOL_CATEGORIES = 'default';
 
 const createBooleanStringSchema = (
     defaultValue: boolean
@@ -233,8 +248,11 @@ const envSchema = z
 
         // Omada Client Configuration
         baseUrl: z.string().url({ message: 'OMADA_BASE_URL must be a valid URL' }),
+        authMode: z.enum(['oauth', 'web']).optional().default('oauth'),
         clientId: z.string().min(1, 'OMADA_CLIENT_ID must not be empty').optional(),
         clientSecret: z.string().min(1, 'OMADA_CLIENT_SECRET must not be empty').optional(),
+        webUsername: z.string().min(1, 'OMADA_WEB_USERNAME must not be empty').optional(),
+        webPassword: z.string().min(1, 'OMADA_WEB_PASSWORD must not be empty').optional(),
         omadacId: z.string().min(1, 'OMADA_OMADAC_ID must not be empty').optional(),
         siteId: z.string().min(1).optional(),
         strictSsl: createBooleanStringSchema(true),
@@ -256,10 +274,21 @@ const envSchema = z
         httpNgrokEnabled: createBooleanStringSchema(false),
         httpNgrokAuthToken: z.string().optional(),
     })
-    .refine((data) => data.useHttp || !!data.clientId, { message: 'OMADA_CLIENT_ID is required when not using HTTP mode', path: ['clientId'] })
-    .refine((data) => data.useHttp || !!data.clientSecret, {
+    .refine((data) => data.useHttp || data.authMode !== 'oauth' || !!data.clientId, {
+        message: 'OMADA_CLIENT_ID is required for OAuth auth when not using HTTP mode',
+        path: ['clientId'],
+    })
+    .refine((data) => data.useHttp || data.authMode !== 'oauth' || !!data.clientSecret, {
         message: 'OMADA_CLIENT_SECRET is required when not using HTTP mode',
         path: ['clientSecret'],
+    })
+    .refine((data) => data.useHttp || data.authMode !== 'web' || !!data.webUsername, {
+        message: 'OMADA_WEB_USERNAME is required for web auth when not using HTTP mode',
+        path: ['webUsername'],
+    })
+    .refine((data) => data.useHttp || data.authMode !== 'web' || !!data.webPassword, {
+        message: 'OMADA_WEB_PASSWORD is required for web auth when not using HTTP mode',
+        path: ['webPassword'],
     })
     .refine((data) => data.useHttp || !!data.omadacId, { message: 'OMADA_OMADAC_ID is required when not using HTTP mode', path: ['omadacId'] })
     .refine(
@@ -302,8 +331,11 @@ const envSchema = z
  */
 export interface OmadaConnectionConfig {
     baseUrl: string;
-    clientId: string;
-    clientSecret: string;
+    authMode: 'oauth' | 'web';
+    clientId?: string;
+    clientSecret?: string;
+    webUsername?: string;
+    webPassword?: string;
     omadacId: string;
     siteId?: string;
     strictSsl: boolean;
@@ -312,15 +344,18 @@ export interface OmadaConnectionConfig {
 
 export interface EnvironmentConfig {
     // Tool category filtering
-    toolCategories: Map<ToolCategory, Set<ToolPermission>>;
+    toolCategories: ToolFilter;
     startupWarnings: string[];
 
     // Omada Client Configuration
     // baseUrl is always required (from env)
     // clientId, clientSecret, omadacId are optional in HTTP mode (can come from request headers)
     baseUrl: string;
+    authMode: 'oauth' | 'web';
     clientId?: string;
     clientSecret?: string;
+    webUsername?: string;
+    webPassword?: string;
     omadacId?: string;
     siteId?: string;
     strictSsl: boolean;
@@ -351,8 +386,11 @@ export function loadConfigFromEnv(env: NodeJS.ProcessEnv = process.env): Environ
 
         // Omada Client Configuration
         baseUrl: env.OMADA_BASE_URL,
+        authMode: env.OMADA_AUTH_MODE,
         clientId: env.OMADA_CLIENT_ID,
         clientSecret: env.OMADA_CLIENT_SECRET,
+        webUsername: env.OMADA_WEB_USERNAME,
+        webPassword: env.OMADA_WEB_PASSWORD,
         omadacId: env.OMADA_OMADAC_ID,
         siteId: env.OMADA_SITE_ID,
         strictSsl: env.OMADA_STRICT_SSL,
@@ -397,18 +435,21 @@ export function loadConfigFromEnv(env: NodeJS.ProcessEnv = process.env): Environ
     }
 
     // Parse tool categories
-    const { categories: toolCategories, warnings: categoryWarnings } = parseToolCategories(parsed.data.toolCategories);
+    const { categories, profiles, warnings: categoryWarnings } = parseToolCategories(parsed.data.toolCategories);
     warnings.push(...categoryWarnings);
 
     return {
         // Tool category filtering
-        toolCategories,
+        toolCategories: { categories, profiles },
         startupWarnings: warnings,
 
         // Omada Client Configuration
         baseUrl: parsed.data.baseUrl.replace(/\/$/, ''),
+        authMode: parsed.data.authMode,
         clientId: parsed.data.clientId,
         clientSecret: parsed.data.clientSecret,
+        webUsername: parsed.data.webUsername,
+        webPassword: parsed.data.webPassword,
         omadacId: parsed.data.omadacId,
         siteId: parsed.data.siteId,
         strictSsl: parsed.data.strictSsl,

@@ -31,6 +31,7 @@ describe('config', () => {
             expect(config.baseUrl).toBe('https://omada.example.com');
             expect(config.clientId).toBe('test-client-id');
             expect(config.clientSecret).toBe('test-client-secret');
+            expect(config.authMode).toBe('oauth');
             expect(config.omadacId).toBe('test-omadac-id');
             expect(config.siteId).toBeUndefined();
             expect(config.strictSsl).toBe(true); // Default
@@ -72,6 +73,31 @@ describe('config', () => {
 
         it('should throw error if OMADA_OMADAC_ID is missing in stdio mode', () => {
             delete mockEnv.OMADA_OMADAC_ID;
+
+            expect(() => loadConfigFromEnv(mockEnv)).toThrow('Invalid environment configuration');
+        });
+
+        it('should load web auth configuration in stdio mode', () => {
+            mockEnv.OMADA_AUTH_MODE = 'web';
+            delete mockEnv.OMADA_CLIENT_ID;
+            delete mockEnv.OMADA_CLIENT_SECRET;
+            mockEnv.OMADA_WEB_USERNAME = 'web-user';
+            mockEnv.OMADA_WEB_PASSWORD = 'web-pass';
+
+            const config = loadConfigFromEnv(mockEnv);
+
+            expect(config.authMode).toBe('web');
+            expect(config.webUsername).toBe('web-user');
+            expect(config.webPassword).toBe('web-pass');
+            expect(config.clientId).toBeUndefined();
+            expect(config.clientSecret).toBeUndefined();
+        });
+
+        it('should throw if web auth username is missing in stdio mode', () => {
+            mockEnv.OMADA_AUTH_MODE = 'web';
+            delete mockEnv.OMADA_CLIENT_ID;
+            delete mockEnv.OMADA_CLIENT_SECRET;
+            mockEnv.OMADA_WEB_PASSWORD = 'web-pass';
 
             expect(() => loadConfigFromEnv(mockEnv)).toThrow('Invalid environment configuration');
         });
@@ -353,15 +379,24 @@ describe('config', () => {
                 httpNgrokEnabled: true,
                 httpNgrokAuthToken: 'ngrok-token-xyz',
             });
-            expect(config.toolCategories).toBeInstanceOf(Map);
+            expect(config.toolCategories.categories).toBeInstanceOf(Map);
+            expect(config.toolCategories.profiles).toBeInstanceOf(Set);
         });
     });
 });
 
 describe('parseToolCategories', () => {
     it('should return empty categories and no warnings for empty string', () => {
-        const { categories, warnings } = parseToolCategories('');
+        const { categories, profiles, warnings } = parseToolCategories('');
         expect(categories.size).toBe(0);
+        expect(profiles.size).toBe(0);
+        expect(warnings).toEqual([]);
+    });
+
+    it('should parse the default profile', () => {
+        const { categories, profiles, warnings } = parseToolCategories('default');
+        expect(categories.size).toBe(0);
+        expect(profiles).toEqual(new Set(['default']));
         expect(warnings).toEqual([]);
     });
 
@@ -415,7 +450,8 @@ describe('parseToolCategories', () => {
     });
 
     it('DEFAULT_TOOL_CATEGORIES should not contain any future categories', () => {
-        const { warnings } = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
+        const { profiles, warnings } = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
+        expect(profiles).toEqual(new Set(['default']));
         expect(warnings.filter((w) => w.includes('future phase'))).toHaveLength(0);
     });
 

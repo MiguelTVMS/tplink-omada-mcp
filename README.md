@@ -107,7 +107,7 @@ The MCP server reads its configuration from environment variables. See `.env.exa
 
 | Variable                  | Required | Default                                                      | Description                                          |
 | ------------------------- | -------- | ------------------------------------------------------------ | ---------------------------------------------------- |
-| `OMADA_TOOL_CATEGORIES` | No       | `dashboard:r,client-insights:r,clients:r,devices-all:r` | Comma-separated categories to enable at startup |
+| `OMADA_TOOL_CATEGORIES` | No       | `default` | Tool profile or comma-separated categories to enable at startup |
 Each token is `<category>[:<suffix>]`. Permission suffixes:
 
 | Suffix | Effect               |
@@ -119,7 +119,7 @@ Each token is `<category>[:<suffix>]`. Permission suffixes:
 
 ##### Category Reference
 
-Categories marked with `*` are reserved for upcoming phases and have no tool implementations yet. Specifying them will produce a startup warning and they will be skipped. Write tools are currently limited to the `clients` category.
+Use `default` for the curated practical tool set inherited from the original server. Use `all` for the complete generated registry. Categories marked with `*` are reserved for upcoming phases and have no tool implementations yet. Specifying them will produce a startup warning and they will be skipped.
 
 | Group                   | Categories                                                                    |
 | ----------------------- | ----------------------------------------------------------------------------- |
@@ -153,11 +153,11 @@ Examples:
 # Read-only access to everything
 OMADA_TOOL_CATEGORIES=all:r
 
-# Default safe subset (read only)
-OMADA_TOOL_CATEGORIES=dashboard:r,client-insights:r,clients:r,devices-all:r
+# Curated default tool set
+OMADA_TOOL_CATEGORIES=default
 
 # Full access including write operations
-OMADA_TOOL_CATEGORIES=all:rw
+OMADA_TOOL_CATEGORIES=all
 
 # Network read + client write operations
 OMADA_TOOL_CATEGORIES=network-all:r,clients:rw
@@ -168,8 +168,11 @@ OMADA_TOOL_CATEGORIES=network-all:r,clients:rw
 | Variable              | Required | Default | Description                                                                 |
 | --------------------- | -------- | ------- | --------------------------------------------------------------------------- |
 | `OMADA_BASE_URL` | Yes      | -       | Base URL of the Omada controller (e.g., `https://omada-controller.local`) |
-| `OMADA_CLIENT_ID` | Yes      | -       | OAuth client ID generated under Omada Platform Integration |
-| `OMADA_CLIENT_SECRET` | Yes      | -       | OAuth client secret associated with the client ID                           |
+| `OMADA_AUTH_MODE` | No       | `oauth` | Authentication mode: `oauth` or `web` |
+| `OMADA_CLIENT_ID` | OAuth   | -       | OAuth client ID generated under Omada Platform Integration |
+| `OMADA_CLIENT_SECRET` | OAuth   | -       | OAuth client secret associated with the client ID                           |
+| `OMADA_WEB_USERNAME` | Web     | -       | Omada web UI username for Fusion/local web-session auth |
+| `OMADA_WEB_PASSWORD` | Web     | -       | Omada web UI password for Fusion/local web-session auth |
 | `OMADA_OMADAC_ID` | Yes      | -       | Omada controller ID (omadacId) to target |
 | `OMADA_SITE_ID` | No       | -       | Optional default site ID; if omitted, each MCP call must pass a siteId |
 | `OMADA_STRICT_SSL` | No       | `true`  | Enforce strict SSL certificate validation (set to `false` for self-signed) |
@@ -181,7 +184,7 @@ OMADA_TOOL_CATEGORIES=network-all:r,clients:rw
 | `MCP_SERVER_LOG_LEVEL` | No       | `info`  | Logging verbosity (`debug`, `info`, `warn`, `error`, `silent`) |
 | `MCP_SERVER_LOG_FORMAT` | No       | `plain` | Log output format (`plain`, `json`, or `gcp-json`) |
 | `MCP_SERVER_USE_HTTP` | No       | `false` | Start HTTP server instead of stdio |
-> **Session IDs and authentication:** When `OMADA_CLIENT_ID`, `OMADA_CLIENT_SECRET`, and `OMADA_OMADAC_ID` are provided (the default client-credentials mode), the server runs statelessly and treats the `Mcp-Session-Id` header as optional. A future OAuth-based user authentication mode will require this header again.
+> **Session IDs and authentication:** In default `oauth` mode, provide `OMADA_CLIENT_ID`, `OMADA_CLIENT_SECRET`, and `OMADA_OMADAC_ID`. For Fusion gateways or controllers where OpenAPI OAuth is unavailable, set `OMADA_AUTH_MODE=web` and provide `OMADA_WEB_USERNAME`, `OMADA_WEB_PASSWORD`, and `OMADA_OMADAC_ID`. The HTTP transport also accepts matching `x-omada-auth-mode`, `x-omada-client-id`, `x-omada-client-secret`, `x-omada-web-username`, `x-omada-web-password`, and `x-omada-omadac-id` headers.
 
 #### MCP Server HTTP Configuration
 
@@ -1004,4 +1007,3 @@ The repository includes a ready-to-use [devcontainer](https://containers.dev/) c
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-

@@ -4,6 +4,7 @@ import { extractAuthFromHeaders, resolveOmadaConfig } from '../../src/utils/omad
 
 const baseEnvConfig: EnvironmentConfig = {
     baseUrl: 'https://omada.example.com',
+    authMode: 'oauth',
     strictSsl: true,
     logLevel: 'info',
     logFormat: 'plain',
@@ -20,6 +21,7 @@ describe('omada-headers', () => {
     describe('extractAuthFromHeaders', () => {
         it('extracts all three credential fields when present', () => {
             const headers = {
+                'x-omada-auth-mode': 'oauth',
                 'x-omada-client-id': 'my-client-id',
                 'x-omada-client-secret': 'my-secret',
                 'x-omada-omadac-id': 'my-omadac-id',
@@ -27,9 +29,28 @@ describe('omada-headers', () => {
 
             const result = extractAuthFromHeaders(headers);
 
+            expect(result.authMode).toBe('oauth');
             expect(result.clientId).toBe('my-client-id');
             expect(result.clientSecret).toBe('my-secret');
             expect(result.omadacId).toBe('my-omadac-id');
+        });
+
+        it('extracts web auth credential fields when present', () => {
+            const headers = {
+                'x-omada-auth-mode': 'web',
+                'x-omada-web-username': 'web-user',
+                'x-omada-web-password': 'web-pass',
+                'x-omada-omadac-id': 'my-omadac-id',
+            };
+
+            const result = extractAuthFromHeaders(headers);
+
+            expect(result).toEqual({
+                authMode: 'web',
+                webUsername: 'web-user',
+                webPassword: 'web-pass',
+                omadacId: 'my-omadac-id',
+            });
         });
 
         it('returns undefined for missing fields', () => {
@@ -107,6 +128,7 @@ describe('omada-headers', () => {
 
             expect(result.clientId).toBe('env-client-id');
             expect(result.clientSecret).toBe('env-secret');
+            expect(result.authMode).toBe('oauth');
             expect(result.omadacId).toBe('env-omadac-id');
             expect(result.baseUrl).toBe('https://omada.example.com');
             expect(result.strictSsl).toBe(true);
@@ -123,6 +145,23 @@ describe('omada-headers', () => {
 
             expect(result.clientId).toBe('header-client-id');
             expect(result.clientSecret).toBe('header-secret');
+            expect(result.authMode).toBe('oauth');
+            expect(result.omadacId).toBe('header-omadac-id');
+        });
+
+        it('builds web auth config from headers', () => {
+            const config: EnvironmentConfig = { ...baseEnvConfig };
+
+            const result = resolveOmadaConfig(config, {
+                authMode: 'web',
+                webUsername: 'header-user',
+                webPassword: 'header-pass',
+                omadacId: 'header-omadac-id',
+            });
+
+            expect(result.authMode).toBe('web');
+            expect(result.webUsername).toBe('header-user');
+            expect(result.webPassword).toBe('header-pass');
             expect(result.omadacId).toBe('header-omadac-id');
         });
 
