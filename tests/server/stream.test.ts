@@ -106,7 +106,7 @@ describe('Stream Server', () => {
             httpNgrokEnabled: false,
             logLevel: 'info',
             logFormat: 'plain',
-            toolCategories: new Map(),
+            toolCategories: { categories: new Map(), profiles: new Set() },
             startupWarnings: [],
         } as EnvironmentConfig;
 
@@ -219,7 +219,10 @@ describe('Stream Server', () => {
         });
 
         it('should pass toolCategories from config to registerAllTools', () => {
-            const toolCategories = new Map<ToolCategory, Set<ToolPermission>>([['dashboard' as ToolCategory, new Set<ToolPermission>(['read'])]]);
+            const toolCategories = {
+                categories: new Map<ToolCategory, Set<ToolPermission>>([['dashboard' as ToolCategory, new Set<ToolPermission>(['read'])]]),
+                profiles: new Set(),
+            };
             const configWithCategories = { ...mockConfig, toolCategories };
             createStreamTransport(mockClient, configWithCategories);
             expect(vi.mocked(registerAllTools)).toHaveBeenCalledWith(expect.anything(), expect.anything(), toolCategories);

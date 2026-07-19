@@ -379,15 +379,24 @@ describe('config', () => {
                 httpNgrokEnabled: true,
                 httpNgrokAuthToken: 'ngrok-token-xyz',
             });
-            expect(config.toolCategories).toBeInstanceOf(Map);
+            expect(config.toolCategories.categories).toBeInstanceOf(Map);
+            expect(config.toolCategories.profiles).toBeInstanceOf(Set);
         });
     });
 });
 
 describe('parseToolCategories', () => {
     it('should return empty categories and no warnings for empty string', () => {
-        const { categories, warnings } = parseToolCategories('');
+        const { categories, profiles, warnings } = parseToolCategories('');
         expect(categories.size).toBe(0);
+        expect(profiles.size).toBe(0);
+        expect(warnings).toEqual([]);
+    });
+
+    it('should parse the default profile', () => {
+        const { categories, profiles, warnings } = parseToolCategories('default');
+        expect(categories.size).toBe(0);
+        expect(profiles).toEqual(new Set(['default']));
         expect(warnings).toEqual([]);
     });
 
@@ -441,7 +450,8 @@ describe('parseToolCategories', () => {
     });
 
     it('DEFAULT_TOOL_CATEGORIES should not contain any future categories', () => {
-        const { warnings } = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
+        const { profiles, warnings } = parseToolCategories(DEFAULT_TOOL_CATEGORIES);
+        expect(profiles).toEqual(new Set(['default']));
         expect(warnings.filter((w) => w.includes('future phase'))).toHaveLength(0);
     });
 

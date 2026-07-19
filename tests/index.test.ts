@@ -10,7 +10,7 @@ const baseConfig = {
     strictSsl: true,
     requestTimeout: 15_000,
     httpTransport: 'stream',
-    toolCategories: new Map(),
+    toolCategories: { categories: new Map(), profiles: new Set() },
     startupWarnings: [],
 };
 
@@ -78,7 +78,7 @@ describe('src/index main entry', () => {
 
         expect(mockInitLogger).toHaveBeenCalledWith('info', 'plain', true);
         expect(OmadaClient).toHaveBeenCalledWith(expect.objectContaining({ baseUrl: 'https://controller.local' }));
-        expect(startStdioServer).toHaveBeenCalledWith(expect.objectContaining({ client: 'instance' }), new Map());
+        expect(startStdioServer).toHaveBeenCalledWith(expect.objectContaining({ client: 'instance' }), baseConfig.toolCategories);
         expect(startHttpServer).not.toHaveBeenCalled();
         expect(loggerInfo).toHaveBeenCalledWith(
             'Starting Omada MCP server',

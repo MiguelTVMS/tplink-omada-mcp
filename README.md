@@ -107,7 +107,7 @@ The MCP server reads its configuration from environment variables. See `.env.exa
 
 | Variable                  | Required | Default                                                      | Description                                          |
 | ------------------------- | -------- | ------------------------------------------------------------ | ---------------------------------------------------- |
-| `OMADA_TOOL_CATEGORIES` | No       | `dashboard:r,client-insights:r,clients:r,devices-all:r` | Comma-separated categories to enable at startup |
+| `OMADA_TOOL_CATEGORIES` | No       | `default` | Tool profile or comma-separated categories to enable at startup |
 Each token is `<category>[:<suffix>]`. Permission suffixes:
 
 | Suffix | Effect               |
@@ -119,7 +119,7 @@ Each token is `<category>[:<suffix>]`. Permission suffixes:
 
 ##### Category Reference
 
-Categories marked with `*` are reserved for upcoming phases and have no tool implementations yet. Specifying them will produce a startup warning and they will be skipped. Write tools are currently limited to the `clients` category.
+Use `default` for the curated practical tool set inherited from the original server. Use `all` for the complete generated registry. Categories marked with `*` are reserved for upcoming phases and have no tool implementations yet. Specifying them will produce a startup warning and they will be skipped.
 
 | Group                   | Categories                                                                    |
 | ----------------------- | ----------------------------------------------------------------------------- |
@@ -153,11 +153,11 @@ Examples:
 # Read-only access to everything
 OMADA_TOOL_CATEGORIES=all:r
 
-# Default safe subset (read only)
-OMADA_TOOL_CATEGORIES=dashboard:r,client-insights:r,clients:r,devices-all:r
+# Curated default tool set
+OMADA_TOOL_CATEGORIES=default
 
 # Full access including write operations
-OMADA_TOOL_CATEGORIES=all:rw
+OMADA_TOOL_CATEGORIES=all
 
 # Network read + client write operations
 OMADA_TOOL_CATEGORIES=network-all:r,clients:rw

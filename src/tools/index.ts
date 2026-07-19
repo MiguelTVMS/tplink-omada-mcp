@@ -1,6 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
-import type { ToolCategory, ToolPermission } from '../config.js';
+import type { ToolCategory, ToolFilter, ToolPermission } from '../config.js';
 import type { OmadaClient } from '../omadaClient/index.js';
 import { logger } from '../utils/logger.js';
 import { registerAdoptDeviceTool } from './adoptDevice.js';
@@ -381,6 +381,69 @@ interface ToolEntry {
     category: ToolCategory;
     permission: ToolPermission;
 }
+
+const DEFAULT_TOOL_FNS = new Set<(server: McpServer, client: OmadaClient) => void>([
+    registerAdoptDeviceTool,
+    registerBatchSetSwitchPortNameTool,
+    registerBatchSetSwitchPortPoeTool,
+    registerBatchSetSwitchPortProfileTool,
+    registerBatchSetSwitchPortStatusTool,
+    registerBlockClientTool,
+    registerCreateFirewallAclTool,
+    registerCreateLanNetworkTool,
+    registerCreateLanProfileTool,
+    registerDeleteFirewallAclTool,
+    registerDeleteLanNetworkTool,
+    registerGenericApiCallTool,
+    registerGetCableTestResultsTool,
+    registerGetClientTool,
+    registerGetDeviceTool,
+    registerGetFirewallSettingTool,
+    registerGetFirmwareDetailsTool,
+    registerGetInternetInfoTool,
+    registerGetLanNetworkListTool,
+    registerGetLanProfileListTool,
+    registerGetPortForwardingStatusTool,
+    registerGetSsidDetailTool,
+    registerGetSsidListTool,
+    registerGetSwitchTool,
+    registerGetSwitchNetworksTool,
+    registerGetSwitchPortsTool,
+    registerGetSwitchStackDetailTool,
+    registerGetThreatListTool,
+    registerGetWlanGroupListTool,
+    registerListClientsTool,
+    registerListClientsActivityTool,
+    registerListClientsPastConnectionsTool,
+    registerListDevicesTool,
+    registerListDevicesStatsTool,
+    registerListEventsTool,
+    registerListFirewallAclsTool,
+    registerListIpGroupsTool,
+    registerListLogsTool,
+    registerListMostActiveClientsTool,
+    registerListRoutesTool,
+    registerListSitesTool,
+    registerRebootDeviceTool,
+    registerReconnectClientTool,
+    registerSearchDevicesTool,
+    registerSetDeviceLedTool,
+    registerSetGatewayWanConnectTool,
+    registerSetSwitchNetworksTool,
+    registerSetSwitchPortNameTool,
+    registerSetSwitchPortPoeTool,
+    registerSetSwitchPortProfileTool,
+    registerSetSwitchPortProfileOverrideTool,
+    registerSetSwitchPortStatusTool,
+    registerStartCableTestTool,
+    registerStartFirmwareUpgradeTool,
+    registerUnblockClientTool,
+    registerUpdateClientTool,
+    registerUpdateFirewallSettingTool,
+    registerUpdateLanNetworkTool,
+    registerUpdateLanProfileTool,
+    registerUpdateSwitchPortTool,
+]);
 
 const TOOL_REGISTRY: ToolEntry[] = [
     // --- Sites ---
@@ -818,19 +881,33 @@ const TOOL_REGISTRY: ToolEntry[] = [
 // registers matching tools with the MCP server.
 // ---------------------------------------------------------------------------
 
-export function registerAllTools(server: McpServer, client: OmadaClient, activeCategories?: Map<ToolCategory, Set<ToolPermission>>): void {
+export function registerAllTools(server: McpServer, client: OmadaClient, filter?: ToolFilter | Map<ToolCategory, Set<ToolPermission>>): void {
     // If no filter map provided, register everything (backward-compat / tests)
-    if (!activeCategories) {
+    if (!filter) {
         for (const entry of TOOL_REGISTRY) {
             entry.fn(server, client);
         }
         return;
     }
 
+    const activeCategories = filter instanceof Map ? filter : filter.categories;
+    const activeProfiles = filter instanceof Map ? new Set() : filter.profiles;
+
     // Deduplicate: some tools appear in multiple categories; track which fns we've already called.
     const registered = new Set<(server: McpServer, client: OmadaClient) => void>();
 
     let toolCount = 0;
+    if (activeProfiles.has('default')) {
+        for (const entry of TOOL_REGISTRY) {
+            if (!DEFAULT_TOOL_FNS.has(entry.fn)) continue;
+            if (registered.has(entry.fn)) continue;
+
+            registered.add(entry.fn);
+            entry.fn(server, client);
+            toolCount++;
+        }
+    }
+
     for (const entry of TOOL_REGISTRY) {
         const allowed = activeCategories.get(entry.category);
         if (!allowed) continue;
@@ -849,8 +926,10 @@ export function registerAllTools(server: McpServer, client: OmadaClient, activeC
             return `${cat}:${p}`;
         })
         .join(', ');
+    const profileList = [...activeProfiles].join(', ');
 
     logger.info('Tool categories loaded', {
+        profiles: profileList || undefined,
         categories: categoryList,
         toolCount,
     });

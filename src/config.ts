@@ -93,8 +93,16 @@ export interface ActiveCategoryEntry {
     permissions: Set<ToolPermission>;
 }
 
+export type ToolProfile = 'default';
+
+export interface ToolFilter {
+    categories: Map<ToolCategory, Set<ToolPermission>>;
+    profiles: Set<ToolProfile>;
+}
+
 export interface ParseToolCategoriesResult {
     categories: Map<ToolCategory, Set<ToolPermission>>;
+    profiles: Set<ToolProfile>;
     warnings: string[];
 }
 
@@ -108,6 +116,7 @@ export interface ParseToolCategoriesResult {
  *   - no suffix    → read and write (`:rw`)
  *
  * Group aliases (e.g. `all`, `devices-all`) are expanded before the suffix is applied.
+ * The `default` profile registers the curated practical tool set from the original server.
  * Unknown category names produce a warning and are skipped.
  * Future (unimplemented) categories produce a warning and are skipped.
  *
@@ -115,6 +124,7 @@ export interface ParseToolCategoriesResult {
  */
 export function parseToolCategories(raw: string): ParseToolCategoriesResult {
     const categories = new Map<ToolCategory, Set<ToolPermission>>();
+    const profiles = new Set<ToolProfile>();
     const warnings: string[] = [];
 
     const tokens = raw
@@ -153,6 +163,11 @@ export function parseToolCategories(raw: string): ParseToolCategoriesResult {
             permissions.add('write');
         }
 
+        if (name === 'default') {
+            profiles.add('default');
+            continue;
+        }
+
         // Expand group aliases
         if (name in CATEGORY_GROUP_ALIASES) {
             for (const cat of CATEGORY_GROUP_ALIASES[name]) {
@@ -182,7 +197,7 @@ export function parseToolCategories(raw: string): ParseToolCategoriesResult {
         mergePermissions(categories, name as ToolCategory, permissions);
     }
 
-    return { categories, warnings };
+    return { categories, profiles, warnings };
 }
 
 function mergePermissions(map: Map<ToolCategory, Set<ToolPermission>>, cat: ToolCategory, perms: Set<ToolPermission>): void {
@@ -195,7 +210,7 @@ function mergePermissions(map: Map<ToolCategory, Set<ToolPermission>>, cat: Tool
 }
 
 /** Default value for OMADA_TOOL_CATEGORIES */
-export const DEFAULT_TOOL_CATEGORIES = 'dashboard:r,client-insights:r,clients:r,devices-all:r';
+export const DEFAULT_TOOL_CATEGORIES = 'default';
 
 const createBooleanStringSchema = (
     defaultValue: boolean
@@ -329,7 +344,7 @@ export interface OmadaConnectionConfig {
 
 export interface EnvironmentConfig {
     // Tool category filtering
-    toolCategories: Map<ToolCategory, Set<ToolPermission>>;
+    toolCategories: ToolFilter;
     startupWarnings: string[];
 
     // Omada Client Configuration
@@ -420,12 +435,12 @@ export function loadConfigFromEnv(env: NodeJS.ProcessEnv = process.env): Environ
     }
 
     // Parse tool categories
-    const { categories: toolCategories, warnings: categoryWarnings } = parseToolCategories(parsed.data.toolCategories);
+    const { categories, profiles, warnings: categoryWarnings } = parseToolCategories(parsed.data.toolCategories);
     warnings.push(...categoryWarnings);
 
     return {
         // Tool category filtering
-        toolCategories,
+        toolCategories: { categories, profiles },
         startupWarnings: warnings,
 
         // Omada Client Configuration
