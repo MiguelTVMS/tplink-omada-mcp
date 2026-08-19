@@ -36,10 +36,10 @@ export class LogOperations {
         };
 
         if (options.startTime !== undefined) {
-            params['filters.startTime'] = options.startTime;
+            params['filters.timeStart'] = options.startTime;
         }
         if (options.endTime !== undefined) {
-            params['filters.endTime'] = options.endTime;
+            params['filters.timeEnd'] = options.endTime;
         }
         if (options.searchKey) {
             params.searchKey = options.searchKey;
@@ -63,10 +63,10 @@ export class LogOperations {
         };
 
         if (options.startTime !== undefined) {
-            params['filters.startTime'] = options.startTime;
+            params['filters.timeStart'] = options.startTime;
         }
         if (options.endTime !== undefined) {
-            params['filters.endTime'] = options.endTime;
+            params['filters.timeEnd'] = options.endTime;
         }
         if (options.searchKey) {
             params.searchKey = options.searchKey;
@@ -116,10 +116,10 @@ export class LogOperations {
         };
 
         if (options.startTime !== undefined) {
-            params['filters.startTime'] = options.startTime;
+            params['filters.timeStart'] = options.startTime;
         }
         if (options.endTime !== undefined) {
-            params['filters.endTime'] = options.endTime;
+            params['filters.timeEnd'] = options.endTime;
         }
         if (options.searchKey) {
             params.searchKey = options.searchKey;
@@ -142,10 +142,10 @@ export class LogOperations {
         };
 
         if (options.startTime !== undefined) {
-            params['filters.startTime'] = options.startTime;
+            params['filters.timeStart'] = options.startTime;
         }
         if (options.endTime !== undefined) {
-            params['filters.endTime'] = options.endTime;
+            params['filters.timeEnd'] = options.endTime;
         }
         if (options.searchKey) {
             params.searchKey = options.searchKey;

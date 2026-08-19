@@ -57,8 +57,8 @@ describe('LogOperations', () => {
             expect(mockRequest.get).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.objectContaining({
-                    'filters.startTime': 1000000,
-                    'filters.endTime': 2000000,
+                    'filters.timeStart': 1000000,
+                    'filters.timeEnd': 2000000,
                     searchKey: 'device',
                 }),
                 undefined
@@ -106,8 +106,8 @@ describe('LogOperations', () => {
             expect(mockRequest.get).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.objectContaining({
-                    'filters.startTime': 1000,
-                    'filters.endTime': 2000,
+                    'filters.timeStart': 1000,
+                    'filters.timeEnd': 2000,
                     searchKey: 'test',
                 }),
                 undefined
@@ -123,6 +123,22 @@ describe('LogOperations', () => {
 
             expect(mockRequest.get).toHaveBeenCalledWith('/openapi/v1/test-omadac/logs/alerts', { page: 1, pageSize: 10 }, undefined);
             expect(result.data).toHaveLength(1);
+        });
+
+        it('should include optional filters for global alerts', async () => {
+            vi.mocked(mockRequest.get).mockResolvedValue(makePaginatedResponse());
+
+            await logOps.listGlobalAlerts({ page: 1, pageSize: 10, startTime: 1000, endTime: 2000, searchKey: 'test' });
+
+            expect(mockRequest.get).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.objectContaining({
+                    'filters.timeStart': 1000,
+                    'filters.timeEnd': 2000,
+                    searchKey: 'test',
+                }),
+                undefined
+            );
         });
     });
 
@@ -214,7 +230,7 @@ describe('LogOperations', () => {
             await logOps.listSiteAlerts({ page: 1, pageSize: 10, startTime: 1640000000000, endTime: 1640100000000, searchKey: 'test' }, 'site-123');
             expect(mockRequest.get).toHaveBeenCalledWith(
                 '/openapi/v1/test-omadac/sites/site-123/logs/alerts',
-                { page: 1, pageSize: 10, 'filters.startTime': 1640000000000, 'filters.endTime': 1640100000000, searchKey: 'test' },
+                { page: 1, pageSize: 10, 'filters.timeStart': 1640000000000, 'filters.timeEnd': 1640100000000, searchKey: 'test' },
                 undefined
             );
         });
