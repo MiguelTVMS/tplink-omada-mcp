@@ -3,6 +3,13 @@ import type { CustomHeaders, OmadaApiResponse, PaginatedResult } from '../types/
 import type { RequestHandler } from './request.js';
 import type { SiteOperations } from './site.js';
 
+/**
+ * The events and alerts endpoints mark `filters.timeStart` and
+ * `filters.timeEnd` as required (OpenAPI spec, controller 6.3). When the
+ * caller supplies no window, query the last 24 hours rather than 400ing.
+ */
+const DEFAULT_LOG_WINDOW_MS = 24 * 60 * 60 * 1000;
+
 export interface LogQueryOptions {
     page: number;
     pageSize: number;
@@ -30,17 +37,13 @@ export class LogOperations {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/logs/events`);
 
+        const now = Date.now();
         const params: Record<string, unknown> = {
             page: options.page,
             pageSize: options.pageSize,
+            'filters.timeStart': options.startTime ?? now - DEFAULT_LOG_WINDOW_MS,
+            'filters.timeEnd': options.endTime ?? now,
         };
-
-        if (options.startTime !== undefined) {
-            params['filters.startTime'] = options.startTime;
-        }
-        if (options.endTime !== undefined) {
-            params['filters.endTime'] = options.endTime;
-        }
         if (options.searchKey) {
             params.searchKey = options.searchKey;
         }
@@ -57,17 +60,13 @@ export class LogOperations {
         const resolvedSiteId = this.site.resolveSiteId(siteId);
         const path = this.buildPath(`/sites/${encodeURIComponent(resolvedSiteId)}/logs/alerts`);
 
+        const now = Date.now();
         const params: Record<string, unknown> = {
             page: options.page,
             pageSize: options.pageSize,
+            'filters.timeStart': options.startTime ?? now - DEFAULT_LOG_WINDOW_MS,
+            'filters.timeEnd': options.endTime ?? now,
         };
-
-        if (options.startTime !== undefined) {
-            params['filters.startTime'] = options.startTime;
-        }
-        if (options.endTime !== undefined) {
-            params['filters.endTime'] = options.endTime;
-        }
         if (options.searchKey) {
             params.searchKey = options.searchKey;
         }
@@ -110,17 +109,13 @@ export class LogOperations {
     public async listGlobalEvents(options: LogQueryOptions, customHeaders?: CustomHeaders): Promise<PaginatedResult<unknown>> {
         const path = this.buildPath('/logs/events');
 
+        const now = Date.now();
         const params: Record<string, unknown> = {
             page: options.page,
             pageSize: options.pageSize,
+            'filters.timeStart': options.startTime ?? now - DEFAULT_LOG_WINDOW_MS,
+            'filters.timeEnd': options.endTime ?? now,
         };
-
-        if (options.startTime !== undefined) {
-            params['filters.startTime'] = options.startTime;
-        }
-        if (options.endTime !== undefined) {
-            params['filters.endTime'] = options.endTime;
-        }
         if (options.searchKey) {
             params.searchKey = options.searchKey;
         }
@@ -136,17 +131,13 @@ export class LogOperations {
     public async listGlobalAlerts(options: LogQueryOptions, customHeaders?: CustomHeaders): Promise<PaginatedResult<unknown>> {
         const path = this.buildPath('/logs/alerts');
 
+        const now = Date.now();
         const params: Record<string, unknown> = {
             page: options.page,
             pageSize: options.pageSize,
+            'filters.timeStart': options.startTime ?? now - DEFAULT_LOG_WINDOW_MS,
+            'filters.timeEnd': options.endTime ?? now,
         };
-
-        if (options.startTime !== undefined) {
-            params['filters.startTime'] = options.startTime;
-        }
-        if (options.endTime !== undefined) {
-            params['filters.endTime'] = options.endTime;
-        }
         if (options.searchKey) {
             params.searchKey = options.searchKey;
         }

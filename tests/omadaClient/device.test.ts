@@ -354,8 +354,13 @@ describe('omadaClient/device', () => {
 
     describe('getApRadios', () => {
         it('should get AP radio info', async () => {
-            const mockRadios = [{ band: '5GHz', channel: 36 }];
-            const mockResponse: OmadaApiResponse<unknown[]> = { errorCode: 0, result: mockRadios };
+            const mockRadios = {
+                radioTraffic2g: { rx: 1, tx: 2 },
+                radioTraffic5g: { rx: 3, tx: 4 },
+                wp2g: { actualChannel: '6   / 2437MHz' },
+                wp5g: { actualChannel: '36  / 5180MHz' },
+            };
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: mockRadios };
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
             (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockRadios);
 
@@ -365,22 +370,14 @@ describe('omadaClient/device', () => {
             expect(result).toEqual(mockRadios);
         });
 
-        it('should return empty array when ensureSuccess returns null', async () => {
-            const mockResponse: OmadaApiResponse<unknown[]> = { errorCode: 0, result: [] };
+        it('should return the controller response as-is when it is an object', async () => {
+            const mockRadios = { wp5g: { actualChannel: '36  / 5180MHz' } };
+            const mockResponse: OmadaApiResponse<unknown> = { errorCode: 0, result: mockRadios };
             (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
-            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(null);
+            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue(mockRadios);
 
             const result = await deviceOps.getApRadios('AA:BB:CC:DD:EE:FF', 'site-1');
-            expect(result).toEqual([]);
-        });
-
-        it('should return empty array when ensureSuccess returns a non-array object', async () => {
-            const mockResponse: OmadaApiResponse<unknown[]> = { errorCode: 0, result: [] };
-            (mockRequest.get as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
-            (mockRequest.ensureSuccess as ReturnType<typeof vi.fn>).mockReturnValue({});
-
-            const result = await deviceOps.getApRadios('AA:BB:CC:DD:EE:FF', 'site-1');
-            expect(result).toEqual([]);
+            expect(result).toEqual(mockRadios);
         });
 
         it('should throw when apMac is empty', async () => {
